@@ -31,6 +31,12 @@
         "projectId": "6e6a6094-0af8-456e-8012-9f7de36585de"
       }
     },
-    "owner": "rijalclub"
+    "owner": "rijalclub",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/6e6a6094-0af8-456e-8012-9f7de36585de"
+    }
   }
 }

@@ -130,5 +130,5 @@ dist
 .pnp.*
 .DS_Store
 
-# expo files
+#expo files
 .expo/
