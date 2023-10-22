@@ -4,12 +4,16 @@ Latest Staged Build:
 
 ![Expo QR Code](http://api.qrserver.com/v1/create-qr-code/?color=000000&bgcolor=FFFFFF&data=exp://u.expo.dev/6e6a6094-0af8-456e-8012-9f7de36585de/group/3be502e1-4fa3-476e-9d46-b3bba4897f44&size=200x200&qzone=1&margin=0&ecc=L)
 
+In the staged build certain functionality might not work due to limitations of Expo Go.
 
 QR code not working? Please reach out to the devs.
 
 ## Introduction
 
-Welcome to the RijalClub Mobile App repository. By scanning the QR code above with the [Expo Go](https://expo.dev/client) app, you can instantly preview the latest build of the application on your device. No installation or setup required!
+Welcome to the RijalClub Mobile App repository. By scanning the QR code above with the [Expo Go](https://expo.dev/client) app, you can instantly preview the latest preview of the application on your device. No installation or setup required other than downloading expo go from your respective app store!
+
+[IOS app store](https://apps.apple.com/gb/app/expo-go/id982107779)
+[Android playstore](https://play.google.com/store/apps/details?id=host.exp.exponent)
 
 ## Getting Started for Beginners
 
@@ -55,7 +59,7 @@ If you're familiar with React Native and Expo, you can dive straight into the co
 
 ## Feedback and Contributions
 
-Feedback is always welcome! If you'd like to see a feature or report a bug, please open an issue on this repository. If you'd like to contribute, please fork the repository and submit a pull request.
+Feedback is always welcome! If you'd like to report a bug, please open an issue on this repository. If you'd like to contribute, please fork the repository and submit a pull request.
 
 ## License
 
