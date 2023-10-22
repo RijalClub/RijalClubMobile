@@ -1,62 +1,58 @@
-name: pre-prod
-on: 
+name: staged-build
+on:
   push:
-     branches: [ production ]
+    branches: [staged]
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Setup Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18.x
-        cache: yarn
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: yarn
 
-    - name: 🏗 Setup EAS
-      uses: expo/expo-github-action@v8
-      with:
-        eas-version: latest
-        token: ${{ secrets.EXPO_TOKEN }}
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
 
-    - name: 📦 Install dependencies
-      run: yarn install
+      - name: 📦 Install dependencies
+        run: yarn install
 
-    - name: EAS Update and Capture Output
-      id: eas_update
-      run: |
-        OUTPUT=$(eas update --branch production --message "production")
-        echo "$OUTPUT"
-        UPDATE_GROUP_ID=$(echo "$OUTPUT" | awk -F'Update group ID    ' '/Update group ID/ {print $2}')
-        echo "UPDATE_GROUP_ID=$UPDATE_GROUP_ID" >> $GITHUB_ENV
-        eas channel:edit production --branch production
-      env:
-        EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      - name: 🖥️ EAS Update and Capture Output
+        id: eas_update
+        run: |
+          OUTPUT=$(eas update --branch staged --message "staged")
+          echo "$OUTPUT"
+          UPDATE_GROUP_ID=$(echo "$OUTPUT" | awk -F'Update group ID    ' '/Update group ID/ {print $2}')
+          echo "UPDATE_GROUP_ID=$UPDATE_GROUP_ID" >> $GITHUB_ENV
+          eas channel:edit staged --branch staged
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-    # - name: Generate Manifest URL
-    #   run: echo "MANIFEST_URL=https://u.expo.dev/${{ secrets.EAS_PROJECT_ID }}?channel-name=production" >> $GITHUB_ENV
+      # - name: Generate Manifest URL
+      #   run: echo "MANIFEST_URL=https://u.expo.dev/${{ secrets.EAS_PROJECT_ID }}?channel-name=production" >> $GITHUB_ENV
 
-    # - name: Generate Deep Link
-    #   run: echo "DEEP_LINK=exp+rijalclubapp://expo-development-client/?url=${{ env.MANIFEST_URL }}" >> $GITHUB_ENV
+      # - name: Generate Deep Link
+      #   run: echo "DEEP_LINK=exp+rijalclubapp://expo-development-client/?url=${{ env.MANIFEST_URL }}" >> $GITHUB_ENV
 
-    - name: Generate EXPO Go Deep Link
-      run: echo "DEEP_EXPO_LINK=exp://u.expo.dev/${{ secrets.EAS_PROJECT_ID }}/group/${{ env.UPDATE_GROUP_ID }}" >> $GITHUB_ENV
+      - name: 🤮 Generate EXPO Go Deep Link
+        run: echo "DEEP_EXPO_LINK=exp://u.expo.dev/${{ secrets.EAS_PROJECT_ID }}/group/${{ env.UPDATE_GROUP_ID }}" >> $GITHUB_ENV
 
-    - name: Update README.md with QR Code
-      run: |
-        sed -i "s|\(data=\)[^&]*|\1${{ env.DEEP_EXPO_LINK }}|" README.md
+      - name: ✍️ Update README.md with QR Code
+        run: |
+          sed -i "s|\(data=\)[^&]*|\1${{ env.DEEP_EXPO_LINK }}|" README.md
 
-    - name: Commit and push the changes to README.md
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-      run: |
+      - name: 🚲 Commit and push the changes to README.md
+        run: |
           git config user.name "GitHub Actions"
           git config user.email "github-actions@github.com"
           git add README.md
           git commit -m "Update Expo QR Code and links in README"
-          git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/RijalClub/RijalClubMobile.git
-          git push origin HEAD:production
-        
+          git push origin HEAD:staged
