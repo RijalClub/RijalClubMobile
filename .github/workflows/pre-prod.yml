@@ -29,11 +29,11 @@ jobs:
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
-
-            - name: Get current date
+          
+      - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d %H:%M:%S')"
-
+        
       - name: UpdateReadmeAction-Private
         uses: Ligengxin96/UpdateReadmeAction-Private@v1.0-publicpreview
         env:
