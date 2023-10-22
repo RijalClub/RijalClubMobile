@@ -5,51 +5,41 @@ on:
 
 jobs:
   update:
-    name: EAS Update
     runs-on: ubuntu-latest
     steps:
-      - name: Check for EXPO_TOKEN
-        run: |
-          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
-            echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
-            exit 1
-          fi
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: yarn
+    - name: Install Expo CLI
+      run: npm install -g expo-cli
 
-      - name: Set up Expo
-        uses: expo/expo-github-action@v7
-        with:
-          expo-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-          
-      - name: Install dependencies
-        run: yarn install
+    - name: Login to Expo
+      run: expo login -u ${{ secrets.EXPO_USERNAME }} -p ${{ secrets.EXPO_PASSWORD }}
 
-      - name: Publish to Expo & create a QR code
-        uses: expo/expo-preview-action@v1
-        with:
-          channel: production
-        id: preview
+    - name: EAS Update
+      run: eas update --branch production --message "production" && eas channel:edit production --branch production
+      env:
+        EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Update README.md with QR Code
-        run: |
-          sed -i "s|!\[Expo QR Code\]\(.*\)|!\[Expo QR Code\]\(${{ steps.preview.outputs.EXPO_QR_CODE_URL }}\)|" README.md
-          echo "You can [preview the PR here](${{ steps.preview.outputs.EXPO_QR_CODE_URL }})." >> README.md
-          echo "QR code not working or need a different client? Try the QR code or deep link from the [project page](${{steps.preview.outputs.EXPO_PROJECT_URL}})." >> README.md
-          echo "${{ steps.publish.outputs.EXPO_NEW_BUILD_IS_REQUIRED_MESSAGE }}" >> README.md
+    - name: Generate Manifest URL
+      run: echo "MANIFEST_URL=https://u.expo.dev/${{ secrets.EAS_PROJECT_ID }}?channel-name=production" >> $GITHUB_ENV
 
-      - name: Commit and push the changes to README.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-        run: |
+    - name: Generate Deep Link
+      run: echo "DEEP_LINK=exp+rijalclubapp://expo-development-client/?url=${{ env.MANIFEST_URL }}" >> $GITHUB_ENV
+
+    - name: Generate QR Code URL
+      run: echo "QR_CODE_URL=http://api.qrserver.com/v1/create-qr-code/?color=000000&bgcolor=FFFFFF&data=${{ env.DEEP_LINK }}&qzone=1&margin=0&size=500x500&ecc=L" >> $GITHUB_ENV
+
+    - name: Commit and push the changes to README.md
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+      run: |
+          sed -i 's#https://your-old-qr-code-url#'"${{ env.QR_CODE_URL }}"'#g' README.md
           git config user.name "GitHub Actions"
           git config user.email "github-actions@github.com"
           git add README.md
