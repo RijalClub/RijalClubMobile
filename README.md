@@ -2,7 +2,7 @@
 
 Latest Staged Build:
 
-![Expo QR Code](http://api.qrserver.com/v1/create-qr-code/?color=000000&bgcolor=FFFFFF&data=exp://u.expo.dev/6e6a6094-0af8-456e-8012-9f7de36585de/group/f46496b2-2351-45b6-ab9a-716695ce2797&size=200x200&qzone=1&margin=0&ecc=L)
+![Expo QR Code](http://api.qrserver.com/v1/create-qr-code/?color=000000&bgcolor=FFFFFF&data=exp://u.expo.dev/6e6a6094-0af8-456e-8012-9f7de36585de/group/3be502e1-4fa3-476e-9d46-b3bba4897f44&size=200x200&qzone=1&margin=0&ecc=L)
 
 
 QR code not working? Please reach out to the devs.
