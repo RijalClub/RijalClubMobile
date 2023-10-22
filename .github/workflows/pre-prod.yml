@@ -30,44 +30,6 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
           
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d %H:%M:%S')"
-        
-      - name: UpdateReadmeAction-Private
-        uses: Ligengxin96/UpdateReadmeAction-Private@v1.0-publicpreview
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-        with:
-          header: About FetchBingDailyImage
-          subhead: |
-                  The `main` branch project can fetch bing daily image and store them in MongoDB.
-                  It also can create a post automatically, you can see the images list in [this website](https://oursalbum.netlify.app)
-
-                  The `apis` branch project can expose the apis so that we can get bing historical daily images.
-
-                  ## How it work
-
-                  Use schedule Github Action to automatically update readme.md file to trigger the Github Action to deploy main branch project to heroku.
-
-                  After deploying in heroku, heroku will automatically execute `npm start` command to run this project, so we can fetch the image everyday.
-
-                  This is like we deploy a azure function in heroku, we can get a free azure function by this way.
-
-                  ## `'{startDate}'` To `'{endDate}'` '{repo}' repo traffic data
-
-                  Total views data: `'{viewsData}'`
-
-                  Total clones data: `'{clonesData}'`
-
-                  ## Latest fetch images time
-
-                  Latest fetch images time: `${{ steps.date.outputs.date }}`
-
-                  ## To everyone
-
-                  If this project is helpful to you please star this project, this is an encouragement to me `:)`    
-
       - name: Install dependencies
         run: yarn install
 
@@ -77,17 +39,17 @@ jobs:
           command: eas update --auto
         id: preview
 
-      - name: Update GitHub README
-        uses: theboi/github-update-readme@v1.0
-        env:  
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          header: "Salam, prospectus user! 👋"
-          subhead: >
-              You can [preview the PR here](${{ steps.preview.outputs.EXPO_QR_CODE_URL }}).<br><br>
-              <a href="${{ steps.publish.outputs.EXPO_QR_CODE_URL }}"><img src="${{ steps.preview.outputs.EXPO_QR_CODE_URL }}" height="512px" width="512px"></a>
-              <br><br>
-              QR code not working or need a different client? Try the QR code or deep link from the [project page](${{steps.preview.outputs.EXPO_PROJECT_URL}}).
-              <br><br>
-              ${{ steps.publish.outputs.EXPO_NEW_BUILD_IS_REQUIRED_MESSAGE }}
-              
+      - name: Update README.md with QR Code
+        run: |
+          sed -i "s|!\[Expo QR Code\]\(.*\)|!\[Expo QR Code\]\(${{ steps.preview.outputs.EXPO_QR_CODE_URL }}\)|" README.md
+          echo "You can [preview the PR here](${{ steps.preview.outputs.EXPO_QR_CODE_URL }})." >> README.md
+          echo "QR code not working or need a different client? Try the QR code or deep link from the [project page](${{steps.preview.outputs.EXPO_PROJECT_URL}})." >> README.md
+          echo "${{ steps.publish.outputs.EXPO_NEW_BUILD_IS_REQUIRED_MESSAGE }}" >> README.md
+
+      - name: Commit and push the changes to README.md
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@github.com"
+          git add README.md
+          git commit -m "Update Expo QR Code and links in README"
+          git push
