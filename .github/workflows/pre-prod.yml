@@ -47,6 +47,8 @@ jobs:
           echo "${{ steps.publish.outputs.EXPO_NEW_BUILD_IS_REQUIRED_MESSAGE }}" >> README.md
 
       - name: Commit and push the changes to README.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           git config user.name "GitHub Actions"
           git config user.email "github-actions@github.com"
