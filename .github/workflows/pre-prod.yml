@@ -39,8 +39,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
-          showTrafficData: true
-          apiPath: https://www.ligengxin-server.top/getrepoinfo/v1/getrepoinfo
           header: About FetchBingDailyImage
           subhead: |
                   The `main` branch project can fetch bing daily image and store them in MongoDB.
