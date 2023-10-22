@@ -47,7 +47,7 @@ jobs:
 
     - name: Update README.md with QR Code
       run: |
-        sed -i 's|~placeholder~|${{ env.DEEP_EXPO_LINK }}|' README.md
+        sed -i "s|\(data=\)[^&]*|\1${{ env.DEEP_EXPO_LINK }}|" README.md
 
     - name: Commit and push the changes to README.md
       env:
