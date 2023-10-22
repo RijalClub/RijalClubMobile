@@ -8,12 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Setup Node
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: 18.x
+        cache: yarn
 
     - name: 🏗 Setup EAS
       uses: expo/expo-github-action@v8
@@ -35,25 +36,18 @@ jobs:
       env:
         EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-    - name: Generate Manifest URL
-      run: echo "MANIFEST_URL=https://u.expo.dev/${{ secrets.EAS_PROJECT_ID }}?channel-name=production" >> $GITHUB_ENV
+    # - name: Generate Manifest URL
+    #   run: echo "MANIFEST_URL=https://u.expo.dev/${{ secrets.EAS_PROJECT_ID }}?channel-name=production" >> $GITHUB_ENV
 
-    - name: Generate Deep Link
-      run: echo "DEEP_LINK=exp+rijalclubapp://expo-development-client/?url=${{ env.MANIFEST_URL }}" >> $GITHUB_ENV
+    # - name: Generate Deep Link
+    #   run: echo "DEEP_LINK=exp+rijalclubapp://expo-development-client/?url=${{ env.MANIFEST_URL }}" >> $GITHUB_ENV
 
     - name: Generate EXPO Go Deep Link
       run: echo "DEEP_EXPO_LINK=exp://u.expo.dev/${{ secrets.EAS_PROJECT_ID }}/group/${{ env.UPDATE_GROUP_ID }}" >> $GITHUB_ENV
 
-    - name: Generate QR Code URL
-      run: echo "QR_CODE_URL=http://api.qrserver.com/v1/create-qr-code/?color=000000&bgcolor=FFFFFF&data=${{ env.DEEP_EXPO_LINK }}&qzone=1&margin=0&size=500x500&ecc=L" >> $GITHUB_ENV
-
     - name: Update README.md with QR Code
       run: |
-        # Ensure the placeholder exists, if not, append a placeholder to README
-        grep -q "\!\[Expo QR Code\]" README.md || echo "![Expo QR Code](placeholder)" >> README.md
-        # Replace the placeholder or the old QR code link with the new link
-        sed -i "s|![Expo QR Code](.*)|![Expo QR Code](${{ env.QR_CODE_URL }})|" README.md
-        echo "QR code not working? Please reach out to the devs." >> README.md
+        sed -i 's|~placeholder~|${{ env.DEEP_EXPO_LINK }}|' README.md
 
     - name: Commit and push the changes to README.md
       env:
