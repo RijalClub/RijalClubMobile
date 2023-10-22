@@ -37,7 +37,6 @@ function MyTabs() {
     <Tab.Navigator
       initialRouteName="Feed"
       activeColor="#e91e63"
-      labelStyle={{ fontSize: 12 }}
       style={{ backgroundColor: "tomato" }}
     >
       <Tab.Screen
