@@ -38,11 +38,16 @@ jobs:
     - name: Generate QR Code URL
       run: echo "QR_CODE_URL=http://api.qrserver.com/v1/create-qr-code/?color=000000&bgcolor=FFFFFF&data=${{ env.DEEP_LINK }}&qzone=1&margin=0&size=500x500&ecc=L" >> $GITHUB_ENV
 
+    - name: Update README.md with QR Code
+      run: |
+          sed -i "s|!\[Expo QR Code\]\(.*\)|!\[Expo QR Code\]\(${{ env.QR_CODE_URL }}\)|" README.md
+          echo "You can [preview the latest production alpha build here](${{ env.QR_CODE_URL }})." >> README.md
+          echo "QR code not working, please reach out to the devs" >> README.md
+
     - name: Commit and push the changes to README.md
       env:
         GITHUB_TOKEN: ${{ secrets.GH_PAT }}
       run: |
-          sed -i 's#https://your-old-qr-code-url#'"${{ env.QR_CODE_URL }}"'#g' README.md
           git config user.name "GitHub Actions"
           git config user.email "github-actions@github.com"
           git add README.md
