@@ -1,5 +1,1 @@
-Default: |
-
-## ${header}
-
-${subhead}
+![Expo QR Code](INITIAL_OR_EXISTING_QR_CODE_URL)
