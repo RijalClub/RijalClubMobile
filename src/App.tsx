@@ -3,10 +3,12 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import { NavigationContainer } from "@react-navigation/native";
 import * as React from "react";
 import { Text, View } from "react-native";
+import { Avatar } from "react-native-paper";
 
 function Feed() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Avatar.Image size={100} source={require("../assets/logo.png")} />
       <Text>Welcome to the Rijal App!!!</Text>
     </View>
   );
