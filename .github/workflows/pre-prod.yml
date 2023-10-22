@@ -21,6 +21,9 @@ jobs:
         eas-version: latest
         token: ${{ secrets.EXPO_TOKEN }}
 
+    - name: 📦 Install dependencies
+      run: yarn install
+
     - name: EAS Update
       run: eas update --branch production --message "production" && eas channel:edit production --branch production
       env:
