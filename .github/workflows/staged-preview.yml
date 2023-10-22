@@ -1,4 +1,4 @@
-name: staged-build
+name: staged-preview
 on:
   push:
     branches: [staged]
