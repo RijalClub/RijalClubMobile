@@ -39,6 +39,10 @@ jobs:
           command: eas update --auto
         id: preview
 
+      - name: Debug - Print all environment variables
+        run: printenv
+
+
       - name: Update README.md with QR Code
         run: |
           sed -i "s|!\[Expo QR Code\]\(.*\)|!\[Expo QR Code\]\(${{ steps.preview.outputs.EXPO_QR_CODE_URL }}\)|" README.md
@@ -56,3 +60,4 @@ jobs:
           git commit -m "Update Expo QR Code and links in README"
           git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/RijalClub/RijalClubMobile.git
           git push origin HEAD:production
+        
