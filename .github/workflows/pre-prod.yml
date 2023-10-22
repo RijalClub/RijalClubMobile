@@ -24,8 +24,14 @@ jobs:
     - name: 📦 Install dependencies
       run: yarn install
 
-    - name: EAS Update
-      run: eas update --branch production --message "production" && eas channel:edit production --branch production
+    - name: EAS Update and Capture Output
+      id: eas_update
+      run: |
+        OUTPUT=$(eas update --branch production --message "production")
+        echo "$OUTPUT"
+        UPDATE_GROUP_ID=$(echo "$OUTPUT" | grep -oP 'Update group ID: \K\S+')
+        echo "UPDATE_GROUP_ID=$UPDATE_GROUP_ID" >> $GITHUB_ENV
+        eas channel:edit production --branch production
       env:
         EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
@@ -35,13 +41,16 @@ jobs:
     - name: Generate Deep Link
       run: echo "DEEP_LINK=exp+rijalclubapp://expo-development-client/?url=${{ env.MANIFEST_URL }}" >> $GITHUB_ENV
 
+    - name: Generate EXPO Go Deep Link
+      run: echo "DEEP_EXPO_LINK=exp://u.expo.dev/${{ secrets.EAS_PROJECT_ID }}/group/${{ env.UPDATE_GROUP_ID }}" >> $GITHUB_ENV
+
     - name: Generate QR Code URL
-      run: echo "QR_CODE_URL=http://api.qrserver.com/v1/create-qr-code/?color=000000&bgcolor=FFFFFF&data=${{ env.DEEP_LINK }}&qzone=1&margin=0&size=500x500&ecc=L" >> $GITHUB_ENV
+      run: echo "QR_CODE_URL=http://api.qrserver.com/v1/create-qr-code/?color=000000&bgcolor=FFFFFF&data=${{ env.DEEP_EXPO_LINK }}&qzone=1&margin=0&size=500x500&ecc=L" >> $GITHUB_ENV
 
     - name: Update README.md with QR Code
       run: |
           sed -i "s|!\[Expo QR Code\]\(.*\)|!\[Expo QR Code\]\(${{ env.QR_CODE_URL }}\)|" README.md
-          echo "You can [preview the latest production alpha build here](${{ env.QR_CODE_URL }})." >> README.md
+          echo "You can [preview the latest production alpha build here](${{ env.DEEP_EXPO_LINK }})." >> README.md
           echo "QR code not working, please reach out to the devs" >> README.md
 
     - name: Commit and push the changes to README.md
