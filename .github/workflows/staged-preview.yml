@@ -56,12 +56,3 @@ jobs:
           git add README.md
           git commit -m "Update Expo QR Code and links in staged README"
           git push origin HEAD:staged
-
-      - name: 🚲 Commit and push the changes to main README.md
-        run: |
-          git checkout main
-          sed -i "s|\(data=\)[^&]*|\1${{ env.DEEP_EXPO_LINK }}|" README.md
-          git add README.md
-          git commit -m "Update Expo QR Code and links in main README"
-          git push origin HEAD:main
-        
