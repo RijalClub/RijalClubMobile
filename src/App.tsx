@@ -4,6 +4,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import * as React from "react";
 import { Text, View } from "react-native";
 import { Avatar } from "react-native-paper";
+import FootballScreen from "./football";
+import FitnessScreen from "./fitness";
 
 function Feed() {
   return (
@@ -16,17 +18,13 @@ function Feed() {
 
 function Fitness() {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Fitness!!!</Text>
-    </View>
+    <FitnessScreen></FitnessScreen>
   );
 }
 
 function Football() {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Football!!!</Text>
-    </View>
+    <FootballScreen></FootballScreen>
   );
 }
 

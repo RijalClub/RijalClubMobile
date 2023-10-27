@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { Button, Menu, Divider, PaperProvider } from 'react-native-paper';
 
-const FootballScreen = () => {
+const FitnessScreen = () => {
   const [visible, setVisible] = React.useState(false);
 
   const openMenu = () => setVisible(true);
@@ -31,4 +31,4 @@ const FootballScreen = () => {
   );
 };
 
-export default FootballScreen;
+export default FitnessScreen;
