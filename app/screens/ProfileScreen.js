@@ -27,7 +27,7 @@ const ProfileScreen = () => {
 
     const checkUserExists = async () => {
       try {
-          const response = await fetch(`${supabaseUrl}/functions/v1/listUserByEmai`, {
+          const response = await fetch(`${supabaseUrl}/functions/v1/listUserByEmail`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
