@@ -24,6 +24,9 @@ jobs:
 
       - name: 📦 Install dependencies
         run: yarn install
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: 🖥️ EAS Update and Capture Output
         id: eas_update

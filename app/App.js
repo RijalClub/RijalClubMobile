@@ -6,6 +6,7 @@ import { Text, View } from "react-native";
 import { Avatar } from "react-native-paper";
 import FootballScreen from "./football";
 import FitnessScreen from "./fitness";
+import ProfileScreen from "./screens/ProfileScreen";
 
 function Feed() {
   return (
@@ -65,6 +66,16 @@ function MyTabs() {
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="run-fast" color={color} size={26} />
           ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+        tabBarLabel: "Profile",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="account" color={color} size={26} />
+            ),
         }}
       />
     </Tab.Navigator>
