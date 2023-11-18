@@ -24,9 +24,6 @@ jobs:
 
       - name: 📦 Install dependencies
         run: yarn install
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: 🖥️ EAS Update and Capture Output
         id: eas_update
@@ -38,6 +35,8 @@ jobs:
           eas channel:edit staged --branch staged
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
       # - name: Generate Manifest URL
       #   run: echo "MANIFEST_URL=https://u.expo.dev/${{ secrets.EAS_PROJECT_ID }}?channel-name=production" >> $GITHUB_ENV

@@ -5,8 +5,8 @@ import { TextInput, Button } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import supabase from '../utils/supabaseClient'; // Adjust the import path as necessary
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
 const ProfileScreen = () => {
     const [email, setEmail] = useState('');
