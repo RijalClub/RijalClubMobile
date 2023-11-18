@@ -2,7 +2,7 @@
 
 Latest Staged Build:
 
-![Expo QR Code](http://api.qrserver.com/v1/create-qr-code/?color=000000&bgcolor=FFFFFF&data=exp://u.expo.dev/6e6a6094-0af8-456e-8012-9f7de36585de/group/6ca893f5-c72d-4350-8a22-caefe3a8312e&size=200x200&qzone=1&margin=0&ecc=L)
+![Expo QR Code](http://api.qrserver.com/v1/create-qr-code/?color=000000&bgcolor=FFFFFF&data=exp://u.expo.dev/6e6a6094-0af8-456e-8012-9f7de36585de/group/d50babba-3f7e-4d96-bc1a-736fecc01a24&size=200x200&qzone=1&margin=0&ecc=L)
 
 In the staged build certain functionality might not work due to limitations of Expo Go.
 
