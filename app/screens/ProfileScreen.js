@@ -3,8 +3,10 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
-import supabase from '../utils/supabaseClient'; // Adjust the import path as necessary
+import { useAtom } from 'jotai';
+import supabase from '../utils/supabaseClient';
+import {userAtom} from "../utils/atoms";
+import {getUserEmail, getUserMetadata} from "../utils/userFunctions";
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -18,7 +20,7 @@ const ProfileScreen = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [checkedEmail, setCheckedEmail] = useState(false);
     const [dateOfBirth, setDateOfBirth] = useState(new Date());
-
+    const [userSession, setUserSession] = useAtom(userAtom);
     const isPasswordMatch = password === confirmPassword;
     const onDateChange = (event, selectedDate) => {
         const currentDate = selectedDate || dateOfBirth;
@@ -26,6 +28,7 @@ const ProfileScreen = () => {
     };
 
     const checkUserExists = async () => {
+        const lowerCaseEmail = email.toLocaleLowerCase();
       try {
           const response = await fetch(`${supabaseUrl}/functions/v1/listUserByEmail`, {
           method: 'POST',
@@ -34,7 +37,7 @@ const ProfileScreen = () => {
             // Replace with your actual Authorization header
               'Authorization': `Bearer ${supabaseAnonKey}`,
           },
-            body: JSON.stringify({ email: email }), // Make sure 'email' variable is defined in your component's state
+            body: JSON.stringify({ email: lowerCaseEmail }),// Make sure 'email' variable is defined in your component's state
         });
     
         const { userExists, error } = await response.json();
@@ -53,7 +56,7 @@ const ProfileScreen = () => {
     
 
     const handleSignUp = async () => {
-        
+        const lowerCaseEmail = email.toLocaleLowerCase();
         const formattedDateOfBirth = dateOfBirth.toISOString().split('T')[0];
         
         const userMetadata = {
@@ -62,8 +65,8 @@ const ProfileScreen = () => {
             date_of_birth: formattedDateOfBirth
         };
         
-        const { user, error } = await supabase.auth.signUp({
-            email,
+        const { data, error } = await supabase.auth.signUp({
+            lowerCaseEmail,
             password,
             options: {
                 data: userMetadata
@@ -72,20 +75,24 @@ const ProfileScreen = () => {
 
         if (error) {
             console.error('Error signing up:', error.message);
-            return;
+        } else {
+            setUserSession(data.user);
+            setLoggedIn(true);
         }
-      
-        setLoggedIn(true);
     };
     
 
     const handleSignIn = async () => {
-        const { user, error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
+
+        const { data, error } = await supabase.auth
+        .signInWithPassword({ email, password });
+
+         if (error) {
             console.error('Error signing in:', error.message);
-        } else {
-            setLoggedIn(true);
-        }
+         } else {
+             setUserSession(data.user);
+             setLoggedIn(true);
+         }
     };
 
     const handleSignOut = async () => {
@@ -93,34 +100,32 @@ const ProfileScreen = () => {
         if (error) {
             console.error('Error signing out:', error.message);
         } else {
+            setUserSession(null);
             setLoggedIn(false);
             setUserExists(null);
             setEmail('');
             setPassword('');
+            setCheckedEmail(false);
         }
+        setUserSession({});
     };
     
     const formatDateForDatabase = (date) => {
         return date.toISOString().split('T')[0];
     };
     
-    
-
-    if (loggedIn) {
-        return (
-            <View style={styles.container}>
-                <Text>Logged in</Text>
-                <Button mode="contained" onPress={handleSignOut}>
-                    Log out
-                </Button>
-            </View>
-        );
+    const seeAtom = () => {
+        console.log(getUserMetadata(userSession));
+        console.log(getUserEmail(userSession));
     }
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             {loggedIn ? (<View style={styles.container}>
-                <Text>Logged in</Text>
+                <Button mode="contained" onPress={seeAtom}>
+                    see atom
+                </Button>
+                <Text>{"\n"}</Text>
                 <Button mode="contained" onPress={handleSignOut}>
                     Log out
                 </Button>
@@ -131,13 +136,12 @@ const ProfileScreen = () => {
                     onChangeText={setEmail}
                     style={styles.input}
                     mode="outlined"
-                    onBlur={checkUserExists}
                 />
-            {/*    {!checkedEmail &&*/}
-            {/*    <Button mode="contained" onPress={checkUserExists}>*/}
-            {/*        Enter*/}
-            {/*    </Button>*/}
-            {/*}*/}
+                {!checkedEmail &&
+                <Button mode="contained" onPress={checkUserExists}>
+                    Enter
+                </Button>
+            }
                 {(userExists !== null && checkedEmail) && (
                     <>
                     <TextInput
