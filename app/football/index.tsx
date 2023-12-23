@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { View } from 'react-native';
 
-const FitnessScreen = () => {
+
+const FootballScreen = () => {
   const [visible, setVisible] = React.useState(false);
 
   const openMenu = () => setVisible(true);
@@ -9,10 +10,10 @@ const FitnessScreen = () => {
   const closeMenu = () => setVisible(false);
 
   return (
-    <View>
+   <View>
 
    </View>
   );
 };
 
-export default FitnessScreen;
+export default FootballScreen;

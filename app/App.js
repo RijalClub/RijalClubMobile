@@ -1,19 +1,30 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from "@react-navigation/native";
 import * as React from "react";
 import { Text, View } from "react-native";
-import { Avatar } from "react-native-paper";
+import {
+    Avatar,
+    AvatarFallbackText,
+    AvatarImage,
+} from "@gluestack-ui/themed";
+import FootballScreen from "./football";
 import FitnessScreen from "./fitness";
 import ProfileScreen from "./screens/ProfileScreen";
 import FootballScreen from "./screens/FootballScreen";
 
 function Feed() {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Avatar.Image size={100} source={require("../assets/logo.png")} />
-      <Text>Welcome to the Rijal App!!!</Text>
-    </View>
+      <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+          <Avatar>
+              <AvatarFallbackText>Initials</AvatarFallbackText>
+              <AvatarImage
+                  source={require("../assets/logo.png")}
+                  alt={"Rijal Logo"}
+              />
+          </Avatar>
+          <Text>Welcome to the Rijal App!!!</Text>
+      </View>
   );
 }
 
@@ -29,7 +40,7 @@ function Football() {
   );
 }
 
-const Tab = createMaterialBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
 function MyTabs() {
   return (
