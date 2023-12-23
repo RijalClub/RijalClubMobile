@@ -1,56 +1,92 @@
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
-import { Modal, Portal, Box, Button, Text as GText } from '@gluestack-ui/themed';
+import React, { useRef } from 'react';
+import { StyleSheet } from 'react-native';
+import {
+  Modal,
+  Box,
+  Button,
+  Text,
+  ModalBackdrop,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Icon,
+  ButtonText
+} from '@gluestack-ui/themed';
 import PositionDropdown from './PositionDropdown';
+import { CreditCard, UserPlus, LogOut, XCircle } from 'lucide-react-native';
 
 const EventModal = ({ visible, currentEvent, hideModal }) => {
+  const closeButtonRef = useRef(null);
 
-  const joinEvent = () => {
-    console.log("joined");
-  };
-
-  const leaveEvent = () => {
-    console.log("left match");
-  };
-
-  const payEvent = () => {
-    console.log("pay for event");
-  };
+  const joinEvent = () => console.log("Joined");
+  const leaveEvent = () => console.log("Left Match");
+  const payEvent = () => console.log("Pay for Event");
 
   return (
-    <Portal>
-      <Modal visible={visible} onDismiss={hideModal}>
-        <Box style={styles.modal}>
-          <GText style={styles.modalTitle}>{currentEvent?.title}</GText>
-          <GText>{currentEvent?.description}</GText>
-          <GText>Time</GText>
-          <GText>Date</GText>
-          <GText>Location</GText>
-          <GText>Availability 15/28</GText>
+    <Modal isOpen={visible} onClose={hideModal} finalFocusRef={closeButtonRef} size="md">
+      <ModalBackdrop />
+      <ModalContent>
+        <ModalHeader>
+          <Box flexDirection="row" justifyContent="space-between" alignItems="center" width="100%">
+            <Text style={styles.modalTitle}>{currentEvent?.title}</Text>
+            <ModalCloseButton onPress={hideModal}>
+              <Icon as={XCircle} size="lg" color={'red'} />
+            </ModalCloseButton>
+          </Box>
+        </ModalHeader>
+        <ModalBody>
+          <Text>{currentEvent?.description}</Text>
+          <Text>Time: {currentEvent?.time}</Text>
+          <Text>Date: {currentEvent?.date}</Text>
+          <Text>Location: {currentEvent?.location}</Text>
           <PositionDropdown />
-          <Button onPress={payEvent} variant="primary">Pay</Button>
-          <Button onPress={joinEvent} variant="primary">Join Event</Button>
-          <Button onPress={leaveEvent} variant="primary">Leave Event</Button>
-          <Button onPress={hideModal} variant="secondary">Close</Button>
-        </Box>
-      </Modal>
-    </Portal>
-  );
+        </ModalBody>
+        <ModalFooter style={styles.modalFooter}>
+          <Button onPress={payEvent} variant="primary" style={styles.button}>
+            <Icon as={CreditCard} size="md" />
+            <Text style={styles.buttonText}>Pay</Text>
+          </Button>
+          <Button onPress={joinEvent} variant="primary" style={styles.button}>
+            <Icon as={UserPlus} size="md" />
+            <Text style={styles.buttonText}>Join Event</Text>
+          </Button>
+          <Button onPress={leaveEvent} variant="primary" style={styles.button}>
+            <Icon as={LogOut} size="md" />
+            <Text style={styles.buttonText}>Leave Event</Text>
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+    );
 };
 
 const styles = StyleSheet.create({
-  modal: {
-    backgroundColor: 'white',
-    padding: 20,
-    margin: 20,
-  },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
+    flexShrink: 1
   },
-  modalButton: {
-    marginTop: 10,
+ modalFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingTop: 10,
   },
+  button: {
+    flex: 1, // Each button will take equal width
+    backgroundColor: '#2196F3',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginHorizontal: 5,
+  },
+  buttonText: {
+    color: 'white',
+    marginLeft: 5,
+    textAlign: 'center',
+  }
 });
 
 export default EventModal;

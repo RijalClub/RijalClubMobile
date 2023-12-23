@@ -1,16 +1,14 @@
-//As a user, after signing up, I should be able to express my interest for joining a football session.
-
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
-import { View, Text, Icon } from '@gluestack-ui/themed';
+import { SafeAreaView, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { Box, Text, Icon } from '@gluestack-ui/themed';
 import EventModal from './components/EventModal';
-import { CalendarPlus } from 'lucide-react-native';
+import { CalendarPlus } from 'lucide-react-native'; // Ensure this is compatible with Gluestack UI
 
 const FootballScreen = () => {
   const [visible, setVisible] = useState(false);
   const [currentEvent, setCurrentEvent] = useState(null);
 
-  const events = [
+   const events = [
     {
       id: 1,
       title: 'Champions League Matchday 6',
@@ -56,7 +54,7 @@ const FootballScreen = () => {
       location: 'Allianz Arena, Munich',
       icon: 'soccer'
     }
-  ];
+   ];
 
   const showModal = (event) => {
     setCurrentEvent(event);
@@ -68,20 +66,36 @@ const FootballScreen = () => {
   return (
     <SafeAreaView style={{ flex: 1, paddingTop: 50, paddingLeft: 20 }}>
       <ScrollView>
-      {events.map((event, index) => (
-        <View key={event.id} onPress={() => showModal(event)}>
-          <Icon as={CalendarPlus} />
-          <Text>{event.title}</Text>
-          <Text>{event.description}</Text>
-        </View>
-      ))}
+        {events.map((event) => (
+          <Pressable key={event.id} onPress={() => showModal(event)} style={styles.eventPressable}>
+            <Box style={styles.eventBox}>
+              <Icon as={CalendarPlus} size="md" />
+              <Text bold size="md">{event.title}</Text>
+              <Text isTruncated>{event.description}</Text>
+              {/* Other event details */}
+            </Box>
+          </Pressable>
+        ))}
       </ScrollView>
-      {currentEvent && <EventModal visible={visible} currentEvent={currentEvent} hideModal={hideModal}/>}
+      {currentEvent && <EventModal visible={visible} currentEvent={currentEvent} hideModal={hideModal} />}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  eventPressable: {
+    marginBottom: 10,
+    borderRadius: 5,
+    overflow: 'hidden',
+  },
+  eventBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#f5f5f5',
+    borderColor: '#ccc',
+    borderWidth: 1,
+  },
   modal: {
     backgroundColor: 'white',
     padding: 20,
