@@ -48,8 +48,6 @@ const styles = StyleSheet.create({
   dropdown: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'grey',
     padding: 10,
   },
   modalOverlay: {

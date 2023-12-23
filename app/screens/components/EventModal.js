@@ -29,7 +29,7 @@ const EventModal = ({ visible, currentEvent, hideModal }) => {
       <ModalBackdrop />
       <ModalContent>
         <ModalHeader>
-          <Box flexDirection="row" justifyContent="space-between" alignItems="center" width="100%" style={styles.modalHeader}>
+          <Box width="100%" style={styles.modalHeader}>
             <Text style={styles.modalTitle}>{currentEvent?.title}</Text>
             <ModalCloseButton onPress={hideModal}>
               <Icon as={XCircle} size="lg" color={'red'} />
@@ -38,23 +38,26 @@ const EventModal = ({ visible, currentEvent, hideModal }) => {
         </ModalHeader>
         <ModalBody>
           <Text>{currentEvent?.description}</Text>
-          <Text>Time: {currentEvent?.time}</Text>
-          <Text>Date: {currentEvent?.date}</Text>
-          <Text>Location: {currentEvent?.location}</Text>
-          <PositionDropdown />
+          <Text>Time: <Text fontWeight="bold">{currentEvent?.time}</Text></Text>
+          <Text>Date: <Text fontWeight="bold">{currentEvent?.date}</Text></Text>
+          <Text>Location: <Text fontWeight="bold">{currentEvent?.location}</Text></Text>
+          <Box style={styles.postionDropdown}>
+            <Text>Position: </Text>
+            <PositionDropdown />
+          </Box>
         </ModalBody>
         <ModalFooter style={styles.modalFooter}>
-          <Button onPress={payEvent} variant="primary" style={styles.button}>
+          <Button onPress={payEvent} variant="primary" style={[styles.button, styles.payButton]}>
             <Icon as={CreditCard} size="md" />
             <Text style={styles.buttonText}>Pay</Text>
           </Button>
           <Button onPress={joinEvent} variant="primary" style={styles.button}>
             <Icon as={UserPlus} size="md" />
-            <Text style={styles.buttonText}>Join Event</Text>
+            <Text style={styles.buttonText}>Join</Text>
           </Button>
-          <Button onPress={leaveEvent} variant="primary" style={styles.button}>
+          <Button onPress={leaveEvent} variant="primary" style={[styles.button, styles.leaveButton]}>
             <Icon as={LogOut} size="md" />
-            <Text style={styles.buttonText}>Leave Event</Text>
+            <Text style={styles.buttonText}>Leave</Text>
           </Button>
         </ModalFooter>
       </ModalContent>
@@ -92,6 +95,16 @@ const styles = StyleSheet.create({
     color: 'white',
     marginLeft: 5,
     textAlign: 'center',
+  },
+  postionDropdown: {
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  leaveButton: {
+    backgroundColor:"red"
+  },
+  payButton: {
+    backgroundColor: '#4CAF50'
   }
 });
 

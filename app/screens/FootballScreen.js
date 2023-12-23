@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Pressable } from 'react-native';
-import { Box, Text, Icon } from '@gluestack-ui/themed';
+import { SafeAreaView, ScrollView, StyleSheet, Pressable, View } from 'react-native';
+import { Box, Text, Icon, HStack } from '@gluestack-ui/themed';
 import EventModal from './components/EventModal';
 import { CalendarPlus } from 'lucide-react-native'; // Ensure this is compatible with Gluestack UI
 
@@ -64,15 +64,18 @@ const FootballScreen = () => {
   const hideModal = () => setVisible(false);
 
   return (
-    <SafeAreaView style={{ flex: 1, paddingTop: 50, paddingLeft: 20 }}>
+    <SafeAreaView style={{ flex: 1, paddingTop: 50, paddingHorizontal: 20 }}>
       <ScrollView>
         {events.map((event) => (
           <Pressable key={event.id} onPress={() => showModal(event)} style={styles.eventPressable}>
-            <Box style={styles.eventBox}>
-              <Icon as={CalendarPlus} size="md" />
-              <Text bold size="md">{event.title}</Text>
-              <Text isTruncated>{event.description}</Text>
-              {/* Other event details */}
+            <Box>
+              <HStack space='sm'>
+                <Icon as={CalendarPlus} size='xl' color='black'/>
+                <View>
+                  <Text style={styles.modalTitle}>{event.title}</Text>
+                  <Text style={styles.modalDescription}>{event.description}</Text>
+                </View>
+              </HStack>
             </Box>
           </Pressable>
         ))}
@@ -84,17 +87,16 @@ const FootballScreen = () => {
 
 const styles = StyleSheet.create({
   eventPressable: {
-    marginBottom: 10,
-    borderRadius: 5,
-    overflow: 'hidden',
-  },
-  eventBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#f5f5f5',
-    borderColor: '#ccc',
+    backgroundColor: '#f2ebff',
+    // shadowColor: 'black',
+    // shadowRadius: 10,
+    // elevation: 3,
+    borderColor: 'black',
     borderWidth: 1,
+    borderRadius: 20,
+    marginBottom: 10,
+    padding: 10,
+    marginBottom: 20
   },
   modal: {
     backgroundColor: 'white',
