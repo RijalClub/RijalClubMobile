@@ -28,7 +28,7 @@ const ProfileScreen = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [surname, setSurname] = useState('');
-    const [userExists, setUserExists] = useState('');
+    const [userExists, setUserExists] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
     const [checkedEmail, setCheckedEmail] = useState(false);
     const [dateOfBirth, setDateOfBirth] = useState(new Date());
@@ -42,7 +42,7 @@ const ProfileScreen = () => {
     }
     const onDateChange = (event, selectedDate) => {
         const currentDate = selectedDate || dateOfBirth;
-        setDateOfBirth(currentDate);
+        setDateOfBirth(formatDateForDatabase(currentDate));
     };
 
     const checkUserExists = async () => {
