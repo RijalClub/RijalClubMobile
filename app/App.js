@@ -8,7 +8,6 @@ import {
     AvatarFallbackText,
     AvatarImage,
 } from "@gluestack-ui/themed";
-import FootballScreen from "./football";
 import FitnessScreen from "./fitness";
 import ProfileScreen from "./screens/ProfileScreen";
 import FootballScreen from "./screens/FootballScreen";

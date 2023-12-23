@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, View, Text } from 'react-native';
-import { List, Avatar, Modal, Portal, Button, Picker } from 'react-native-paper';
+import { ScrollView, StyleSheet } from 'react-native';
+import { Modal, Portal, Box, Button, Text as GText } from '@gluestack-ui/themed';
 import PositionDropdown from './PositionDropdown';
 
 const EventModal = ({ visible, currentEvent, hideModal }) => {
@@ -19,18 +19,20 @@ const EventModal = ({ visible, currentEvent, hideModal }) => {
 
   return (
     <Portal>
-      <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
-        <Text style={styles.modalTitle}>{currentEvent?.title}</Text>
-        <Text>{currentEvent?.description}</Text>
-        <Text>Time</Text>
-        <Text>Date</Text>
-        <Text>Location</Text>
-        <Text>Availability 15/28</Text>
-        <PositionDropdown />
-        <Button onPress={payEvent} mode="contained" style={styles.modalButton}>Pay</Button>
-        <Button onPress={joinEvent} mode="contained" style={styles.modalButton}>Join Event</Button>
-        <Button onPress={leaveEvent} mode="contained" style={styles.modalButton}>Leave Event</Button>
-        <Button onPress={hideModal} mode="contained" style={styles.modalButton}>Close</Button>
+      <Modal visible={visible} onDismiss={hideModal}>
+        <Box style={styles.modal}>
+          <GText style={styles.modalTitle}>{currentEvent?.title}</GText>
+          <GText>{currentEvent?.description}</GText>
+          <GText>Time</GText>
+          <GText>Date</GText>
+          <GText>Location</GText>
+          <GText>Availability 15/28</GText>
+          <PositionDropdown />
+          <Button onPress={payEvent} variant="primary">Pay</Button>
+          <Button onPress={joinEvent} variant="primary">Join Event</Button>
+          <Button onPress={leaveEvent} variant="primary">Leave Event</Button>
+          <Button onPress={hideModal} variant="secondary">Close</Button>
+        </Box>
       </Modal>
     </Portal>
   );
@@ -47,8 +49,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   modalButton: {
-    marginTop: 10
-  }
+    marginTop: 10,
+  },
 });
 
 export default EventModal;

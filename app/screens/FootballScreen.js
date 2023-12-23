@@ -1,10 +1,10 @@
 //As a user, after signing up, I should be able to express my interest for joining a football session.
 
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, View, Text } from 'react-native';
-import { List, Avatar, Modal, Portal, Button, Picker } from 'react-native-paper';
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Icon } from '@gluestack-ui/themed';
 import EventModal from './components/EventModal';
+import { CalendarPlus } from 'lucide-react-native';
 
 const FootballScreen = () => {
   const [visible, setVisible] = useState(false);
@@ -68,15 +68,13 @@ const FootballScreen = () => {
   return (
     <SafeAreaView style={{ flex: 1, paddingTop: 50, paddingLeft: 20 }}>
       <ScrollView>
-        {events.map((event, index) => (
-          <List.Item
-            key={event.id}
-            title={event.title}
-            description={event.description}
-            left={() => <MaterialCommunityIcons name="soccer" size={26} />}
-            onPress={() => showModal(event)}
-          />
-        ))}
+      {events.map((event, index) => (
+        <View key={event.id} onPress={() => showModal(event)}>
+          <Icon as={CalendarPlus} />
+          <Text>{event.title}</Text>
+          <Text>{event.description}</Text>
+        </View>
+      ))}
       </ScrollView>
       {currentEvent && <EventModal visible={visible} currentEvent={currentEvent} hideModal={hideModal}/>}
     </SafeAreaView>
