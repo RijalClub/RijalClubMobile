@@ -29,7 +29,7 @@ const EventModal = ({ visible, currentEvent, hideModal }) => {
       <ModalBackdrop />
       <ModalContent>
         <ModalHeader>
-          <Box flexDirection="row" justifyContent="space-between" alignItems="center" width="100%">
+          <Box flexDirection="row" justifyContent="space-between" alignItems="center" width="100%" style={styles.modalHeader}>
             <Text style={styles.modalTitle}>{currentEvent?.title}</Text>
             <ModalCloseButton onPress={hideModal}>
               <Icon as={XCircle} size="lg" color={'red'} />
@@ -63,10 +63,16 @@ const EventModal = ({ visible, currentEvent, hideModal }) => {
 };
 
 const styles = StyleSheet.create({
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center', // This ensures vertical alignment
+    height: 50, // You can adjust this height as needed
+  },
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    flexShrink: 1
+    flex: 1,
   },
  modalFooter: {
     flexDirection: 'row',
