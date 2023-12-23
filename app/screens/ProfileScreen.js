@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useAtom } from 'jotai';
 import supabase from '../utils/supabaseClient';
 import {userAtom} from "../utils/atoms";
@@ -119,6 +119,17 @@ const ProfileScreen = () => {
         console.log(getUserEmail(userSession));
     }
 
+    const openAndroidDatePicker = () => {
+        DateTimePickerAndroid.open({
+            value: dateOfBirth,
+            mode: 'date',
+            onChange: (event, selectedDate) => {
+                setDateOfBirth(selectedDate || dateOfBirth);
+                },
+        });
+    };
+
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             {loggedIn ? (<View style={styles.container}>
@@ -149,7 +160,7 @@ const ProfileScreen = () => {
                         value={password}
                         onChangeText={setPassword}
                         secureTextEntry
-                        style={[styles.input, isPasswordMatch ? styles.match : styles.noMatch]}
+                        style={[styles.input, (!userExists) && (isPasswordMatch ? styles.match : styles.noMatch)]}
                         mode="outlined"
                     />
                     {!userExists && (
@@ -178,14 +189,19 @@ const ProfileScreen = () => {
                         />
                         <View style={styles.datePickerContainer}>
                             <Text style={styles.datePickerLabel}>Date of Birth:</Text>
-                            <DateTimePicker
-                                value={dateOfBirth}
-                                mode="date"
-                                display="default"
-                                onChange={onDateChange}
-                                maximumDate={new Date()}
-                            />
+                            {Platform.OS === 'android' ? (
+                                <Button onPress={openAndroidDatePicker}>{dateOfBirth ? (dateOfBirth.toDateString()) : ("Select Date") }</Button>
+                            ) : (
+                                <DateTimePicker
+                                    value={dateOfBirth}
+                                    mode="date"
+                                    display="default"
+                                    onChange={onDateChange}
+                                    maximumDate={new Date()}
+                                />
+                            )}
                         </View>
+
                         <Button mode="contained" onPress={handleSignUp}>
                             Sign Up
                         </Button>
