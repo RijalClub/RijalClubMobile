@@ -4,9 +4,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import * as React from "react";
 import { Text, View } from "react-native";
 import { Avatar } from "react-native-paper";
-import FootballScreen from "./football";
 import FitnessScreen from "./fitness";
 import ProfileScreen from "./screens/ProfileScreen";
+import FootballScreen from "./screens/FootballScreen";
 
 function Feed() {
   return (
