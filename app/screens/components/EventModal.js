@@ -25,7 +25,7 @@ const EventModal = ({ visible, currentEvent, hideModal }) => {
   const payEvent = () => console.log("Pay for Event");
 
   return (
-    <Modal isOpen={visible} onClose={hideModal} finalFocusRef={closeButtonRef} size="md">
+    <Modal isOpen={visible} onClose={hideModal} finalFocusRef={closeButtonRef} size="lg">
       <ModalBackdrop />
       <ModalContent>
         <ModalHeader>
