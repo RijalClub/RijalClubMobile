@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { ChevronDownIcon } from 'lucide-react-native';
-import { Icon } from '@gluestack-ui/themed';
+import { Modal, Pressable , StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { View, Text } from '@gluestack-ui/themed';
 
 const PositionDropdown = () => {
   const [visible, setVisible] = useState(false);
@@ -18,27 +18,26 @@ const PositionDropdown = () => {
 
   return (
     <View>
-      <TouchableOpacity onPress={toggleMenu}>
+      <Pressable onPress={toggleMenu}>
         <View style={styles.dropdown}>
           <Text>{selected}</Text>
-          {/* Replace ChevronDownIcon with your icon component if available */}
-          <Icon as={ChevronDownIcon} size="md" />
+          <Ionicons name="chevron-down-circle-outline" size={24} style={{marginLeft:8}} color="#333333" />
         </View>
-      </TouchableOpacity>
+      </Pressable>
       <Modal
         transparent={true}
         visible={visible}
         onRequestClose={toggleMenu}
         >
-        <TouchableOpacity style={styles.modalOverlay} onPress={toggleMenu}>
+        <Pressable style={styles.modalOverlay} onPress={toggleMenu}>
           <View style={styles.menu}>
             {positions.map((position) => (
-              <TouchableOpacity key={position} onPress={() => selectItem(position)}>
+              <Pressable key={position} onPress={() => selectItem(position)}>
                 <Text style={styles.menuItem}>{position}</Text>
-              </TouchableOpacity>
+              </Pressable>
               ))}
           </View>
-        </TouchableOpacity>
+        </Pressable>
       </Modal>
     </View>
     );

@@ -1,101 +1,98 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from "@react-navigation/native";
-import * as React from "react";
-import { Text, View } from "react-native";
-import {
-    Avatar,
-    AvatarFallbackText,
-    AvatarImage,
-} from "@gluestack-ui/themed";
-import FitnessScreen from "./fitness";
-import ProfileScreen from "./screens/ProfileScreen";
-import FootballScreen from "./screens/FootballScreen";
+import React, {useState, useEffect} from 'react';
+import {Pressable, StyleSheet, BackHandler} from 'react-native';
+import {Box, VStack, HStack, Text, View} from '@gluestack-ui/themed';
+import {Ionicons} from '@expo/vector-icons';
+import {NavigationContainer} from '@react-navigation/native';
+import {useAtom} from "jotai";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {routerHistoryAtom} from "./utils/atoms";
+import FitnessScreen from './screens/FitnessScreen';
+import FootballScreen from './screens/FootballScreen';
+import HomeScreen from './screens/HomeScreen';
+import ProfileScreen from './screens/ProfileScreen';
+const TabIcon = ({name, label, onPress, active}) => (
+    <Pressable onPress={onPress}>
+        <VStack alignItems="center">
+            <Ionicons name={name} size={24} color={active ? "blue" : "gray"}/>
+            <Text color={active ? "blue" : "gray"}>{label}</Text>
+        </VStack>
+    </Pressable>
+);
 
-function Feed() {
-  return (
-      <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
-          <Avatar>
-              <AvatarFallbackText>Initials</AvatarFallbackText>
-              <AvatarImage
-                  source={require("../assets/logo.png")}
-                  alt={"Rijal Logo"}
-              />
-          </Avatar>
-          <Text>Welcome to the Rijal App!!!</Text>
-      </View>
-  );
-}
+const App = () => {
+    const [activeScreen, setActiveScreen] = useState('Home');
+    const [history, setHistory] = useAtom(routerHistoryAtom);
+    const insets = useSafeAreaInsets();
 
-function Fitness() {
-  return (
-    <FitnessScreen></FitnessScreen>
-  );
-}
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener(
+            'hardwareBackPress',
+            handleBackButtonPress
+        );
+        return () => backHandler.remove();
+    }, [history]);
 
-function Football() {
-  return (
-    <FootballScreen></FootballScreen>
-  );
-}
+    const navigateToScreen = (screen) => {
+        setHistory(prevHistory => [...prevHistory, screen]); // Push new screen to history
+        setActiveScreen(screen);
+    };
 
-const Tab = createBottomTabNavigator();
+    const handleBackButtonPress = () => {
+        if (history.length > 1) {
+            const newHistory = history.slice(0, history.length - 1); // Remove the last screen
+            setHistory(newHistory);
+            setActiveScreen(newHistory[newHistory.length - 1]); // Set the previous screen as active
+            return true;
+        }
+        BackHandler.exitApp();
+        return true; // To do nothing
+    };
 
-function MyTabs() {
-  return (
-    <Tab.Navigator
-      initialRouteName="Feed"
-      activeColor="#e91e63"
-      style={{ backgroundColor: "tomato" }}
-    >
-      <Tab.Screen
-        name="Football"
-        component={Football}
-        options={{
-          tabBarLabel: "Football",
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="soccer" color={color} size={26} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Feed"
-        component={Feed}
-        options={{
-          tabBarLabel: "Home",
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="home" color={color} size={26} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Fitness"
-        component={Fitness}
-        options={{
-          tabBarLabel: "Fitness",
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="run-fast" color={color} size={26} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-        tabBarLabel: "Profile",
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="account" color={color} size={26} />
-            ),
-        }}
-      />
-    </Tab.Navigator>
-  );
-}
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <MyTabs />
-    </NavigationContainer>
-  );
-}
+    const renderScreen = () => {
+        switch (activeScreen) {
+            case 'Fitness':
+                return <FitnessScreen handleBackPress={handleBackButtonPress}/>;
+            case 'Football':
+                return <FootballScreen handleBackPress={handleBackButtonPress}/>;
+            case 'Profile':
+                return <ProfileScreen handleBackPress={handleBackButtonPress}/>;
+            default:
+                return <HomeScreen handleBackPress={handleBackButtonPress}/>;
+        }
+    };
+
+    return (
+            <NavigationContainer>
+                <Box flex={1} style={{ paddingBottom: Math.max(insets.bottom, 10), paddingTop: Math.max(insets.top, 10)}}>
+                    <View style={styles.container}>
+                    {renderScreen()}
+                    </View>
+                    <HStack justifyContent="space-around" paddingX="20px" paddingY="10px" style={styles.navBar}>
+                        <TabIcon name="football-outline" label="Football" onPress={() => navigateToScreen('Football')}
+                                 active={activeScreen === 'Football'}/>
+                        <TabIcon name="home" label="Home" onPress={() => navigateToScreen('Home')}
+                                 active={activeScreen === 'Home'}/>
+                        <TabIcon name="fitness-outline" label="Fitness" onPress={() => navigateToScreen('Fitness')}
+                                 active={activeScreen === 'Fitness'}/>
+                        <TabIcon name="person-outline" label="Profile" onPress={() => navigateToScreen('Profile')}
+                                 active={activeScreen === 'Profile'}/>
+                    </HStack>
+                </Box>
+            </NavigationContainer>
+        );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#EFEFEF',
+    },
+    navBar: {
+        paddingTop : 15
+    }
+});
+
+export default App;

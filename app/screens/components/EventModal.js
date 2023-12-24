@@ -15,7 +15,7 @@ import {
   ButtonText
 } from '@gluestack-ui/themed';
 import PositionDropdown from './PositionDropdown';
-import { CreditCard, UserPlus, LogOut, XCircle } from 'lucide-react-native';
+import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const EventModal = ({ visible, currentEvent, hideModal }) => {
   const closeButtonRef = useRef(null);
@@ -25,14 +25,14 @@ const EventModal = ({ visible, currentEvent, hideModal }) => {
   const payEvent = () => console.log("Pay for Event");
 
   return (
-    <Modal isOpen={visible} onClose={hideModal} finalFocusRef={closeButtonRef} size="md">
+    <Modal isOpen={visible} onClose={hideModal} finalFocusRef={closeButtonRef} size="lg">
       <ModalBackdrop />
       <ModalContent>
         <ModalHeader>
           <Box width="100%" style={styles.modalHeader}>
             <Text style={styles.modalTitle}>{currentEvent?.title}</Text>
             <ModalCloseButton onPress={hideModal}>
-              <Icon as={XCircle} size="lg" color={'red'} />
+              <MaterialCommunityIcons name="close-circle" size={24} color="#DC143C" />
             </ModalCloseButton>
           </Box>
         </ModalHeader>
@@ -48,15 +48,15 @@ const EventModal = ({ visible, currentEvent, hideModal }) => {
         </ModalBody>
         <ModalFooter style={styles.modalFooter}>
           <Button onPress={payEvent} variant="primary" style={[styles.button, styles.payButton]}>
-            <Icon as={CreditCard} size="md" />
+            <FontAwesome name="credit-card" size={21} color="white" />
             <Text style={styles.buttonText}>Pay</Text>
           </Button>
           <Button onPress={joinEvent} variant="primary" style={styles.button}>
-            <Icon as={UserPlus} size="md" />
+            <FontAwesome name="user-plus" size={21} color="white" />
             <Text style={styles.buttonText}>Join</Text>
           </Button>
           <Button onPress={leaveEvent} variant="primary" style={[styles.button, styles.leaveButton]}>
-            <Icon as={LogOut} size="md" />
+            <MaterialCommunityIcons name="logout-variant" size={21} color="white" />
             <Text style={styles.buttonText}>Leave</Text>
           </Button>
         </ModalFooter>
