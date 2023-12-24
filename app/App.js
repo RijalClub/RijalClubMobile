@@ -1,15 +1,15 @@
-import React, {useState} from 'react';
-import {SafeAreaView, Pressable, StyleSheet} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {Pressable, StyleSheet, BackHandler} from 'react-native';
 import {Box, VStack, HStack, Text, View} from '@gluestack-ui/themed';
 import {Ionicons} from '@expo/vector-icons';
 import {NavigationContainer} from '@react-navigation/native';
-
-// Import your actual screen components
+import {useAtom} from "jotai";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {routerHistoryAtom} from "./utils/atoms";
 import FitnessScreen from './screens/FitnessScreen';
 import FootballScreen from './screens/FootballScreen';
 import HomeScreen from './screens/HomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
-
 const TabIcon = ({name, label, onPress, active}) => (
     <Pressable onPress={onPress}>
         <VStack alignItems="center">
@@ -21,38 +21,63 @@ const TabIcon = ({name, label, onPress, active}) => (
 
 const App = () => {
     const [activeScreen, setActiveScreen] = useState('Home');
+    const [history, setHistory] = useAtom(routerHistoryAtom);
+    const insets = useSafeAreaInsets();
+
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener(
+            'hardwareBackPress',
+            handleBackButtonPress
+        );
+        return () => backHandler.remove();
+    }, [history]);
+
+    const navigateToScreen = (screen) => {
+        setHistory(prevHistory => [...prevHistory, screen]); // Push new screen to history
+        setActiveScreen(screen);
+    };
+
+    const handleBackButtonPress = () => {
+        if (history.length > 1) {
+            const newHistory = history.slice(0, history.length - 1); // Remove the last screen
+            setHistory(newHistory);
+            setActiveScreen(newHistory[newHistory.length - 1]); // Set the previous screen as active
+            return true;
+        }
+        BackHandler.exitApp();
+        return true; // To do nothing
+    };
+
 
     const renderScreen = () => {
         switch (activeScreen) {
             case 'Fitness':
-                return <FitnessScreen/>;
+                return <FitnessScreen handleBackPress={handleBackButtonPress}/>;
             case 'Football':
-                return <FootballScreen/>;
+                return <FootballScreen handleBackPress={handleBackButtonPress}/>;
             case 'Profile':
-                return <ProfileScreen/>;
+                return <ProfileScreen handleBackPress={handleBackButtonPress}/>;
             default:
-                return <HomeScreen/>;
+                return <HomeScreen handleBackPress={handleBackButtonPress}/>;
         }
     };
 
     return (
             <NavigationContainer>
-                <Box flex={1}>
+                <Box flex={1} style={{ paddingBottom: Math.max(insets.bottom, 10), paddingTop: Math.max(insets.top, 10)}}>
                     <View style={styles.container}>
                     {renderScreen()}
                     </View>
-                  <SafeAreaView>
                     <HStack justifyContent="space-around" paddingX="20px" paddingY="10px" style={styles.navBar}>
-                        <TabIcon name="football-outline" label="Football" onPress={() => setActiveScreen('Football')}
+                        <TabIcon name="football-outline" label="Football" onPress={() => navigateToScreen('Football')}
                                  active={activeScreen === 'Football'}/>
-                        <TabIcon name="home" label="Home" onPress={() => setActiveScreen('Home')}
+                        <TabIcon name="home" label="Home" onPress={() => navigateToScreen('Home')}
                                  active={activeScreen === 'Home'}/>
-                        <TabIcon name="fitness-outline" label="Fitness" onPress={() => setActiveScreen('Fitness')}
+                        <TabIcon name="fitness-outline" label="Fitness" onPress={() => navigateToScreen('Fitness')}
                                  active={activeScreen === 'Fitness'}/>
-                        <TabIcon name="person-outline" label="Profile" onPress={() => setActiveScreen('Profile')}
+                        <TabIcon name="person-outline" label="Profile" onPress={() => navigateToScreen('Profile')}
                                  active={activeScreen === 'Profile'}/>
                     </HStack>
-                  </SafeAreaView>
                 </Box>
             </NavigationContainer>
         );
@@ -66,7 +91,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#EFEFEF',
     },
     navBar: {
-        paddingTop : 10
+        paddingTop : 15
     }
 });
 

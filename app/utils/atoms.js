@@ -9,3 +9,5 @@ export const passwordAtom = atom('');
 export const checkedEmailAtom = atom(false);
 
 export const userExistsAtom = atom(false);
+
+export const routerHistoryAtom = atom(['Home']);

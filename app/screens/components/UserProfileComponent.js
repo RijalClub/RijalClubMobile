@@ -29,7 +29,8 @@ const UserProfileComponent = () => {
         <Ionicons name="person-circle-outline" size={100} color="#cccccc" style={styles.icon} />
         <Text style={styles.header}>Profile</Text>
           <Text style={styles.info}>Email: {user?.email}</Text>
-          <Text style={styles.info}>Name: {user?.user_metadata?.full_name}</Text>
+          <Text style={styles.info}>First Name: {user?.user_metadata?.first_name}</Text>
+          <Text style={styles.info}>Surname: {user?.user_metadata?.surname}</Text>
           {/* Add more user info here */}
           <Button onPress={handleSignOut} style={styles.button}>
               <ButtonText>Sign Out</ButtonText>
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
     borderColor: '#cccccc',
     borderRadius: 8,
     width: '100%',
-    maxWidth: 400, // Set max-width for larger devices
+    maxWidth: 400,
   },
   icon: {
     alignSelf: 'center',
@@ -62,6 +63,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
+    paddingTop: 10,
   },
   info: {
     fontSize: 18,

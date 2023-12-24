@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Pressable, View } from 'react-native';
-import { Box, Text, Icon, HStack } from '@gluestack-ui/themed';
+import { ScrollView, StyleSheet, Pressable } from 'react-native';
+import { View, Box, Text, Icon, HStack } from '@gluestack-ui/themed';
 import EventModal from './components/EventModal';
-import { CalendarPlus } from 'lucide-react-native'; // Ensure this is compatible with Gluestack UI
+import { FontAwesome } from '@expo/vector-icons';
+import HeaderComponent from './components/HeaderComponent';
 
-const FootballScreen = () => {
+const FootballScreen = ({ handleBackPress }) => {
   const [visible, setVisible] = useState(false);
   const [currentEvent, setCurrentEvent] = useState(null);
 
@@ -64,13 +65,14 @@ const FootballScreen = () => {
   const hideModal = () => setVisible(false);
 
   return (
-    <SafeAreaView style={{ flex: 1, paddingTop: 50, paddingHorizontal: 20 }}>
+    <>
+    <HeaderComponent title="Football" onBackPress={handleBackPress} />
       <ScrollView>
         {events.map((event) => (
           <Pressable key={event.id} onPress={() => showModal(event)} style={styles.eventPressable}>
             <Box>
-              <HStack space='sm'>
-                <Icon as={CalendarPlus} size='xl' color='black'/>
+              <HStack space='sm' style={styles.hStack}>
+                <FontAwesome name="calendar-plus-o" size={24} color="#333333" />
                 <View>
                   <Text style={styles.modalTitle}>{event.title}</Text>
                   <Text style={styles.modalDescription}>{event.description}</Text>
@@ -78,25 +80,28 @@ const FootballScreen = () => {
               </HStack>
             </Box>
           </Pressable>
-        ))}
+          ))}
       </ScrollView>
       {currentEvent && <EventModal visible={visible} currentEvent={currentEvent} hideModal={hideModal} />}
-    </SafeAreaView>
-  );
+    </>
+    );
 };
 
 const styles = StyleSheet.create({
   eventPressable: {
     backgroundColor: '#f2ebff',
-    // shadowColor: 'black',
-    // shadowRadius: 10,
-    // elevation: 3,
     borderColor: 'black',
     borderWidth: 1,
     borderRadius: 20,
-    marginBottom: 10,
     padding: 10,
-    marginBottom: 20
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  hStack: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modal: {
     backgroundColor: 'white',

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Modal, Pressable , StyleSheet } from 'react-native';
-import { ChevronDownIcon } from 'lucide-react-native';
-import { Icon, View, Text } from '@gluestack-ui/themed';
+import { Ionicons } from '@expo/vector-icons';
+import { View, Text } from '@gluestack-ui/themed';
 
 const PositionDropdown = () => {
   const [visible, setVisible] = useState(false);
@@ -21,8 +21,7 @@ const PositionDropdown = () => {
       <Pressable onPress={toggleMenu}>
         <View style={styles.dropdown}>
           <Text>{selected}</Text>
-          {/* Replace ChevronDownIcon with your icon component if available */}
-          <Icon as={ChevronDownIcon} size="md" />
+          <Ionicons name="chevron-down-circle-outline" size={24} style={{marginLeft:8}} color="#333333" />
         </View>
       </Pressable>
       <Modal

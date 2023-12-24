@@ -1,38 +1,44 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import {View} from '@gluestack-ui/themed';
 import {useAtom} from 'jotai';
 import {userAtom, checkedEmailAtom, userExistsAtom} from '../utils/atoms';
-import EmailVerificationComponent from './components/EmailVerificationComponent';
+import EmailCheckComponent from './components/EmailCheckComponent';
 import SignUpComponent from './components/SignUpComponent';
 import SignInComponent from './components/SignInComponent';
 import UserProfileComponent from './components/UserProfileComponent';
+import HeaderComponent from './components/HeaderComponent';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ handleBackPress }) => {
     const [user] = useAtom(userAtom);
     const [checkedEmail] = useAtom(checkedEmailAtom);
     const [userExists] = useAtom(userExistsAtom);
 
     return (
-        <View style={styles.container}>
-            {user ? (
-                <UserProfileComponent/>
-            ) : (
-                <>
-                {checkedEmail ? userExists ? <SignInComponent/> : <SignUpComponent/> : <EmailVerificationComponent/> }
-                </>
-            )}
-        </View>
-    );
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <View>
+                <HeaderComponent title="Profile" onBackPress={handleBackPress} />
+                <View style={styles.container}>
+                    {user ? (
+                        <UserProfileComponent/>
+                        ) : (
+                            <>
+                            {checkedEmail ? userExists ? <SignInComponent/> : <SignUpComponent/> : <EmailCheckComponent/> }
+                            </>
+                            )}
+                </View>
+            </View>
+ </TouchableWithoutFeedback>
+        );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start', // Aligns content to the top with space for the header
         alignItems: 'center',
-        padding: 20,
-        backgroundColor: '#f0f0f0', // Choose a light neutral background color
+        paddingTop: 40, // Adds top padding to give space from the header
+        backgroundColor: '#f0f0f0', // Keeps the background color light and neutral
     },
 });
 
