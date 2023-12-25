@@ -17,6 +17,7 @@
     "@react-navigation/native": "^6.1.9",
     "@supabase/supabase-js": "^2.38.4",
     "expo": "^49.0.16",
+    "expo-calendar": "~11.3.2",
     "expo-constants": "~14.4.2",
     "expo-router": "^2.0.14",
     "expo-status-bar": "~1.6.0",

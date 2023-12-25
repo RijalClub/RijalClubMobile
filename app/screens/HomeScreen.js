@@ -41,7 +41,7 @@ const HomeScreen = ({ handleBackPress }) => {
             <AvatarFallbackText>Initials</AvatarFallbackText>
           </Avatar>
           <Title style={styles.titleText}>Rijal Club App</Title>
-          <Subtitle style={styles.subtitleText}>Connecting you to your community and faith</Subtitle>
+          <Subtitle style={styles.subtitleText}>Connecting you to your faith and community</Subtitle>
         </VStack>
 
         <Box backgroundColor="rgba(255, 255, 255, 0.85)" padding={4} marginX={4} marginTop={6} borderRadius={10}>
@@ -88,9 +88,9 @@ const styles = StyleSheet.create({
      paddingTop: 10
    },
   subtitleText: {
-      fontSize: 16,
+    fontSize: 16,
     color: '#333',
-    marginBottom: 20,
+    marginVertical: 20,
   },
   introText: {
       fontSize: 14,
