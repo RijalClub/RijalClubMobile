@@ -1,4 +1,4 @@
-import { PrayerTimes, Coordinates, CalculationMethod, Madhab } from 'adhan';
+import { PrayerTimes, Coordinates, CalculationMethod } from 'adhan';
 
 export const getLondonPrayerTimesForToday = () => {
     const londonCoordinates = new Coordinates(51.5074, -0.1278);

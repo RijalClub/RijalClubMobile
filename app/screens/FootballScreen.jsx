@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
-import { View, Box, Text, Icon, HStack, Pressable } from '@gluestack-ui/themed';
+import { View, Box, Text, HStack, Pressable } from '@gluestack-ui/themed';
 import EventModal from '../components/EventModal';
 import { FontAwesome } from '@expo/vector-icons';
 import HeaderComponent from '../components/HeaderComponent';

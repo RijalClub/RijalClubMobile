@@ -4,10 +4,7 @@ import {
   Box,
   Text,
   VStack,
-  Avatar,
   Divider,
-  AvatarFallbackText,
-  AvatarImage,
   View
 } from '@gluestack-ui/themed';
 import HeaderComponent from '../components/HeaderComponent';

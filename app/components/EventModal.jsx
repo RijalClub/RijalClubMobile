@@ -11,8 +11,6 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
-  Icon,
-  ButtonText,
   Pressable
 } from '@gluestack-ui/themed';
 import PositionDropdown from './PositionDropdown';
@@ -157,12 +155,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   }
 });
-
-async function requestCalendarPermissions() {
-const { status } = await Calendar.requestCalendarPermissionsAsync();
-return status === 'granted';
-}
-
 async function addEventToCalendar(eventDetails) {
 const defaultCalendarSource = Platform.OS === 'ios'
   ? await getDefaultCalendarSource()

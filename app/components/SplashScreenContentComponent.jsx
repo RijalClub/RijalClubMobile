@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react';
 import { Animated } from 'react-native';
-import { Text, Image, View } from '@gluestack-ui/themed';
 
 const SplashScreenContentComponent = () => {
     const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0

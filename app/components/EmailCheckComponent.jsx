@@ -12,8 +12,8 @@ const EmailCheckComponent= () => {
     const [email, setEmail] = useAtom(emailAtom);
     const [isChecking, setIsChecking] = useState(false);
     const [error, setError] = useState(null);
-    const [checkedEmail, setCheckedEmail] = useAtom(checkedEmailAtom);
-    const [userExists, setUserExists] = useAtom(userExistsAtom);
+    const [, setCheckedEmail] = useAtom(checkedEmailAtom);
+    const [, setUserExists] = useAtom(userExistsAtom);
     
     const checkUserExists = async () => {
         const lowerCaseEmail = email.toLocaleLowerCase();
