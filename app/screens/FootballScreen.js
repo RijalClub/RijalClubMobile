@@ -4,6 +4,8 @@ import { View, Box, Text, Icon, HStack } from '@gluestack-ui/themed';
 import EventModal from './components/EventModal';
 import { FontAwesome } from '@expo/vector-icons';
 import HeaderComponent from './components/HeaderComponent';
+import Subtitle from './components/SubtitleComponent';
+import Title from './components/TitleComponent';
 
 const FootballScreen = ({ handleBackPress }) => {
   const [visible, setVisible] = useState(false);
@@ -66,7 +68,11 @@ const FootballScreen = ({ handleBackPress }) => {
 
   return (
     <>
-    <HeaderComponent title="Football" onBackPress={handleBackPress} />
+    <HeaderComponent title="Rijal Football" onBackPress={handleBackPress} />
+      <Title style={styles.titleText}>About</Title>
+      <Subtitle style={styles.subtitleText}>
+        Join exhilarating football matches with just a tap, immersing yourself in the thrill of the game through our user-friendly app.
+      </Subtitle>
       <ScrollView>
         {events.map((event) => (
           <Pressable key={event.id} onPress={() => showModal(event)} style={styles.eventPressable}>
@@ -112,6 +118,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+  titleText: {
+    fontSize: 28,
+    color: '#000',
+    marginTop: 20,
+    paddingTop: 10
+  },
+  subtitleText: {
+    fontSize: 16,
+    color: '#333',
+    marginVertical: 20,
+  }
 });
 
 export default FootballScreen;

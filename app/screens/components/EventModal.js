@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, Alert } from 'react-native';
 import {
   Modal,
   Box,
@@ -16,6 +16,7 @@ import {
 } from '@gluestack-ui/themed';
 import PositionDropdown from './PositionDropdown';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Calendar from 'expo-calendar';
 
 const EventModal = ({ visible, currentEvent, hideModal }) => {
   const closeButtonRef = useRef(null);
@@ -23,6 +24,39 @@ const EventModal = ({ visible, currentEvent, hideModal }) => {
   const joinEvent = () => console.log("Joined");
   const leaveEvent = () => console.log("Left Match");
   const payEvent = () => console.log("Pay for Event");
+
+  const requestCalendarPermissions = async () => {
+    const { status } = await Calendar.requestCalendarPermissionsAsync();
+    if (status === 'granted') {
+      return true;
+    } else {
+      alert('Calendar permissions are required to perform this operation');
+      return false;
+    }
+  }
+
+  const handleAddEventPress = async () => {
+    const hasPermission = await requestCalendarPermissions();
+    if (hasPermission) {
+      // Dummy data for the event
+      const eventDetails = {
+        title: 'Team Meeting',
+        startDate: new Date('2023-12-30T09:00:00.000Z'), // Example start date
+        endDate: new Date('2023-12-30T10:00:00.000Z'), // Example end date
+        location: 'Office',
+        notes: 'Discuss project progress'
+      };
+
+      try {
+        await addEventToCalendar(eventDetails);
+        Alert.alert('Success', 'Event added to calendar');
+      } catch (error) {
+        Alert.alert('Error', 'Failed to add event to calendar');
+      }
+    } else {
+      Alert.alert("Permission Required", "This app needs calendar permissions to add events.");
+    }
+  };
 
   return (
     <Modal isOpen={visible} onClose={hideModal} finalFocusRef={closeButtonRef} size="lg">
@@ -39,7 +73,12 @@ const EventModal = ({ visible, currentEvent, hideModal }) => {
         <ModalBody>
           <Text>{currentEvent?.description}</Text>
           <Text>Time: <Text fontWeight="bold">{currentEvent?.time}</Text></Text>
-          <Text>Date: <Text fontWeight="bold">{currentEvent?.date}</Text></Text>
+          <Text style={styles.dateContainer}>Date:{'\u00A0'}
+            <Text style={styles.dateText}>{currentEvent?.date}</Text>
+            <Pressable onPress={handleAddEventPress}>
+              <Text style={styles.addCalendar}>Add To Calendar</Text>
+            </Pressable>
+          </Text>
           <Text>Location: <Text fontWeight="bold">{currentEvent?.location}</Text></Text>
           <Box style={styles.postionDropdown}>
             <Text>Position: </Text>
@@ -105,7 +144,54 @@ const styles = StyleSheet.create({
   },
   payButton: {
     backgroundColor: '#4CAF50'
+  },
+  dateContainer: {
+    display: 'flex'
+  },
+  addCalendar: {
+    marginLeft: 'auto'
+  },
+  dateText: {
+    marginRight: 'auto',
+    fontWeight: "bold"
   }
 });
+
+async function requestCalendarPermissions() {
+const { status } = await Calendar.requestCalendarPermissionsAsync();
+return status === 'granted';
+}
+
+async function addEventToCalendar(eventDetails) {
+const defaultCalendarSource = Platform.OS === 'ios'
+  ? await getDefaultCalendarSource()
+  : { isLocalAccount: true, name: 'Expo Calendar' };
+
+const newCalendarID = await Calendar.createCalendarAsync({
+  title: 'Expo Calendar',
+  color: 'blue',
+  entityType: Calendar.EntityTypes.EVENT,
+  sourceId: defaultCalendarSource?.id,
+  source: defaultCalendarSource,
+  name: 'internalCalendarName',
+  ownerAccount: 'personal',
+  accessLevel: Calendar.CalendarAccessLevel.OWNER,
+});
+
+await Calendar.createEventAsync(newCalendarID, {
+  title: eventDetails.title,
+  startDate: eventDetails.startDate,
+  endDate: eventDetails.endDate,
+  location: eventDetails.location,
+  notes: eventDetails.notes,
+  timeZone: 'GMT',
+});
+}
+
+async function getDefaultCalendarSource() {
+const calendars = await Calendar.getCalendarsAsync();
+const defaultCalendars = calendars.filter(each => each.source.name === 'Default');
+return defaultCalendars.length > 0 ? defaultCalendars[0].source : null;
+}
 
 export default EventModal;
