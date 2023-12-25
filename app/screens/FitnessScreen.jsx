@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
 import { View, Text, Box, HStack, VStack, Progress, ProgressFilledTrack } from '@gluestack-ui/themed';
-import HeaderComponent from './components/HeaderComponent';
+import HeaderComponent from '../components/HeaderComponent';
 
 const FitnessScreen = ({ handleBackPress }) => {
     return (

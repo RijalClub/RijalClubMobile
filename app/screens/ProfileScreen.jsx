@@ -3,11 +3,11 @@ import {StyleSheet, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import {View} from '@gluestack-ui/themed';
 import {useAtom} from 'jotai';
 import {userAtom, checkedEmailAtom, userExistsAtom} from '../utils/atoms';
-import EmailCheckComponent from './components/EmailCheckComponent';
-import SignUpComponent from './components/SignUpComponent';
-import SignInComponent from './components/SignInComponent';
-import UserProfileComponent from './components/UserProfileComponent';
-import HeaderComponent from './components/HeaderComponent';
+import EmailCheckComponent from '../components/EmailCheckComponent';
+import SignUpComponent from '../components/SignUpComponent';
+import SignInComponent from '../components/SignInComponent';
+import UserProfileComponent from '../components/UserProfileComponent';
+import HeaderComponent from '../components/HeaderComponent';
 
 const ProfileScreen = ({ handleBackPress }) => {
     const [user] = useAtom(userAtom);

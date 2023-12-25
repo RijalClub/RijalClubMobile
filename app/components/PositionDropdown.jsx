@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Modal, Pressable , StyleSheet } from 'react-native';
+import { Modal, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { View, Text } from '@gluestack-ui/themed';
+import { View, Text, Pressable } from '@gluestack-ui/themed';
 
 const PositionDropdown = () => {
   const [visible, setVisible] = useState(false);

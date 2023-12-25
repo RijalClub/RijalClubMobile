@@ -3,8 +3,8 @@ import { StyleSheet } from 'react-native';
 import { VStack, Button, View, Text, ButtonText } from '@gluestack-ui/themed';
 import { Ionicons } from '@expo/vector-icons';
 import { useAtom } from 'jotai';
-import { userAtom, checkedEmailAtom, userExistsAtom } from '../../utils/atoms';
-import supabase from '../../utils/supabaseClient';
+import { userAtom, checkedEmailAtom, userExistsAtom } from '../utils/atoms';
+import supabase from '../utils/supabaseClient';
 
 const UserProfileComponent = () => {
   const [user, setUser] = useAtom(userAtom);

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Pressable, StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Alert } from 'react-native';
 import {
   Modal,
   Box,
@@ -12,7 +12,8 @@ import {
   ModalBody,
   ModalFooter,
   Icon,
-  ButtonText
+  ButtonText,
+  Pressable
 } from '@gluestack-ui/themed';
 import PositionDropdown from './PositionDropdown';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';

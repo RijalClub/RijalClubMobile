@@ -3820,6 +3820,11 @@ acorn@^8.7.1, acorn@^8.8.2:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.11.2.tgz#ca0d78b51895be5390a5903c5b3bdcdaf78ae40b"
   integrity sha512-nc0Axzp/0FILLEVsm4fNwLCwMttvhEI263QtVPQcbpfZZ3ts0hLsZGOpE6czNlid7CJ9MlyH8reXkpsf3YUY4w==
 
+adhan@^4.4.3:
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/adhan/-/adhan-4.4.3.tgz#a8bccaeadd0669b609657d4069118562dba4763f"
+  integrity sha512-568KkQd8OMLUj7o7+d2FDcm6vZHWQrE7vsm/Evssh8sfUDpPyaboj3PVsScZAr7L7sNRgPrtLMmDZZfM7VeAYw==
+
 agent-base@6:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-6.0.2.tgz#49fff58577cfee3f37176feab4c22e00f86d7f77"

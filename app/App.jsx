@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {Pressable, StyleSheet, BackHandler} from 'react-native';
-import {Box, VStack, HStack, Text, View} from '@gluestack-ui/themed';
+import {StyleSheet, BackHandler} from 'react-native';
+import {Box, VStack, HStack, Text, View, Pressable} from '@gluestack-ui/themed';
 import {Ionicons} from '@expo/vector-icons';
 import {NavigationContainer} from '@react-navigation/native';
 import {useAtom} from "jotai";

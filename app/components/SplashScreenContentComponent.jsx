@@ -58,7 +58,7 @@ const SplashScreenContentComponent = () => {
         }}
             >
             <Animated.Image
-                source={require('../../../assets/logo.png')}
+                source={require('../../assets/logo.png')}
                 alt="Logo"
                 resizeMode="contain"
                 style={{

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
 import {
   Box,
@@ -10,38 +10,38 @@ import {
   AvatarImage,
   View
 } from '@gluestack-ui/themed';
-import HeaderComponent from './components/HeaderComponent';
-
-const Title = ({ children, style }) => (
-  <Text style={[styles.titleStyle, style]}>{children}</Text>
-  );
-
-// Subtitle Component
-const Subtitle = ({ children, style }) => (
-  <Text style={[styles.subtitleStyle, style]}>{children}</Text>
-  );
+import HeaderComponent from '../components/HeaderComponent';
+import Title from '../components/TitleComponent';
+import Subtitle from '../components/SubtitleComponent';
+import PrayerTimeWidgetComponent from '../components/PrayerTimeWidgetComponent';
+import { getLondonPrayerTimesForToday } from '../utils/prayerTimes';
 
 const Card = ({ children, style }) => (
   <View style={[styles.cardStyle, style]}>{children}</View>
   );
 
-
-
 const HomeScreen = ({ handleBackPress }) => {
+  const [todaysPrayerTimes, setTodaysPrayerTimes] = useState({});
+
+  useEffect(() => {
+    const times = getLondonPrayerTimesForToday();
+    setTodaysPrayerTimes({
+      fajr: times.fajr,
+      dhuhr: times.dhuhr,
+      asr: times.asr,
+      maghrib: times.maghrib,
+      isha: times.isha,
+    });
+    }, []);
+
   return (
     <>
       <HeaderComponent title="Home" onBackPress={handleBackPress} />
       <ScrollView style={styles.container}>
         <VStack space={6} alignItems="center">
-          <Avatar size="xl">
-            <AvatarImage
-              source={require('../../assets/logo.png')}
-              alt={"Rijal Logo"}
-            />
-            <AvatarFallbackText>Initials</AvatarFallbackText>
-          </Avatar>
           <Title style={styles.titleText}>Rijal Club App</Title>
           <Subtitle style={styles.subtitleText}>Connecting you to your faith and community</Subtitle>
+          <PrayerTimeWidgetComponent prayerTimes={todaysPrayerTimes} />
         </VStack>
 
         <Box backgroundColor="rgba(255, 255, 255, 0.85)" padding={4} marginX={4} marginTop={6} borderRadius={10}>
@@ -120,16 +120,6 @@ const styles = StyleSheet.create({
        color: '#000',
        marginBottom: 4,
      },
-  titleStyle: {
-      fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  subtitleStyle: {
-      fontSize: 18,
-    fontWeight: 'normal',
-    textAlign: 'center',
-    },
   cardStyle: {
       backgroundColor: '#fff',
     borderRadius: 10,
