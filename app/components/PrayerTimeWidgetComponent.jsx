@@ -82,12 +82,12 @@ const PrayerTimeWidgetComponent = ({ prayerTimes }) => {
 const styles = StyleSheet.create({
   prayerTimeContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Ensures even spacing between items
+    justifyContent: 'space-between',
     backgroundColor: '#fff',
     borderRadius: 10,
     paddingVertical: 15,
-    paddingHorizontal: 5,
-    marginHorizontal: 10, // Adjust margin as needed for screen width
+    paddingHorizontal: 5, // Reduce padding if needed
+    marginHorizontal: 10,
     shadowOpacity: 0.1,
     shadowRadius: 3,
     shadowColor: '#000',
@@ -97,32 +97,31 @@ const styles = StyleSheet.create({
   prayerTimeBlock: {
     alignItems: 'center',
     flex: 1, // Each block will take equal space
-    marginHorizontal: 5, // Add horizontal margin for spacing
+    marginHorizontal: 2, // Reduced horizontal margin for more space
   },
   prayerIcon: {
     marginBottom: 5,
   },
   prayerLabel: {
-    fontSize: 12,
+    fontSize: 11, // Slightly reduced font size
     color: '#555',
-    marginBottom: 5,
+    marginBottom: 3, // Reduced space below label
   },
   nextPrayerLabel: {
-    fontSize: 12,
+    fontSize: 11, // Ensure consistent font size
     color: 'blue',
-    marginBottom: 5,
     fontWeight: 'bold',
   },
   prayerTime: {
-    fontSize: 14,
+    fontSize: 12, // Slightly reduced font size
     color: '#555',
-    marginBottom: 5, // Add some space below the time
   },
   nextPrayerTime: {
-    fontSize: 14,
+    fontSize: 12, // Ensure consistent font size
     fontWeight: 'bold',
     color: 'blue',
   },
 });
+
 
 export default PrayerTimeWidgetComponent;

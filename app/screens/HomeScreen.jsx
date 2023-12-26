@@ -1,17 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import {
-  Box,
   Text,
   VStack,
-  Divider,
-  View
+  Divider
 } from '@gluestack-ui/themed';
 import HeaderComponent from '../components/HeaderComponent';
 import Title from '../components/TitleComponent';
 import Subtitle from '../components/SubtitleComponent';
 import PrayerTimeWidgetComponent from '../components/PrayerTimeWidgetComponent';
 import { getLondonPrayerTimesForToday } from '../utils/prayerTimes';
+import NotificationPanelComponent from "../components/NotificationPanelComponent";
 
 const Card = ({ children, style }) => (
   <View style={[styles.cardStyle, style]}>{children}</View>
@@ -34,44 +33,29 @@ const HomeScreen = ({ handleBackPress }) => {
   return (
     <>
       <HeaderComponent title="Home" onBackPress={handleBackPress} />
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
         <VStack space={6} alignItems="center">
           <Title style={styles.titleText}>Rijal Club App</Title>
           <Subtitle style={styles.subtitleText}>Connecting you to your faith and community</Subtitle>
           <PrayerTimeWidgetComponent prayerTimes={todaysPrayerTimes} />
         </VStack>
 
-        <Box backgroundColor="rgba(255, 255, 255, 0.85)" padding={4} marginX={4} marginTop={6} borderRadius={10}>
-          <Text style={styles.introText}>
-          "In the name of Allah, the Most Gracious, the Most Merciful.
-                Let us take a moment to reflect on the wisdom of the Prophet Muhammad (PBUH),
-                whose compassion and dedication to spreading knowledge has inspired countless hearts.
-                In the early days of Islam, his perseverance in the face of adversity set an example
-                for all Muslims to follow..."
-          </Text>
-        </Box>
-
         <Divider my={4} />
 
         <VStack space={4} px={4}>
           <Text style={styles.sectionTitle}>Rijal Club Announcements</Text>
-          {dummyNotifications.map((notification, index) => (
-            <Card key={index} style={styles.notificationCard}>
-              <Text style={[styles.notificationTitle, notification.level !== 'low' && (notification.level === 'high' ? styles.urgentTitle : styles.medTitle)]}>{notification.title}</Text>
-                <Text>{notification.message}</Text>
-            </Card>
-            ))}
+            <NotificationPanelComponent />
         </VStack>
-      </ScrollView>
+      </View>
     </>
     );
 };
 
-const dummyNotifications = [
-  { title: '* Urgent: Volunteer Helpers Needed', message: 'We urgently require additional volunteer helpers for the weekend charity event. Please respond if you can participate.', level: 'high' },
-  { title: '* Membership Due', message: 'Your annual membership fee is due. Please make sure to pay by the end of the month.', level: 'medium' },
-  { title: 'Upcoming Event', message: 'Do not forget our meeting next Thursday at the community center.', level: 'low' },
-];
+// const dummyNotifications = [
+//   { title: '* Urgent: Volunteer Helpers Needed', message: 'We urgently require additional volunteer helpers for the weekend charity event. Please respond if you can participate.', level: 'high' },
+//   { title: '* Membership Due', message: 'Your annual membership fee is due. Please make sure to pay by the end of the month.', level: 'medium' },
+//   { title: 'Upcoming Event', message: 'Do not forget our meeting next Thursday at the community center.', level: 'low' },
+// ];
 
 const styles = StyleSheet.create({
      container: {

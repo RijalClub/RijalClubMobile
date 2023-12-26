@@ -165,6 +165,7 @@ const SignUpComponent = () => {
                             <ButtonText style={styles.buttonText}>Sign Up</ButtonText>
                             )}
                 </Button>
+                {signUpError && <Text style={styles.errorText}>{signUpError}</Text>}
             </VStack>
         </View>
         </ScrollView>
