@@ -63,8 +63,8 @@ const App = () => {
     };
 
     return (
-            <NavigationContainer>
-                <Box flex={1} style={{ paddingBottom: Math.max(insets.bottom, 10), paddingTop: Math.max(insets.top, 10)}}>
+                <Box flex={1} style={{ paddingBottom: Math.max(insets.bottom, 10), paddingTop: Math.max(insets.top, 10),  zIndex: 999}}>
+                    <NavigationContainer>
                     <View style={styles.container}>
                     {renderScreen()}
                     </View>
@@ -78,8 +78,8 @@ const App = () => {
                         <TabIcon name="person-outline" label="Profile" onPress={() => navigateToScreen('Profile')}
                                  active={activeScreen === 'Profile'}/>
                     </HStack>
+                    </NavigationContainer>
                 </Box>
-            </NavigationContainer>
         );
 };
 

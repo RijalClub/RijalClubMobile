@@ -1,27 +1,12 @@
 import React from 'react';
 import { Text, StyleSheet, TouchableOpacity } from 'react-native';
-import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import { AntDesign } from '@expo/vector-icons';
+import {useDismissGesture} from "../utils/useDismissGesture";
 
-const NotificationCardComponent = ({ notification, onDismiss, onPress }) => {
-    const translateX = useSharedValue(0);
-    const itemHeight = useSharedValue(70);
-
-    const panGestureEvent = useAnimatedGestureHandler({
-        onActive: (event) => {
-            translateX.value = Math.max(-100, Math.min(0, event.translationX));
-        },
-        onEnd: () => {
-            if (translateX.value < -50) {
-                translateX.value = withSpring(-1000);
-                itemHeight.value = withSpring(0, undefined, (isFinished) => {
-                });
-            } else {
-                translateX.value = withSpring(0);
-            }
-        },
-    });
+const NotificationCardComponent = ({notification, id, onPress }) => {
+    const { translateX, itemHeight, gestureHandler } = useDismissGesture(id);
 
     const cardStyle = useAnimatedStyle(() => ({
         height: itemHeight.value,
@@ -29,7 +14,7 @@ const NotificationCardComponent = ({ notification, onDismiss, onPress }) => {
     }));
 
     return (
-        <PanGestureHandler onGestureEvent={panGestureEvent}>
+        <PanGestureHandler onGestureEvent={gestureHandler}>
             <Animated.View style={[styles.card, cardStyle]}>
                 <TouchableOpacity style={styles.content} onPress={() => onPress(notification)}>
                     <Text style={styles.title}>{notification.title}</Text>
@@ -44,9 +29,8 @@ const NotificationCardComponent = ({ notification, onDismiss, onPress }) => {
 const styles = StyleSheet.create({
     card: {
         backgroundColor: 'white',
-        borderRadius: 12,
+        borderRadius: 10,
         padding: 10,
-        marginVertical: 5,
         marginHorizontal: 10,
         flexDirection: 'row',
         alignItems: 'center',

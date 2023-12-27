@@ -16,9 +16,11 @@ import {
 import PositionDropdown from './PositionDropdown';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Calendar from 'expo-calendar';
+import {CardField, useStripe} from "@stripe/stripe-react-native";
 
 const EventModal = ({ visible, currentEvent, hideModal }) => {
   const closeButtonRef = useRef(null);
+  const { confirmPayment } = useStripe();
 
   const joinEvent = () => console.log("Joined");
   const leaveEvent = () => console.log("Left Match");
