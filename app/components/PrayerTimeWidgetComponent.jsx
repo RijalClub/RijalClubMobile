@@ -40,7 +40,7 @@ const PrayerTimeWidgetComponent = ({ prayerTimes }) => {
   //   setNextPrayer(nextPrayerName);
   // };
 
-  const determineCurrentPrayer = useMemo(() => {
+  const determineCurrentPrayer = () => {
     const now = new Date();
     const currentTime = now.getHours() + now.getMinutes() / 60;
     let currentPrayer = 'isha';
@@ -61,11 +61,12 @@ const PrayerTimeWidgetComponent = ({ prayerTimes }) => {
       }
     }
     return currentPrayer;
-   }, [prayerTimes]); // O
+   }; // O
 
+  const currentPrayerMemoized = useMemo(determineCurrentPrayer, [prayerTimes]);
 
   useEffect(() => {
-    setNextPrayer(determineCurrentPrayer);
+    setNextPrayer(currentPrayerMemoized);
     const interval = setInterval(determineCurrentPrayer, 60000);
     return () => clearInterval(interval);
   }, [prayerTimes]);

@@ -1,10 +1,10 @@
-// HeaderComponent.jsx
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, Pressable } from 'react-native';
 import { View, Image } from '@gluestack-ui/themed';
 import { Ionicons } from '@expo/vector-icons';
 
 const HeaderComponent = ({navigation}) => {
+
     const onMenuPress = () => {
         navigation.toggleDrawer();
     };
@@ -19,20 +19,20 @@ const HeaderComponent = ({navigation}) => {
 
   return (
       <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={onMenuPress} style={styles.menuButton}>
+        <Pressable onPress={onMenuPress} style={styles.menuButton}>
           <Ionicons name="menu" size={24} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onHomePress} style={styles.logoContainer}>
+        </Pressable>
+        <Pressable onPress={onHomePress} style={styles.logoContainer}>
           <Image
               source={require('../../assets/logo.png')} // Update with your logo
               style={styles.logo}
               resizeMode="contain"
               alt="App logo"
           />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onProfilePress} style={styles.profileButton}>
+        </Pressable>
+        <Pressable onPress={onProfilePress} style={styles.profileButton}>
           <Ionicons name="person-circle" size={24} color="white" />
-        </TouchableOpacity>
+        </Pressable>
       </View>
   );
 };
@@ -57,8 +57,9 @@ const styles = StyleSheet.create({
     // add styles if needed
   },
   logo: {
-    width: 30, // adjust the size as needed
-    height: 30, // adjust the size as needed
+    width: 34, // adjust the size as needed
+    height: 34, // adjust the size as needed
+    borderRadius: 17,
   },
 });
 

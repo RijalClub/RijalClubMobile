@@ -37,10 +37,10 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'flex-start', // Aligns content to the top with space for the header
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingTop: 40, // Adds top padding to give space from the header
-        backgroundColor: '#f0f0f0', // Keeps the background color light and neutral
+        paddingTop: 40,
+        backgroundColor: '#f0f0f0',
     },
 });
 

@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useMemo} from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ImageBackground } from 'react-native';
 import {
   Text,
   VStack
@@ -49,12 +49,6 @@ const HomeScreen = ({ navigation }) => {
     );
 };
 
-// const dummyNotifications = [
-//   { title: '* Urgent: Volunteer Helpers Needed', message: 'We urgently require additional volunteer helpers for the weekend charity event. Please respond if you can participate.', level: 'high' },
-//   { title: '* Membership Due', message: 'Your annual membership fee is due. Please make sure to pay by the end of the month.', level: 'medium' },
-//   { title: 'Upcoming Event', message: 'Do not forget our meeting next Thursday at the community center.', level: 'low' },
-// ];
-
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#121212', // Dark background color for the entire screen
@@ -62,13 +56,13 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontSize: 28,
-        color: '#FFFFFF', // White text for better contrast on dark background
+        color: '#FFFFFF',
         marginTop: 20,
         paddingTop: 10
     },
     subtitleText: {
         fontSize: 16,
-        color: '#D0D0D0', // Light grey for less important text
+        color: '#D0D0D0',
         marginTop: 20
     },
     prayerDay: {
