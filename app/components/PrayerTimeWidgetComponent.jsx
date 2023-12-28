@@ -1,7 +1,5 @@
-// PrayerTimeWidgetComponent.jsx
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import { Text, View, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 const PrayerTimeWidgetComponent = ({ prayerTimes }) => {
   const [nextPrayer, setNextPrayer] = useState('');
@@ -10,41 +8,65 @@ const PrayerTimeWidgetComponent = ({ prayerTimes }) => {
       return `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
   };
     
-  const determineNextPrayer = () => {
+  // const determineNextPrayer = () => {
+  //   const now = new Date();
+  //   const currentTime = now.getHours() + now.getMinutes() / 60;
+  //
+  //   let foundNextPrayer = false;
+  //   let nextPrayerName = '';
+  //
+  //   const prayerTimesInHours = Object.keys(prayerTimes).map((prayerName) => {
+  //     const time = prayerTimes[prayerName];
+  //     return {
+  //       name: prayerName,
+  //       time: time.getHours() + time.getMinutes() / 60
+  //     };
+  //   });
+  //
+  //   const sortedPrayerTimes = prayerTimesInHours.sort((a, b) => a.time - b.time);
+  //
+  //   for (let i = 0; i < sortedPrayerTimes.length; i++) {
+  //     if (currentTime < sortedPrayerTimes[i].time) {
+  //       nextPrayerName = sortedPrayerTimes[i].name;
+  //       foundNextPrayer = true;
+  //       break;
+  //     }
+  //   }
+  //
+  //   if (!foundNextPrayer) {
+  //       nextPrayerName = 'fajr';
+  //   }
+  //
+  //   setNextPrayer(nextPrayerName);
+  // };
+
+  const determineCurrentPrayer = useMemo(() => {
     const now = new Date();
     const currentTime = now.getHours() + now.getMinutes() / 60;
-  
-    let foundNextPrayer = false;
-    let nextPrayerName = '';
-  
-    const prayerTimesInHours = Object.keys(prayerTimes).map((prayerName) => {
-      const time = prayerTimes[prayerName];
-      return {
-        name: prayerName,
-        time: time.getHours() + time.getMinutes() / 60
-      };
-    });
-    
-    const sortedPrayerTimes = prayerTimesInHours.sort((a, b) => a.time - b.time);
-    
-    for (let i = 0; i < sortedPrayerTimes.length; i++) {
-      if (currentTime < sortedPrayerTimes[i].time) {
-        nextPrayerName = sortedPrayerTimes[i].name;
-        foundNextPrayer = true;
+    let currentPrayer = 'isha';
+    const sortedPrayers = Object.entries(prayerTimes)
+        .map(([name, time]) => ({name, time: time.getHours() + time.getMinutes() / 60}))
+        .sort((a, b) => a.time - b.time);
+    for (let i = 0; i < sortedPrayers.length; i++) {
+      if (currentTime < sortedPrayers[0].time) {
+        break;
+      }
+      if (currentTime >= sortedPrayers[sortedPrayers.length - 1].time) {
+        currentPrayer = 'isha';
+        break;
+      }
+      if (currentTime >= sortedPrayers[i].time && currentTime < sortedPrayers[i + 1].time) {
+        currentPrayer = sortedPrayers[i].name;
         break;
       }
     }
-  
-    if (!foundNextPrayer) {
-        nextPrayerName = 'fajr';
-    }
-  
-    setNextPrayer(nextPrayerName);
-  };
-    
+    return currentPrayer;
+   }, [prayerTimes]); // O
+
+
   useEffect(() => {
-    determineNextPrayer();
-    const interval = setInterval(determineNextPrayer, 60000);
+    setNextPrayer(determineCurrentPrayer);
+    const interval = setInterval(determineCurrentPrayer, 60000);
     return () => clearInterval(interval);
   }, [prayerTimes]);
 
@@ -69,43 +91,39 @@ const styles = StyleSheet.create({
   prayerTimeContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
+    backgroundColor: '#333',
     borderRadius: 10,
     paddingVertical: 15,
-    paddingHorizontal: 5, // Reduce padding if needed
+    paddingHorizontal: 5,
     marginHorizontal: 10,
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    shadowColor: '#000',
-    shadowOffset: { height: 1, width: 0 },
-    elevation: 3,
   },
   prayerTimeBlock: {
     alignItems: 'center',
-    flex: 1, // Each block will take equal space
-    marginHorizontal: 2, // Reduced horizontal margin for more space
+    flex: 1,
   },
   prayerIcon: {
     marginBottom: 5,
   },
   prayerLabel: {
-    fontSize: 11, // Slightly reduced font size
-    color: '#555',
-    marginBottom: 3, // Reduced space below label
+    fontSize: 14,
+    color: '#FFF',
+    fontWeight: '700',
+    marginBottom: 3,
   },
   nextPrayerLabel: {
-    fontSize: 11, // Ensure consistent font size
-    color: 'blue',
-    fontWeight: 'bold',
+    fontSize: 14,
+    color: '#30D5C8',
+    fontWeight: '700',
   },
   prayerTime: {
-    fontSize: 12, // Slightly reduced font size
-    color: '#555',
+    fontSize: 14,
+    color: '#FFF',
+    fontWeight: '700',
   },
   nextPrayerTime: {
-    fontSize: 12, // Ensure consistent font size
-    fontWeight: 'bold',
-    color: 'blue',
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#30D5C8',
   },
 });
 

@@ -7,17 +7,18 @@ import EmailCheckComponent from '../components/EmailCheckComponent';
 import SignUpComponent from '../components/SignUpComponent';
 import SignInComponent from '../components/SignInComponent';
 import UserProfileComponent from '../components/UserProfileComponent';
-import HeaderComponent from '../components/HeaderComponent';
+import HeaderComponent from "../components/HeaderComponent";
 
-const ProfileScreen = ({ handleBackPress }) => {
+const ProfileScreen = ({ navigation }) => {
     const [user] = useAtom(userAtom);
     const [checkedEmail] = useAtom(checkedEmailAtom);
     const [userExists] = useAtom(userExistsAtom);
 
     return (
+        <>
+            <HeaderComponent navigation={navigation} />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View>
-                <HeaderComponent title="Profile" onBackPress={handleBackPress} />
                 <View style={styles.container}>
                     {user ? (
                         <UserProfileComponent/>
@@ -29,6 +30,7 @@ const ProfileScreen = ({ handleBackPress }) => {
                 </View>
             </View>
  </TouchableWithoutFeedback>
+        </>
         );
 };
 

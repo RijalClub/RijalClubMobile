@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, UIManager, Platform, LayoutAnimation} from 'react-native';
-import NotificationCardComponent from './NotificationCardComponent'; // Correct path to your component
+import {UIManager, Platform, LayoutAnimation} from 'react-native';
+import NotificationCardComponent from './NotificationCardComponent';
 import NotificationModalComponent from './NotificationModalComponent';
 import { ScrollView, VStack, View } from '@gluestack-ui/themed';
 import {useAtom} from "jotai";
@@ -11,7 +11,7 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 }
 const NotificationPanelComponent = () => {
 
-    const [notifications, setNotifications ] = useAtom(notificationsAtom);
+    const [notifications, ] = useAtom(notificationsAtom);
     const [selectedNotification, setSelectedNotification] = useState(null);
 
     useEffect(() => {
@@ -20,20 +20,20 @@ const NotificationPanelComponent = () => {
 
     const handlePress = (notification) => {
         setSelectedNotification(notification);
-        console.log(notifications.length);
     };
 
     return (
-        <View style={styles.container}>
+        <>
         <ScrollView style={{ flex: 1 }}>
-            <VStack spacing={4}>
+            <VStack space="md">
                 {notifications.map(notification => (
+                    <View key={notification.id} style={{paddingLeft: 10, paddingRight: 10, borderRadius: 10}}>
                     <NotificationCardComponent
-                        key={notification.id}
                         notification={notification}
                         id={notification.id}
                         handlePress={()=> handlePress(notification)}
                     />
+                    </View>
                 ))}
             </VStack>
         </ScrollView>
@@ -44,16 +44,7 @@ const NotificationPanelComponent = () => {
                     onClose={() => setSelectedNotification(null)}
                 />
             )}
-    </View>
+    </>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingBottom: 225,
-        zIndex: 0
-    },
-});
-
 export default NotificationPanelComponent;

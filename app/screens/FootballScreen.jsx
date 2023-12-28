@@ -3,11 +3,11 @@ import { ScrollView, StyleSheet } from 'react-native';
 import { View, Box, Text, HStack, Pressable } from '@gluestack-ui/themed';
 import EventModal from '../components/EventModal';
 import { FontAwesome } from '@expo/vector-icons';
-import HeaderComponent from '../components/HeaderComponent';
 import Subtitle from '../components/SubtitleComponent';
 import Title from '../components/TitleComponent';
+import HeaderComponent from "../components/HeaderComponent";
 
-const FootballScreen = ({ handleBackPress }) => {
+const FootballScreen = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
   const [currentEvent, setCurrentEvent] = useState(null);
 
@@ -68,7 +68,7 @@ const FootballScreen = ({ handleBackPress }) => {
 
   return (
     <>
-    <HeaderComponent title="Rijal Football" onBackPress={handleBackPress} />
+      <HeaderComponent navigation={navigation} />
       <Title style={styles.titleText}>About</Title>
       <Subtitle style={styles.subtitleText}>
         Join exhilarating football matches with just a tap, immersing yourself in the thrill of the game through our user-friendly app.

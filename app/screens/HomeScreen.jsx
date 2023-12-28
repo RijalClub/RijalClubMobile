@@ -2,22 +2,20 @@ import React, {useState, useEffect, useMemo} from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
   Text,
-  VStack,
-  Divider
+  VStack
 } from '@gluestack-ui/themed';
-import HeaderComponent from '../components/HeaderComponent';
-import Title from '../components/TitleComponent';
 import Subtitle from '../components/SubtitleComponent';
 import PrayerTimeWidgetComponent from '../components/PrayerTimeWidgetComponent';
 import { getLondonPrayerTimesForToday } from '../utils/prayerTimes';
 import NotificationPanelComponent from "../components/NotificationPanelComponent";
 import {writeIslamicDate} from "../utils/islamicCalendarConversion";
+import HeaderComponent from "../components/HeaderComponent";
 
 const Card = ({ children, style }) => (
   <View style={[styles.cardStyle, style]}>{children}</View>
   );
 
-const HomeScreen = ({ handleBackPress }) => {
+const HomeScreen = ({ navigation }) => {
   const [todayPrayerTimes, setTodayPrayerTimes] = useState({});
   const [todayIslamicDate, setTodayIslamicDate] = useState('');
 
@@ -37,19 +35,15 @@ const HomeScreen = ({ handleBackPress }) => {
 
   return (
     <>
-      <HeaderComponent title="Home" onBackPress={handleBackPress} />
+        <HeaderComponent navigation={navigation} />
       <View style={styles.container}>
         <VStack space={6} alignItems="center">
-            <Title style={styles.titleText}>Rijal Club App</Title>
             <Subtitle style={styles.subtitleText}>Connecting you to your faith and community</Subtitle>
             <Subtitle style={styles.subtitleText}>{todayIslamicDate}</Subtitle>
             <PrayerTimeWidgetComponent prayerTimes={todayPrayerTimes} />
         </VStack>
-        <Divider my={4} />
-        <VStack space={4} px={4}>
-          <Text style={styles.sectionTitle}>Rijal Club Announcements</Text>
-            <NotificationPanelComponent />
-        </VStack>
+          <Text style={styles.sectionTitle}>Announcements</Text>
+          <NotificationPanelComponent />
       </View>
     </>
     );
@@ -62,21 +56,21 @@ const HomeScreen = ({ handleBackPress }) => {
 // ];
 
 const styles = StyleSheet.create({
-     container: {
-        backgroundColor: '#EFEFEF',
-       flex: 1
+    container: {
+        backgroundColor: '#121212', // Dark background color for the entire screen
+        flex: 1,
     },
-   titleText: {
-    fontSize: 28,
-    color: '#000',
-     marginTop: 20,
-     paddingTop: 10
-   },
-  subtitleText: {
-    fontSize: 16,
-    color: '#333',
-    marginTop: 20
-  },
+    titleText: {
+        fontSize: 28,
+        color: '#FFFFFF', // White text for better contrast on dark background
+        marginTop: 20,
+        paddingTop: 10
+    },
+    subtitleText: {
+        fontSize: 16,
+        color: '#D0D0D0', // Light grey for less important text
+        marginTop: 20
+    },
     prayerDay: {
         fontSize: 16,
         color: '#333',
@@ -89,8 +83,9 @@ const styles = StyleSheet.create({
   sectionTitle: {
       fontSize: 22,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#FFFFFF',
     paddingVertical: 10,
+      textAlign: 'center'
   },
     notificationCard: {
     backgroundColor: '#fff',
