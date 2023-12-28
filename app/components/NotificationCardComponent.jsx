@@ -1,62 +1,87 @@
 import React from 'react';
-import { Text, StyleSheet, TouchableOpacity } from 'react-native';
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
-import { PanGestureHandler } from 'react-native-gesture-handler';
-import { AntDesign } from '@expo/vector-icons';
-import {useDismissGesture} from "../utils/useDismissGesture";
+import { StyleSheet, View, Text, Pressable } from 'react-native';
+import { Swipeable } from 'react-native-gesture-handler';
+import { useAtom } from 'jotai';
+import { notificationsAtom } from '../utils/atoms';
 
-const NotificationCardComponent = ({notification, id, onPress }) => {
-    const { translateX, itemHeight, gestureHandler } = useDismissGesture(id);
+const NotificationCardComponent = ({ notification, id, handlePress }) => {
+    const [, setNotifications] = useAtom(notificationsAtom);
 
-    const cardStyle = useAnimatedStyle(() => ({
-        height: itemHeight.value,
-        transform: [{ translateX: translateX.value }],
-    }));
+    const handleSwipe = () => {
+        setNotifications(currentNotifications =>
+            currentNotifications.filter(notif => notif.id !== id)
+        );
+    };
+
+    const rightSwipeActions = () => {
+        return (
+            <View style={styles.rightAction}>
+                <Text style={styles.actionText}>Delete</Text>
+            </View>
+        );
+    };
 
     return (
-        <PanGestureHandler onGestureEvent={gestureHandler}>
-            <Animated.View style={[styles.card, cardStyle]}>
-                <TouchableOpacity style={styles.content} onPress={() => onPress(notification)}>
-                    <Text style={styles.title}>{notification.title}</Text>
-                    <Text style={styles.message}>{notification.message}</Text>
-                </TouchableOpacity>
-                <AntDesign name="infocirlceo" size={24} color="black" style={styles.infoIcon} />
-            </Animated.View>
-        </PanGestureHandler>
+        <Swipeable
+            renderRightActions={rightSwipeActions}
+            onSwipeableOpen={(direction) => {
+                // Check the swipe direction if necessary
+                if (direction === 'right') {
+                    handleSwipe();
+                }
+            }}
+        >
+            <Pressable onPress={handlePress}>
+            <View containerStyle={styles.card}>
+                <Text style={styles.title}>{notification.title}</Text>
+                <Text style={styles.message}>{notification.message}</Text>
+            </View>
+            </Pressable>
+        </Swipeable>
     );
 };
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: 'white',
-        borderRadius: 10,
-        padding: 10,
+        backgroundColor: '#fff',
+        borderRadius: 6,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        marginVertical: 5,
         marginHorizontal: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        overflow: 'hidden',
+        borderWidth: 1,
+        borderColor: '#E0E0E0',
         shadowColor: '#000',
         shadowOpacity: 0.1,
-        shadowRadius: 3,
-        shadowOffset: { height: 1, width: 0 },
-        elevation: 3,
-    },
-    content: {
-        flex: 1,
+        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 2,
     },
     title: {
         fontSize: 16,
         fontWeight: 'bold',
+        marginBottom: 5,
     },
     message: {
         fontSize: 14,
         color: '#555',
     },
-    infoIcon: {
-        padding: 10,
+    rightAction: {
+        backgroundColor: 'red',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        flex: 1,
+        borderTopRightRadius: 6,
+        borderBottomRightRadius: 6,
+        marginVertical: 5,
+        marginRight: 10,
+        padding: 20,
     },
-    // Additional styles
+    actionText: {
+        color: 'white',
+        fontWeight: '600',
+    },
+    // ... other styles
 });
 
 export default NotificationCardComponent;

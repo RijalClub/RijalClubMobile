@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AppRegistry } from "react-native";
+import {AppRegistry, UIManager} from "react-native";
 import { GluestackUIProvider } from "@gluestack-ui/themed"
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';

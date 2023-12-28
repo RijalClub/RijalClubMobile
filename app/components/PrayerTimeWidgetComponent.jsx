@@ -3,14 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const prayerIcons = {
-    fajr: 'md-moon',
-    dhuhr: 'md-sunny',
-    asr: 'md-partly-sunny',
-    maghrib: 'md-cloudy',
-    isha: 'md-cloudy-night'
-};
-
 const PrayerTimeWidgetComponent = ({ prayerTimes }) => {
   const [nextPrayer, setNextPrayer] = useState('');
    
@@ -60,12 +52,6 @@ const PrayerTimeWidgetComponent = ({ prayerTimes }) => {
     <View style={styles.prayerTimeContainer}>
       {Object.keys(prayerTimes).map((prayer) => (
         <View key={prayer} style={styles.prayerTimeBlock}>
-          <Ionicons
-            name={prayerIcons[prayer]}
-            size={30}
-            color={nextPrayer === prayer ? 'blue' : '#555'}
-            style={styles.prayerIcon}
-          />
           <Text style={[styles.prayerLabel, nextPrayer === prayer && styles.nextPrayerLabel,]}>{prayer.toUpperCase()}</Text>
           <Text style={[
             styles.prayerTime,

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
   Text,
@@ -11,37 +11,41 @@ import Subtitle from '../components/SubtitleComponent';
 import PrayerTimeWidgetComponent from '../components/PrayerTimeWidgetComponent';
 import { getLondonPrayerTimesForToday } from '../utils/prayerTimes';
 import NotificationPanelComponent from "../components/NotificationPanelComponent";
+import {writeIslamicDate} from "../utils/islamicCalendarConversion";
 
 const Card = ({ children, style }) => (
   <View style={[styles.cardStyle, style]}>{children}</View>
   );
 
 const HomeScreen = ({ handleBackPress }) => {
-  const [todaysPrayerTimes, setTodaysPrayerTimes] = useState({});
+  const [todayPrayerTimes, setTodayPrayerTimes] = useState({});
+  const [todayIslamicDate, setTodayIslamicDate] = useState('');
+
+  const todayIslamicDateConverted = useMemo(() => writeIslamicDate(-1), []);
+  const times = useMemo(() => getLondonPrayerTimesForToday(), []);
 
   useEffect(() => {
-    const times = getLondonPrayerTimesForToday();
-    setTodaysPrayerTimes({
+    setTodayPrayerTimes({
       fajr: times.fajr,
       dhuhr: times.dhuhr,
       asr: times.asr,
       maghrib: times.maghrib,
       isha: times.isha,
     });
-    }, []);
+    setTodayIslamicDate(todayIslamicDateConverted);
+    }, [times, todayIslamicDateConverted]);
 
   return (
     <>
       <HeaderComponent title="Home" onBackPress={handleBackPress} />
       <View style={styles.container}>
         <VStack space={6} alignItems="center">
-          <Title style={styles.titleText}>Rijal Club App</Title>
-          <Subtitle style={styles.subtitleText}>Connecting you to your faith and community</Subtitle>
-          <PrayerTimeWidgetComponent prayerTimes={todaysPrayerTimes} />
+            <Title style={styles.titleText}>Rijal Club App</Title>
+            <Subtitle style={styles.subtitleText}>Connecting you to your faith and community</Subtitle>
+            <Subtitle style={styles.subtitleText}>{todayIslamicDate}</Subtitle>
+            <PrayerTimeWidgetComponent prayerTimes={todayPrayerTimes} />
         </VStack>
-
         <Divider my={4} />
-
         <VStack space={4} px={4}>
           <Text style={styles.sectionTitle}>Rijal Club Announcements</Text>
             <NotificationPanelComponent />
@@ -71,8 +75,12 @@ const styles = StyleSheet.create({
   subtitleText: {
     fontSize: 16,
     color: '#333',
-    marginVertical: 20,
+    marginTop: 20
   },
+    prayerDay: {
+        fontSize: 16,
+        color: '#333',
+    },
   introText: {
       fontSize: 14,
     color: '#555',

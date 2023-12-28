@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {StyleSheet, UIManager, Platform} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, UIManager, Platform, LayoutAnimation} from 'react-native';
 import NotificationCardComponent from './NotificationCardComponent'; // Correct path to your component
 import NotificationModalComponent from './NotificationModalComponent';
 import { ScrollView, VStack, View } from '@gluestack-ui/themed';
@@ -11,8 +11,12 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 }
 const NotificationPanelComponent = () => {
 
-    const [notifications, ] = useAtom(notificationsAtom);
+    const [notifications, setNotifications ] = useAtom(notificationsAtom);
     const [selectedNotification, setSelectedNotification] = useState(null);
+
+    useEffect(() => {
+         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    }, [notifications]);
 
     const handlePress = (notification) => {
         setSelectedNotification(notification);
@@ -28,7 +32,7 @@ const NotificationPanelComponent = () => {
                         key={notification.id}
                         notification={notification}
                         id={notification.id}
-                        onPress={()=> handlePress(notification)}
+                        handlePress={()=> handlePress(notification)}
                     />
                 ))}
             </VStack>
