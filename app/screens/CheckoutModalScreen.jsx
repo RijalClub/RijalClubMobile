@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#121212', // Deep charcoal background
         paddingHorizontal: 20,
         paddingTop: 40, // Adjust as needed for status bar
+        marginTop: 20
     },
     headerRow: {
         flexDirection: 'row',

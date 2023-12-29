@@ -11,6 +11,7 @@ import * as Calendar from 'expo-calendar';
 import CheckoutModalScreen from "../screens/CheckoutModalScreen";
 import {AntDesign} from "@expo/vector-icons";
 import openMap from 'react-native-open-maps';
+import {SafeAreaView} from "react-native-safe-area-context";
 
 const EventModal = ({ isVisible, event, hideModal }) => {
   const closeButtonRef = useRef(null);
@@ -69,7 +70,7 @@ const EventModal = ({ isVisible, event, hideModal }) => {
   };
 
   return (
-      <>
+        <SafeAreaView>
     <Modal visible={isVisible} transparent={true} onRequestClose={hideModal}>
       <Animated.ScrollView style={[styles.modalContainer, animatedStyle]}>
         <TouchableOpacity style={styles.backButton} onPress={hideModal}>
@@ -100,9 +101,9 @@ const EventModal = ({ isVisible, event, hideModal }) => {
           <Text style={styles.buttonText}>Pay</Text>
         </TouchableOpacity>
       </Animated.ScrollView>
+      <CheckoutModalScreen eventDetails={event} isVisible={isCheckoutVisible} onClose={() => setCheckoutVisible(false)} />
     </Modal>
-        <CheckoutModalScreen eventDetails={event} isVisible={isCheckoutVisible} onClose={() => setCheckoutVisible(false)} />
-      </>
+      </SafeAreaView>
     );
 };
 
@@ -118,6 +119,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#121212',
     padding: 20,
+    marginTop: 20
   },
   backButton: {
     alignSelf: 'flex-start',

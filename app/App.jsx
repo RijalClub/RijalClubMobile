@@ -23,9 +23,9 @@ const App = () => {
                 drawerContent={(props) => <CustomDrawerContent {...props} />}
             >
                 <Drawer.Screen name="Home" component={HomeScreen} />
-                <Drawer.Screen name="Fitness" component={FitnessScreen} />
+                <Drawer.Screen name="Quran" component={ProfileScreen} />
                 <Drawer.Screen name="Football" component={FootballScreen} />
-                <Drawer.Screen name="Profile" component={ProfileScreen} />
+                <Drawer.Screen name="Fitness" component={FitnessScreen} />
             </Drawer.Navigator>
         </NavigationContainer>
         );
