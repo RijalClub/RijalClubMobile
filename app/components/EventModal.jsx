@@ -1,28 +1,27 @@
 import React, {useRef, useState} from 'react';
-import { StyleSheet, Alert } from 'react-native';
+import {StyleSheet, Alert, Modal, TouchableOpacity, Image, View} from 'react-native';
 import {
-  Modal,
   Box,
   Button,
   Text,
-  ModalBackdrop,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Pressable
 } from '@gluestack-ui/themed';
 import PositionDropdown from './PositionDropdown';
-import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import * as Calendar from 'expo-calendar';
-import {CardField, useStripe} from "@stripe/stripe-react-native";
 import CheckoutModalScreen from "../screens/CheckoutModalScreen";
+import {AntDesign} from "@expo/vector-icons";
+import openMap from 'react-native-open-maps';
 
-const EventModal = ({ visible, currentEvent, hideModal }) => {
+const EventModal = ({ isVisible, event, hideModal }) => {
   const closeButtonRef = useRef(null);
-  const { confirmPayment } = useStripe();
+
   const [isCheckoutVisible, setCheckoutVisible] = useState(false);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: withSpring(isVisible ? 1 : 0) }],
+    };
+  });
 
   const joinEvent = () => console.log("Joined");
   const leaveEvent = () => console.log("Left Match");
@@ -61,107 +60,155 @@ const EventModal = ({ visible, currentEvent, hideModal }) => {
     }
   };
 
+  const formatDateAndTime = (dateString, timeString) => {
+    const date = new Date(dateString);
+    const formattedDate = date.toLocaleDateString('en-GB', {
+      day: 'numeric', month: 'short', year: 'numeric'
+    });
+    return `${formattedDate} at ${timeString}`;
+  };
+
   return (
       <>
-    <Modal isOpen={visible} onClose={hideModal} finalFocusRef={closeButtonRef} size="lg">
-      <ModalBackdrop />
-      <ModalContent>
-        <ModalHeader>
-          <Box width="100%" style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>{currentEvent?.title}</Text>
-            <ModalCloseButton onPress={hideModal}>
-              <MaterialCommunityIcons name="close-circle" size={24} color="#DC143C" />
-            </ModalCloseButton>
-          </Box>
-        </ModalHeader>
-        <ModalBody>
-          <Text>{currentEvent?.description}</Text>
-          <Text>Time: <Text fontWeight="bold">{currentEvent?.time}</Text></Text>
-          <Text style={styles.dateContainer}>Date:{'\u00A0'}
-            <Text style={styles.dateText}>{currentEvent?.date}</Text>
-            <Pressable onPress={handleAddEventPress}>
-              <Text style={styles.addCalendar}>Add To Calendar</Text>
-            </Pressable>
+    <Modal visible={isVisible} transparent={true} onRequestClose={hideModal}>
+      <Animated.ScrollView style={[styles.modalContainer, animatedStyle]}>
+        <TouchableOpacity style={styles.backButton} onPress={hideModal}>
+          <AntDesign name="arrowleft" size={24} color="white" />
+        </TouchableOpacity>
+        <Image source={{ uri: 'https://www.timeoutdubai.com/cloud/timeoutdubai/2021/09/10/8Z01KJ8v-Footlab-dubai-0.jpg' }} style={styles.image} />
+        <View style={styles.content}>
+          <Text style={styles.title}>{event.title}</Text>
+          <Text style={styles.description}>{event.description}</Text>
+          <Text style={styles.dateTimeLocation}>
+            {formatDateAndTime(event.date, event.time)}
           </Text>
-          <Text>Location: <Text fontWeight="bold">{currentEvent?.location}</Text></Text>
-          <Box style={styles.postionDropdown}>
-            <Text>Position: </Text>
-            <PositionDropdown />
-          </Box>
-        </ModalBody>
-        <ModalFooter style={styles.modalFooter}>
-          <Button onPress={payEvent} variant="primary" style={[styles.button, styles.payButton]}>
-            <FontAwesome name="credit-card" size={21} color="white" />
-            <Text style={styles.buttonText}>Pay</Text>
-          </Button>
-          <Button onPress={joinEvent} variant="primary" style={styles.button}>
-            <FontAwesome name="user-plus" size={21} color="white" />
-            <Text style={styles.buttonText}>Join</Text>
-          </Button>
-          <Button onPress={leaveEvent} variant="primary" style={[styles.button, styles.leaveButton]}>
-            <MaterialCommunityIcons name="logout-variant" size={21} color="white" />
-            <Text style={styles.buttonText}>Leave</Text>
-          </Button>
-        </ModalFooter>
-      </ModalContent>
+          <Text style={styles.location}>{event.location}</Text>
+          <Text style={styles.price}>{`Price: £${event.ticketPrice}`}</Text>
+        </View>
+        <View style={styles.buttonRow}>
+          <TouchableOpacity style={[styles.button, styles.registerInterestButton]}>
+            <Text style={styles.buttonText}>Register Interest</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, styles.addToCalendarButton]}>
+            <Text style={styles.buttonText}>Add to Calendar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, styles.openInMapsButton]} onPress={() => openMap({ latitude: 37.865101, longitude: -119.538330 }) }>
+            <Text style={styles.buttonText}>Open in Maps</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.payButton} onPress={() => setCheckoutVisible(true)}>
+          <Text style={styles.buttonText}>Pay</Text>
+        </TouchableOpacity>
+      </Animated.ScrollView>
     </Modal>
-        <CheckoutModalScreen eventDetails={currentEvent} isVisible={isCheckoutVisible} onClose={() => setCheckoutVisible(false)} />
+        <CheckoutModalScreen eventDetails={event} isVisible={isCheckoutVisible} onClose={() => setCheckoutVisible(false)} />
       </>
     );
 };
 
 const styles = StyleSheet.create({
-  modalHeader: {
-    flexDirection: 'row',
+  content: {
+    flex: 1, // Take up all available space
+    borderRadius: 15,
+    marginTop: 10,
     justifyContent: 'space-between',
-    alignItems: 'center', // This ensures vertical alignment
-    height: 50, // You can adjust this height as needed
+    paddingVertical: 30
   },
-  modalTitle: {
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#121212',
+    padding: 20,
+  },
+  backButton: {
+    alignSelf: 'flex-start',
+    padding: 10,
+    borderRadius: 5,
+  },
+  backButtonText: {
+    fontSize: 18,
+    color: '#333', // Dark text for readability
+  },
+  image: {
+    width: '100%',
+    height: 200, // Placeholder for the image
+    borderRadius: 10, // Match the border radius from your design
+    marginTop: 10, // Add some margin at the top
+  },
+  title: {
+    marginTop: 20,
+    fontSize: 23, // Larger for emphasis
+    fontWeight: 'bold',
+    color: '#D0D0D0', // Dark text for readability
+    flexShrink: 1, // Allows text to shrink to fit the container width
+  },
+  description: {
+    fontSize: 16,
+    color: '#D0D0D0',
+    marginBottom: 10,
+  },
+  price: {
     fontSize: 18,
     fontWeight: 'bold',
-    flex: 1,
+    color: '#30D5C8', // Highlight Color for important elements
+    marginBottom: 20,
   },
- modalFooter: {
+  addToCalendarButtonText: {
+    color: '#D0D0D0',
+    fontWeight: 'bold',
+  },
+  // Adjusting the dateTimeLocation style
+  dateTimeLocation: {
+    flexDirection: 'row', // Align date and time on the same line
+    justifyContent: 'space-between', // Spread date and time to opposite ends
+    fontSize: 14,
+    color: '#A0A0A0',
+    marginBottom: 10,
+  },
+  buttonRow: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    paddingTop: 10,
-  },
-  button: {
-    flex: 1, // Each button will take equal width
-    backgroundColor: '#2196F3',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 5,
+    justifyContent: 'space-around', // Space out buttons evenly
     alignItems: 'center',
-    marginHorizontal: 5,
+    marginBottom: 20, // Ensure it doesn't stick to the bottom
   },
+  // Ensure all buttons have the same flex value to distribute space evenly
+  button: {
+    flex: 1, // Each button will take up equal space
+    alignItems: 'center', // Center the text inside the button
+    justifyContent: 'center', // Center the content vertically
+    padding: 10, // Add some padding for better touch area
+    marginHorizontal: 5, // Add horizontal margin between buttons
+    borderRadius: 5,
+  },
+  // Text styles that are common across all buttons
   buttonText: {
-    color: 'white',
-    marginLeft: 5,
-    textAlign: 'center',
+    color: '#D0D0D0',
+    fontWeight: 'bold',
   },
-  postionDropdown: {
-    flexDirection: "row",
-    alignItems: "center"
+  // Unique button styles for background colors
+  registerInterestButton: {
+    backgroundColor: '#F57C00',
   },
-  leaveButton: {
-    backgroundColor:"red"
+  addToCalendarButton: {
+    backgroundColor: '#3A7CA5',
+  },
+  openInMapsButton: {
+    backgroundColor: '#76323F',
   },
   payButton: {
-    backgroundColor: '#4CAF50'
+    backgroundColor: '#517b41', // A bright, inviting blue
+    padding: 15,
+    borderRadius: 30, // Rounded edges for modern look
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%', // Utilize the full width
+    shadowOpacity: 0.3, // Subtle shadow for depth
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    marginBottom: 20,
   },
-  dateContainer: {
-    display: 'flex'
-  },
-  addCalendar: {
-    marginLeft: 'auto'
-  },
-  dateText: {
-    marginRight: 'auto',
-    fontWeight: "bold"
-  }
 });
+
+
 async function addEventToCalendar(eventDetails) {
 const defaultCalendarSource = Platform.OS === 'ios'
   ? await getDefaultCalendarSource()

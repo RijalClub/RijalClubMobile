@@ -4,6 +4,7 @@ import HeaderComponent from "../components/HeaderComponent";
 import EventModal from '../components/EventModal';
 import EventListComponent from "../components/EventListComponent";
 import {dummyEventsData} from "../utils/eventsDummyData";
+import EventDetailsModal from "../components/EventsDetailModal";
 
 const FootballScreen = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
@@ -37,8 +38,8 @@ const FootballScreen = ({ navigation }) => {
         )}
         {currentEvent && (
             <EventModal
-                visible={visible}
-                currentEvent={currentEvent}
+                isVisible={visible}
+                event={currentEvent}
                 hideModal={hideModal}
             />
         )}

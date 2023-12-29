@@ -15,7 +15,7 @@ import {
 import Animated, { useSharedValue, withSpring, useAnimatedStyle } from 'react-native-reanimated';
 import { useStripe } from '@stripe/stripe-react-native';
 import {Checkbox} from '@gluestack-ui/themed';
-import { MaterialIcons } from '@expo/vector-icons';
+import {AntDesign, MaterialIcons} from '@expo/vector-icons';
 
 const CheckoutModalScreen = ({ isVisible, onClose, eventDetails }) => {
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
@@ -57,9 +57,8 @@ const CheckoutModalScreen = ({ isVisible, onClose, eventDetails }) => {
             <Animated.ScrollView style={[styles.container, animatedStyle]}>
                 <View style={styles.headerRow}>
                     <TouchableOpacity onPress={onClose} style={styles.backButton}>
-                        <Text style={styles.backText}>Back</Text>
+                        <AntDesign name="arrowleft" size={24} color="white" />
                     </TouchableOpacity>
-                    <Text style={styles.headerText}>Checkout</Text>
                 </View>
                 <View style={styles.eventDetailsRow}>
                     <Image source={{ uri: 'https://images.unsplash.com/photo-1611162616475-46b635cb6868?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }} style={styles.thumbnail} />
@@ -104,11 +103,6 @@ const styles = StyleSheet.create({
     },
     backButton: {
         marginRight: 'auto',
-    },
-    headerText: {
-        color: '#D0D0D0',
-        fontSize: 20,
-        fontWeight: "bold"
     },
     backText: {
         color: '#ADD8E6',
