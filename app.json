@@ -18,7 +18,7 @@
       [
         "@stripe/stripe-react-native",
         {
-          "merchantIdentifier": "string | string []",
+          "merchantIdentifier": "merchant.com.RijalClubMobile",
         "enableGooglePay": true
         }
       ]
