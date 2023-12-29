@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, {useRef, useState} from 'react';
 import { StyleSheet, Alert } from 'react-native';
 import {
   Modal,
@@ -17,14 +17,16 @@ import PositionDropdown from './PositionDropdown';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Calendar from 'expo-calendar';
 import {CardField, useStripe} from "@stripe/stripe-react-native";
+import CheckoutModalScreen from "../screens/CheckoutModalScreen";
 
 const EventModal = ({ visible, currentEvent, hideModal }) => {
   const closeButtonRef = useRef(null);
   const { confirmPayment } = useStripe();
+  const [isCheckoutVisible, setCheckoutVisible] = useState(false);
 
   const joinEvent = () => console.log("Joined");
   const leaveEvent = () => console.log("Left Match");
-  const payEvent = () => console.log("Pay for Event");
+  const payEvent = () => setCheckoutVisible(true);
 
   const requestCalendarPermissions = async () => {
     const { status } = await Calendar.requestCalendarPermissionsAsync();
@@ -60,6 +62,7 @@ const EventModal = ({ visible, currentEvent, hideModal }) => {
   };
 
   return (
+      <>
     <Modal isOpen={visible} onClose={hideModal} finalFocusRef={closeButtonRef} size="lg">
       <ModalBackdrop />
       <ModalContent>
@@ -102,6 +105,8 @@ const EventModal = ({ visible, currentEvent, hideModal }) => {
         </ModalFooter>
       </ModalContent>
     </Modal>
+        <CheckoutModalScreen eventDetails={currentEvent} isVisible={isCheckoutVisible} onClose={() => setCheckoutVisible(false)} />
+      </>
     );
 };
 
