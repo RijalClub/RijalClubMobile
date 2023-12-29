@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, ScrollView, Platform, Pressable, ActivityIndicator } from 'react-native';
+import { StyleSheet, ScrollView, Platform, ActivityIndicator } from 'react-native';
 import {
     Button,
     Text,
@@ -7,13 +7,14 @@ import {
     VStack,
     View,
     InputField,
-    ButtonText
+    ButtonText,
+    Pressable
 } from '@gluestack-ui/themed';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useAtom } from 'jotai';
-import { emailAtom, passwordAtom, userAtom } from '../../utils/atoms';
-import supabase from '../../utils/supabaseClient';
+import { emailAtom, passwordAtom, userAtom } from '../utils/atoms';
+import supabase from '../utils/supabaseClient';
 
 const SignUpComponent = () => {
     const [email, setEmail] = useAtom(emailAtom);
@@ -164,6 +165,7 @@ const SignUpComponent = () => {
                             <ButtonText style={styles.buttonText}>Sign Up</ButtonText>
                             )}
                 </Button>
+                {signUpError && <Text style={styles.errorText}>{signUpError}</Text>}
             </VStack>
         </View>
         </ScrollView>

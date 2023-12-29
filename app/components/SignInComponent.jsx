@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
-import { StyleSheet, ActivityIndicator, Pressable } from 'react-native';
-import { Input, VStack, Button, Text, View, InputField, ButtonText } from '@gluestack-ui/themed';
+import { StyleSheet, ActivityIndicator } from 'react-native';
+import { Input, VStack, Button, Text, View, InputField, ButtonText, Pressable } from '@gluestack-ui/themed';
 import { useAtom } from 'jotai';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { emailAtom, passwordAtom, userAtom } from '../../utils/atoms'; // Define these atoms as needed
-import supabase from '../../utils/supabaseClient';
+import { emailAtom, passwordAtom, userAtom } from '../utils/atoms'; // Define these atoms as needed
+import supabase from '../utils/supabaseClient';
 
 const SignInComponent = () => {
     const [email, setEmail] = useAtom(emailAtom);
@@ -112,16 +112,6 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         marginLeft: 12,
         marginBottom: 8,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#cccccc',
-        borderRadius: 8,
-        paddingLeft: 12,
-        paddingRight: 12,
-        fontSize: 16,
-        height: 50,
-        width: '100%',
     },
     button: {
         marginTop: 16,

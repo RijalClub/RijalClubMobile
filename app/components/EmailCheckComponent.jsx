@@ -3,7 +3,7 @@ import { StyleSheet, ActivityIndicator } from 'react-native';
 import { Input, InputField, Button, VStack, Text, View, ButtonText } from '@gluestack-ui/themed';
 import { Ionicons } from '@expo/vector-icons';
 import { useAtom } from 'jotai';
-import { emailAtom, checkedEmailAtom, userExistsAtom } from '../../utils/atoms';
+import { emailAtom, checkedEmailAtom, userExistsAtom } from '../utils/atoms';
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
@@ -12,8 +12,8 @@ const EmailCheckComponent= () => {
     const [email, setEmail] = useAtom(emailAtom);
     const [isChecking, setIsChecking] = useState(false);
     const [error, setError] = useState(null);
-    const [checkedEmail, setCheckedEmail] = useAtom(checkedEmailAtom);
-    const [userExists, setUserExists] = useAtom(userExistsAtom);
+    const [, setCheckedEmail] = useAtom(checkedEmailAtom);
+    const [, setUserExists] = useAtom(userExistsAtom);
     
     const checkUserExists = async () => {
         const lowerCaseEmail = email.toLocaleLowerCase();

@@ -1,12 +1,12 @@
 import React from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
-import { View, Text, Box, HStack, VStack, Progress, ProgressFilledTrack } from '@gluestack-ui/themed';
-import HeaderComponent from './components/HeaderComponent';
+import { Text, Box, HStack, VStack, Progress, ProgressFilledTrack } from '@gluestack-ui/themed';
+import HeaderComponent from "../components/HeaderComponent";
 
-const FitnessScreen = ({ handleBackPress }) => {
+const FitnessScreen = ({ navigation }) => {
     return (
         <>
-        <HeaderComponent title="Fitness" onBackPress={handleBackPress} />
+            <HeaderComponent navigation={navigation} />
         <ScrollView style={styles.container}>
             <Box style={styles.statsBox}>
                 <HStack space="md" alignItems="center">
