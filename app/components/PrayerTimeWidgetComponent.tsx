@@ -13,7 +13,7 @@ const PrayerTimeWidgetComponent: React.FC<PrayerTimeWidgetComponentProps> = ({ p
   const [nextPrayer, setNextPrayer] = useState<string>('');
 
   const formatTime = (date: Date): string => {
-    if (!(date instanceof Date) || isNaN(date.getTime())) {
+    if (isNaN(date.getTime())) {
       console.error('Invalid date object passed to formatTime:', date);
       return 'Invalid Time'; // or handle this case as needed
     }
@@ -30,7 +30,7 @@ const PrayerTimeWidgetComponent: React.FC<PrayerTimeWidgetComponentProps> = ({ p
     let currentPrayer = 'isha';
     const sortedPrayers = Object.entries(prayerTimes)
         .map(([name, time]) => {
-          if (!(time instanceof Date) || isNaN(time.getTime())) {
+          if (isNaN(time.getTime())) {
             return { name, time: Infinity }; // Assign a default time for invalid dates
           }
           return { name, time: time.getHours() + time.getMinutes() / 60 };
