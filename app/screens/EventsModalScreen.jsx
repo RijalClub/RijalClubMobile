@@ -5,15 +5,15 @@ import {
   Button,
   Text,
 } from '@gluestack-ui/themed';
-import PositionDropdown from './PositionDropdown';
+import PositionDropdown from '../components/PositionDropdown.jsx';
 import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import * as Calendar from 'expo-calendar';
-import CheckoutModalScreen from "../screens/CheckoutModalScreen";
+import CheckoutModalScreen from "./CheckoutModalScreen.jsx";
 import {AntDesign} from "@expo/vector-icons";
 import openMap from 'react-native-open-maps';
 import {SafeAreaView} from "react-native-safe-area-context";
 
-const EventModal = ({ isVisible, event, hideModal }) => {
+const EventsModalScreen = ({ isVisible, event, hideModal }) => {
   const closeButtonRef = useRef(null);
 
   const [isCheckoutVisible, setCheckoutVisible] = useState(false);
@@ -243,4 +243,4 @@ const defaultCalendars = calendars.filter(each => each.source.name === 'Default'
 return defaultCalendars.length > 0 ? defaultCalendars[0].source : null;
 }
 
-export default EventModal;
+export default EventsModalScreen;

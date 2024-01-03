@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {View, StyleSheet, StatusBar, Text} from 'react-native';
 import HeaderComponent from "../components/HeaderComponent";
-import EventModal from '../components/EventModal';
+import EventsModalScreen from './EventsModalScreen.jsx';
 import EventListComponent from "../components/EventListComponent";
 import {dummyEventsData} from "../utils/eventsDummyData";
 import EventDetailsModal from "../components/EventsDetailModal";
@@ -37,7 +37,7 @@ const FootballScreen = ({ navigation }) => {
             <Text style={styles.errorText}>No events available.</Text>
         )}
         {currentEvent && (
-            <EventModal
+            <EventsModalScreen
                 isVisible={visible}
                 event={currentEvent}
                 hideModal={hideModal}

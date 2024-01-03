@@ -5,7 +5,7 @@ import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { config } from "@gluestack-ui/config"
 import { expo } from "./app.json";
-import App from "./app/App";
+import App from "./app/App.tsx";
 import SplashScreen from "./app/screens/SplashScreen";
 import WelcomeModalComponent from "./app/components/WelcomeModalComponent";
 

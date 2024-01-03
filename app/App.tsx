@@ -1,26 +1,35 @@
-import React from 'react';
+import React, { FC } from 'react';
 import {StyleSheet} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { DrawerContentComponentProps } from '@react-navigation/drawer';
 import FitnessScreen from './screens/FitnessScreen';
 import FootballScreen from './screens/FootballScreen';
-import HomeScreen from './screens/HomeScreen';
+import HomeScreen from './screens/HomeScreen.tsx';
 import ProfileScreen from './screens/ProfileScreen';
 import CustomDrawerContent from "./components/CustomDrawerContent";
 
-const App = () => {
-    const Drawer = createDrawerNavigator();
+export type DrawerNavigatorParamList = {
+    Home: undefined;
+    Quran: undefined;
+    Football: undefined;
+    Fitness: undefined;
+};
+
+const Drawer = createDrawerNavigator<DrawerNavigatorParamList>();
+
+const App: FC = () => {
     return (
         <NavigationContainer>
             <Drawer.Navigator
                 screenOptions={{
-                    headerShown: false, // Hide default header
+                    headerShown: false,
                     drawerStyle: styles.drawer,
                     drawerType: 'slide',
-                    drawerActiveTintColor: 'blue', // Color for the active item
+                    drawerActiveTintColor: 'blue',
                     drawerInactiveTintColor: '#fff',
                 }}
-                drawerContent={(props) => <CustomDrawerContent {...props} />}
+                drawerContent={(props: DrawerContentComponentProps) => <CustomDrawerContent {...props} />}
             >
                 <Drawer.Screen name="Home" component={HomeScreen} />
                 <Drawer.Screen name="Quran" component={ProfileScreen} />
@@ -28,13 +37,13 @@ const App = () => {
                 <Drawer.Screen name="Fitness" component={FitnessScreen} />
             </Drawer.Navigator>
         </NavigationContainer>
-        );
+    );
 };
 
 const styles = StyleSheet.create({
     drawer: {
-        backgroundColor: '#121212', // primary dark background
-        width: 250, // Adjust the width as needed
+        backgroundColor: '#121212',
+        width: 250,
     },
 });
 
