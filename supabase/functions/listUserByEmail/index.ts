@@ -1,8 +1,3 @@
-// Ensure you follow the setup guide to integrate the Deno language server with your editor for autocomplete and other features.
-
-// Instantiate the Supabase client
-// You'll need to include the necessary Supabase libraries
-// and your Supabase service key in a secure manner.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders } from "../_shared/cors.ts";
 
@@ -33,8 +28,8 @@ Deno.serve(async (req) => {
   }
 
   const { data, error } = await supabase
-    .from('profiles') // Replace with your table name
-    .select('id')
+    .from('users')
+    .select('email')
     .eq('email', email);
 
   if (error) {
