@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, Platform, ActivityIndicator } from 'react-native';
 import {
     Button,
@@ -21,7 +21,7 @@ const SignUpComponent = () => {
     const [password, setPassword] = useAtom(passwordAtom);
     const [, setUserSession] = useAtom(userAtom);
     const [firstName, setFirstName] = useState('');
-    const [surname, setSurname] = useState('');
+    const [lastName, setLastName] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState(new Date());
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +33,15 @@ const SignUpComponent = () => {
         })
     };
     
+    useEffect(() => {
+      console.log("testing log");
+    
+      return () => {
+        
+      }
+    }, [])
+    
+
     const handleSignUp = async () => {
         setIsLoading(true);
         setSignUpError(null);
@@ -41,8 +50,8 @@ const SignUpComponent = () => {
 
         const userMetadata = {
             first_name: firstName,
-            surname: surname,
-            date_of_birth: formattedDateOfBirth
+            last_name: lastName,
+            dob: formattedDateOfBirth
         };
 
         const {data, error} = await supabase.auth.signUp({
@@ -134,8 +143,8 @@ const SignUpComponent = () => {
                 <Input textAlign="center" style={styles.input}>
                     <InputField
                         type="text"
-                        value={surname}
-                        onChangeText={setSurname}
+                        value={lastName}
+                        onChangeText={setLastName}
                         placeholder="Surname"
                         placeholderTextColor="#a1a1a1"
                         clearButtonMode="while-editing"

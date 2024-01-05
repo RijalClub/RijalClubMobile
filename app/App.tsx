@@ -32,7 +32,7 @@ const App: FC = () => {
                 drawerContent={(props: DrawerContentComponentProps) => <CustomDrawerContent {...props} />}
             >
                 <Drawer.Screen name="Home" component={HomeScreen} />
-                <Drawer.Screen name="Quran" component={ProfileScreen} />
+                <Drawer.Screen name="Profile" component={ProfileScreen} />
                 <Drawer.Screen name="Football" component={FootballScreen} />
                 <Drawer.Screen name="Fitness" component={FitnessScreen} />
             </Drawer.Navigator>
