@@ -1,249 +1,186 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, Platform, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from "react";
 import {
-    Button,
-    Text,
-    Input,
-    VStack,
-    View,
-    InputField,
-    ButtonText,
-    Pressable
-} from '@gluestack-ui/themed';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { useAtom } from 'jotai';
-import { emailAtom, passwordAtom, userAtom } from '../utils/atoms';
-import supabase from '../utils/supabaseClient';
+  StyleSheet,
+  ScrollView,
+  Platform,
+  ActivityIndicator,
+} from "react-native";
+import {
+  Button,
+  Text,
+  Input,
+  VStack,
+  View,
+  InputField,
+  ButtonText,
+  Pressable,
+  Icon,
+  Center,
+  InputIcon,
+  InputSlot,
+} from "@gluestack-ui/themed";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import DateTimePicker, {
+  DateTimePickerAndroid,
+} from "@react-native-community/datetimepicker";
+import { useAtom } from "jotai";
+import { emailAtom, passwordAtom, userAtom } from "../utils/atoms";
+import supabase from "../utils/supabaseClient";
 
 const SignUpComponent = () => {
-    const [email, setEmail] = useAtom(emailAtom);
-    const [password, setPassword] = useAtom(passwordAtom);
-    const [, setUserSession] = useAtom(userAtom);
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [dateOfBirth, setDateOfBirth] = useState(new Date());
-    const [showPassword, setShowPassword] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [signUpError, setSignUpError] = useState(null);
+  const [email, setEmail] = useAtom(emailAtom);
+  const [password, setPassword] = useAtom(passwordAtom);
+  const [, setUserSession] = useAtom(userAtom);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState(new Date());
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [signUpError, setSignUpError] = useState(null);
 
-    const handleState = () => {
-        setShowPassword((showState) => {
-            return !showState
-        })
+  const handleSignUp = async () => {
+    setIsLoading(true);
+    setSignUpError(null);
+    const lowerCaseEmail = email.toLocaleLowerCase();
+    const formattedDateOfBirth = dateOfBirth.toISOString().split("T")[0];
+
+    const userMetadata = {
+      first_name: firstName,
+      last_name: lastName,
+      dob: formattedDateOfBirth,
     };
-    
-    useEffect(() => {
-      console.log("testing log");
-    
-      return () => {
-        
-      }
-    }, [])
-    
 
-    const handleSignUp = async () => {
-        setIsLoading(true);
-        setSignUpError(null);
-        const lowerCaseEmail = email.toLocaleLowerCase();
-        const formattedDateOfBirth = dateOfBirth.toISOString().split('T')[0];
+    const { data, error } = await supabase.auth.signUp({
+      lowerCaseEmail,
+      password,
+      options: {
+        data: userMetadata,
+      },
+    });
 
-        const userMetadata = {
-            first_name: firstName,
-            last_name: lastName,
-            dob: formattedDateOfBirth
-        };
+    if (error) {
+      console.error("Error signing up:", error.message);
+      setSignUpError(error.message);
+      setIsLoading(false);
+    } else {
+      setUserSession(data.user);
+      setIsLoading(false);
+    }
+  };
 
-        const {data, error} = await supabase.auth.signUp({
-            lowerCaseEmail,
-            password,
-            options: {
-                data: userMetadata
+  const openAndroidDatePicker = () => {
+    DateTimePickerAndroid.open({
+      value: dateOfBirth,
+      mode: "date",
+      onChange: (event, selectedDate) => {
+        setDateOfBirth(selectedDate || dateOfBirth);
+      },
+    });
+  };
+
+  const onChangeDate = (event, selectedDate) => {
+    const currentDate = selectedDate || dateOfBirth;
+    setDateOfBirth(currentDate);
+  };
+
+  return (
+    <ScrollView>
+      <Center>
+        <VStack space="xl" alignItems="center" px={4}>
+          <Text size="xl" bold>
+            Sign Up To Rijal Club
+          </Text>
+          <Text>Please enter your details to create an account.</Text>
+
+          {/* Email Input */}
+          <Input
+            variant="outline"
+            size="sm"
+            placeholder="Enter your email"
+            value={email}
+            onChangeText={setEmail}
+            isDisabled={false}
+            isInvalid={false}
+            isReadOnly={false}
+          >
+            <InputField placeholder="Email" />
+            <InputSlot pr="$3">
+              <Ionicons name="mail-outline" size={20} color="gray" />
+            </InputSlot>
+          </Input>
+
+          {/* Password Input */}
+          <Input
+            type={showPassword ? "text" : "password"}
+            variant="outline"
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            InputRightElement={
+              <Button size="xs" onPress={() => setShowPassword(!showPassword)}>
+                <ButtonText>{showPassword ? "Hide" : "Show"}</ButtonText>
+              </Button>
             }
-        });
+            size="xl"
+          />
 
-        if (error) {
-           console.error('Error signing up:', error.message);
-           setSignUpError(error.message);
-           setIsLoading(false);
-        } else {
-            setUserSession(data.user);
-            setIsLoading(false);
-        }
-    };
+          {/* First Name Input */}
+          <Input
+            variant="outline"
+            placeholder="First Name"
+            value={firstName}
+            onChangeText={setFirstName}
+            InputLeftElement={
+              <Icon
+                as={<MaterialCommunityIcons name="account-circle" />}
+                size="sm"
+              />
+            }
+            size="xl"
+          />
 
-    const openAndroidDatePicker = () => {
-        DateTimePickerAndroid.open({
-            value: dateOfBirth,
-            mode: 'date',
-            onChange: (event, selectedDate) => {
-                setDateOfBirth(selectedDate || dateOfBirth);
-                },
-        });
-    };
-    
-    const onChangeDate = (event, selectedDate) => {
-        const currentDate = selectedDate || dateOfBirth;
-        setDateOfBirth(currentDate);
-    };
+          {/* Last Name Input */}
+          <Input
+            variant="outline"
+            placeholder="Surname"
+            value={lastName}
+            onChangeText={setLastName}
+            InputLeftElement={
+              <Icon
+                as={<MaterialCommunityIcons name="account-circle" />}
+                size="sm"
+              />
+            }
+            size="xl"
+          />
 
-    return (
-        <ScrollView style={styles.scrollView}>
-        <View style={styles.container}>
-            <Text style={styles.title}>Sign Up To Rijal Club</Text>
-            <Text style={styles.subtitle}>Please enter your details to create an account.</Text>
-            <VStack space="md">
-                <Text lineHeight="$xs">
-                        Email
-                    </Text>
-                    <Input style={styles.input}>
-                        <InputField type="text" value={email} placeholder="Enter your email" onChangeText={setEmail}  placeholderTextColor="#a1a1a1"
-                            clearButtonMode="while-editing"/>
-                        <Ionicons name="mail-outline" size={20} color="gray" style={styles.icon} />
-                    </Input>
-                <Text lineHeight="$xs">
-                    Password
-                </Text>
-                <Input style={styles.inputContainer}>
-    <InputField
-        type={showPassword ? "text" : "password"}
-        value={password}
-        onChangeText={setPassword}
-        style={styles.inputField}
-        placeholder="Password"
-        placeholderTextColor="#a1a1a1"
-        clearButtonMode="while-editing"
-    />
-                                <Pressable onPress={handleState}>
-        <MaterialCommunityIcons
-            name={showPassword ? "eye-outline" : "eye-off-outline"}
-            size={20}
-            color="grey" // or any color you prefer
-        />
-                                </Pressable>
-                </Input>
-                <Text lineHeight="$xs">
-                    First Name
-                </Text>
-                <Input textAlign="center" style={styles.input}>
-                    <InputField
-                        type="text"
-                        value={firstName}
-                        onChangeText={setFirstName}
-                        placeholder="First Name"
-                        placeholderTextColor="#a1a1a1"
-                        clearButtonMode="while-editing"
-                    />
-                    <MaterialCommunityIcons name="account-circle" size={20} color="grey" style={styles.icon} />
-                </Input>
+          {/* Date of Birth Picker */}
+          <Text>Date of Birth:</Text>
+          {Platform.OS === "android" ? (
+            <Button onPress={openAndroidDatePicker}>
+              <Text>{dateOfBirth.toDateString()}</Text>
+            </Button>
+          ) : (
+            <DateTimePicker
+              value={dateOfBirth}
+              mode="date"
+              display="default"
+              onChange={onChangeDate}
+              maximumDate={new Date()}
+            />
+          )}
 
-                <Text lineHeight="$xs">
-                    Surname
-                </Text>
-                <Input textAlign="center" style={styles.input}>
-                    <InputField
-                        type="text"
-                        value={lastName}
-                        onChangeText={setLastName}
-                        placeholder="Surname"
-                        placeholderTextColor="#a1a1a1"
-                        clearButtonMode="while-editing"
-                    />
-                    <MaterialCommunityIcons name="account-circle" size={20} color="grey" style={styles.icon} />
-                </Input>
-                <View>
-                    <Text style={styles.datePickerLabel}>Date of Birth:</Text>
-                {Platform.OS === 'android' ? (
-                    <Button onPress={openAndroidDatePicker}>
-                        <Text> {dateOfBirth.toDateString()}</Text>
-                    </Button>
-                    ) : (
-                        <DateTimePicker
-                            value={dateOfBirth}
-                            mode="date"
-                            display={'default'}
-                            onChange={onChangeDate}
-                            maximumDate={new Date()}
-                        />
-                        )}
-                    </View>
-                <Button onPress={handleSignUp}>
-                    {isLoading ? (
-                        <ActivityIndicator size="small" color="gray" />
-                        ) : (
-                            <ButtonText style={styles.buttonText}>Sign Up</ButtonText>
-                            )}
-                </Button>
-                {signUpError && <Text style={styles.errorText}>{signUpError}</Text>}
-            </VStack>
-        </View>
-        </ScrollView>
-        );
+          {/* Sign Up Button */}
+          <Button onPress={handleSignUp} variant="solid" py={6} px={4}>
+            <ButtonText>{isLoading ? "Loading..." : "Sign Up"}</ButtonText>
+          </Button>
+
+          {/* Error Message */}
+          {signUpError && <Text color="red.500">{signUpError}</Text>}
+        </VStack>
+      </Center>
+    </ScrollView>
+  );
 };
-
-const styles = StyleSheet.create({
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 8,
-    },
-    subtitle: {
-        fontSize: 16,
-        textAlign: 'center',
-        marginBottom: 20,
-    },
-    input: {
-         borderWidth: 1,
-        borderColor: '#cccccc',
-        borderRadius: 8,
-        paddingLeft: 15,
-        paddingRight: 50,
-        height: 50,
-        fontSize: 16,
-        flexDirection: 'row',
-        alignItems: 'center',
-        width: '100%',
-    },
-    datePickerLabel: {
-        marginBottom: 4,
-    },
-    button: {
-        backgroundColor: '#0066ff',
-        padding: 15,
-        borderRadius: 8,
-        marginTop: 10,
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    icon: {
-         position: 'absolute',
-        right: 15,
-        zIndex: 1,
-    },
-    inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: '#cccccc',
-        borderRadius: 8,
-        paddingRight: 10,
-        paddingLeft: 10,
-        height: 50,
-    },
-    inputField: {
-        flex: 1,
-        height: '100%',
-    },
-    errorText: {
-        color: 'red',
-        textAlign: 'center',
-        marginTop: 8,
-    },
-});
 
 export default SignUpComponent;
