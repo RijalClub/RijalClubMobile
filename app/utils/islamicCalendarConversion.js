@@ -82,7 +82,7 @@ const kuwaiticalendar = (adjust) => {
 };
 
 export const writeIslamicDate = (adjustment) => {
-    const wdNames = ["Ahad", "Ithnin", "Thulatha", "Arbaa", "Khams", "Jumuah", "Sabt"];
+    // const wdNames = ["Ahad", "Ithnin", "Thulatha", "Arbaa", "Khams", "Jumuah", "Sabt"];
     const iMonthNames = [
         "Muharram", "Safar", "Rabi' Al-Awwal", "Rabi' Al-Akhir",
         "Jumada Al-Ula", "Jumada Al-Akhirah", "Rajab", "Sha'ban",

@@ -19,7 +19,7 @@
         "@stripe/stripe-react-native",
         {
           "merchantIdentifier": "string | string []",
-        "enableGooglePay": true
+          "enableGooglePay": true
         }
       ]
     ],
@@ -27,14 +27,18 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSCalendarsUsageDescription": "This app uses your calendar to add events."
-      }
+      },
+      "bundleIdentifier": "com.rijalclub.rijalclubapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["READ_CALENDAR", "WRITE_CALENDAR"]
+      "permissions": [
+        "READ_CALENDAR",
+        "WRITE_CALENDAR"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
