@@ -6,7 +6,7 @@ import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import App from "./app/App";
-import SplashScreen from "./app/screens/SplashScreen";
+import SplashScreen from "./app/screens/SplashScreen.tsx";
 import WelcomeModalComponent from "./app/components/WelcomeModalComponent";
 
 export const Main: React.FC = () => {

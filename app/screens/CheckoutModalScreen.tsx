@@ -17,7 +17,24 @@ import { useStripe } from '@stripe/stripe-react-native';
 import {Checkbox} from '@gluestack-ui/themed';
 import {AntDesign, MaterialIcons} from '@expo/vector-icons';
 
-const CheckoutModalScreen = ({ isVisible, onClose, eventDetails }) => {
+interface Event {
+    id: number;
+    title: string;
+    description: string;
+    time: string;
+    date: string;
+    location: string;
+    ticketPrice: number;
+    currency: string;
+}
+
+interface CheckoutModalScreenProps {
+    isVisible: boolean;
+    onClose: () => void;
+    eventDetails: Event;
+}
+
+const CheckoutModalScreen: React.FC<CheckoutModalScreenProps> = ({ isVisible, onClose, eventDetails }) => {
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
     const [isAddressSaved, setIsAddressSaved] = useState(false);
     const scale = useSharedValue(0);
