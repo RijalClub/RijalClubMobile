@@ -22,7 +22,7 @@ const ProfileScreen = ({ navigation }) => {
   return (
     <>
       <HeaderComponent navigation={navigation} />
-      <SignUpComponent />
+      <EmailCheckComponent />
       {/*<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>*/}
       {/*  <View>*/}
       {/*    <View style={styles.container}>*/}
