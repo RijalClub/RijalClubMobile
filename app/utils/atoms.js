@@ -32,4 +32,4 @@ const initialNotifications = [
     { id: 'n19', type: 'education', title: 'Islamic Finance Seminar', message: 'Learn about Islamic finance principles at our upcoming seminar.', timestamp: '2023-01-19T11:00:00Z', },
     { id: 'n20', type: 'donation', title: 'Orphan Support Program', message: 'Extend your support to orphans around the world. Join our support program.', timestamp: '2023-01-20T12:00:00Z', }
 ];
-export const notificationsAtom = atom(initialNotifications) ;
+export const notificationsAtom = atom(initialNotifications);
