@@ -26,7 +26,8 @@ export const Main: React.FC = () => {
             {!isSplashActive && isWelcomeModalVisible && (
               <WelcomeModalComponent />
             )}
-            {isSplashActive ? (
+            {/* change back to isSplashActive below */}
+            {false ? (
               <SplashScreen onAnimationComplete={handleAnimationComplete} />
             ) : (
               <App />
