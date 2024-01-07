@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, ActivityIndicator } from "react-native";
+import { ActivityIndicator } from "react-native";
 import {
   Input,
   InputField,
@@ -8,6 +8,8 @@ import {
   Text,
   View,
   ButtonText,
+  Heading,
+  InputSlot,
 } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { useAtom } from "jotai";
@@ -34,7 +36,6 @@ const EmailCheckComponent: React.FC = () => {
       );
       if (error) {
         console.error("Error checking user:", error);
-        // Handle error appropriately
       } else {
         setUserExists(data.userExists);
         setCheckedEmail(true);
@@ -48,113 +49,42 @@ const EmailCheckComponent: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.titleLabel}>Verify Your Account</Text>
-        <Text style={styles.subtitleLabel}>
-          Please enter your email to continue
+    <VStack space="md" alignItems="center" padding={20}>
+      <View alignItems="center">
+        <Heading size="xl" bold color="white">
+          Sign in to Rijal Club
+        </Heading>
+        <Text color="gray" style={{ textAlign: "center" }}>
+          Please enter your email & password to continue to your personal
+          account.
         </Text>
       </View>
-      <VStack space={"lg"} alignItems="center">
-        <Text style={styles.title}>Email</Text>
-        <Input style={styles.input}>
-          <InputField
-            type="text"
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Enter your email"
-            placeholderTextColor="#a1a1a1"
-            clearButtonMode="while-editing"
-          />
-          <Ionicons
-            name="mail-outline"
-            size={20}
-            color="gray"
-            style={styles.icon}
-          />
-        </Input>
-        <Button style={styles.button} onPress={checkUserExists}>
-          {isChecking ? (
-            <ActivityIndicator size="small" color="#fff" />
-          ) : (
-            <ButtonText>Enter</ButtonText>
-          )}
-        </Button>
-        {error && <Text style={styles.errorText}>{error}</Text>}
-      </VStack>
-    </View>
+      <Input>
+        <InputField
+          type="text"
+          value={email}
+          onChangeText={setEmail}
+          placeholder="Enter email"
+          placeholderTextColor="#a1a1a1"
+          clearButtonMode="while-editing"
+          autoCapitalize="none"
+          color="white"
+          autoCorrect={false}
+        />
+        <InputSlot pr="$3">
+          <Ionicons name="mail" size={20} color="gray" />
+        </InputSlot>
+      </Input>
+      <Button variant="solid" onPress={checkUserExists}>
+        {isChecking ? (
+          <ActivityIndicator size="small" color="white" />
+        ) : (
+          <ButtonText>Enter</ButtonText>
+        )}
+      </Button>
+      {error && <Text color="red">{error}</Text>}
+    </VStack>
   );
 };
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    marginBottom: 16, // Adds more space above the input field
-  },
-  titleLabel: {
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center", // Centers the title text
-    marginBottom: 4, // Space between title and subtitle
-  },
-  subtitleLabel: {
-    fontSize: 16,
-    textAlign: "center",
-    color: "#666", // Subtitle in a lighter color for distinction
-  },
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 20,
-  },
-  title: {
-    fontWeight: "bold",
-    fontSize: 18,
-    alignSelf: "flex-start", // Aligns title to the left
-    marginLeft: 12, // Aligns with the input text
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#cccccc",
-    borderRadius: 8,
-    paddingLeft: 15, // Adjust padding for better text alignment
-    paddingRight: 50, // Adjust padding to prevent text overlap with icon
-    height: 50, // Standard touch target size
-    fontSize: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%", // Match the parent width
-  },
-  icon: {
-    position: "absolute",
-    right: 15,
-    zIndex: 1, // Ensures the icon is above the input field
-  },
-  button: {
-    marginTop: 18,
-    backgroundColor: "#0066ff",
-    borderRadius: 8,
-    width: "100%",
-    justifyContent: "center", // Centers the button text vertically
-    alignItems: "center",
-    elevation: 3, // Android shadow
-    shadowColor: "#000", // iOS shadow
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 18, // Adjust font size as needed
-    fontWeight: "bold", // Make the text bold
-    textAlign: "center", // Ensure text is centered
-    width: "100%", // Ensure text spans the full width of the button
-  },
-  errorText: {
-    color: "red",
-    marginTop: 8,
-    textAlign: "center", // Centers the error message
-    fontSize: 14, // Slightly smaller font size for error text
-  },
-});
 
 export default EmailCheckComponent;

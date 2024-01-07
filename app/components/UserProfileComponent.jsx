@@ -1,10 +1,10 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
-import { VStack, Button, View, Text, ButtonText } from '@gluestack-ui/themed';
-import { Ionicons } from '@expo/vector-icons';
-import { useAtom } from 'jotai';
-import { userAtom, checkedEmailAtom, userExistsAtom } from '../utils/atoms';
-import supabase from '../utils/supabaseClient';
+import React from "react";
+import { StyleSheet } from "react-native";
+import { VStack, Button, View, Text, ButtonText } from "@gluestack-ui/themed";
+import { Ionicons } from "@expo/vector-icons";
+import { useAtom } from "jotai";
+import { userAtom, checkedEmailAtom, userExistsAtom } from "../utils/atoms";
+import supabase from "../utils/supabaseClient";
 
 const UserProfileComponent = () => {
   const [user, setUser] = useAtom(userAtom);
@@ -19,49 +19,58 @@ const UserProfileComponent = () => {
       setUserExists(false);
       setCheckedEmail(false);
     } catch (error) {
-      console.error('Error signing out:', error.message);
+      console.error("Error signing out:", error.message);
     }
   };
 
   return (
     <View style={styles.container}>
       <VStack space="md" style={styles.profileBox}>
-        <Ionicons name="person-circle-outline" size={100} color="#cccccc" style={styles.icon} />
+        <Ionicons
+          name="person-circle-outline"
+          size={100}
+          color="#cccccc"
+          style={styles.icon}
+        />
         <Text style={styles.header}>Profile</Text>
-          <Text style={styles.info}>Email: {user?.email}</Text>
-          <Text style={styles.info}>First Name: {user?.user_metadata?.first_name}</Text>
-          <Text style={styles.info}>Surname: {user?.user_metadata?.surname}</Text>
-          {/* Add more user info here */}
-          <Button onPress={handleSignOut} style={styles.button}>
-              <ButtonText>Sign Out</ButtonText>
-          </Button>
+        <Text style={styles.info}>Email: {user?.email}</Text>
+        <Text style={styles.info}>
+          First Name: {user?.user_metadata?.first_name}
+        </Text>
+        <Text style={styles.info}>
+          Surname: {user?.user_metadata?.last_name}
+        </Text>
+        {/* Add more user info here */}
+        <Button onPress={handleSignOut} style={styles.button}>
+          <ButtonText>Sign Out</ButtonText>
+        </Button>
       </VStack>
     </View>
-    );
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-  justifyContent: 'center',
-  alignItems: 'center',
-  flex: 1,
-},
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+  },
   profileBox: {
     padding: 20,
     borderWidth: 1,
-    borderColor: '#cccccc',
+    borderColor: "#cccccc",
     borderRadius: 8,
-    width: '100%',
+    width: "100%",
     maxWidth: 400,
   },
   icon: {
-    alignSelf: 'center',
+    alignSelf: "center",
     marginBottom: 16,
   },
   header: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
     paddingTop: 10,
   },
@@ -71,7 +80,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 10,
-    backgroundColor: '#ff3333', // A contrasting color for the sign-out button
+    backgroundColor: "#ff3333", // A contrasting color for the sign-out button
   },
 });
 

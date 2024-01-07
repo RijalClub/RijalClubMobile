@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
   }
 
   const { data, error } = await supabase
-    .from("users")
+    .from("email")
     .select("email")
     .eq("email", email);
 
@@ -37,7 +37,6 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
-
   if (data.length === 1) {
     return new Response(JSON.stringify({ userExists: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

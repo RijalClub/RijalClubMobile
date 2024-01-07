@@ -8,40 +8,47 @@ interface PrayerTimeWidgetComponentProps {
   prayerTimes: PrayerTimes | null;
   currentPrayer: string | null;
 }
+
+const formatTime = (date: Date): string => {
+  return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`;
+};
 const PrayerTimeWidgetComponent: React.FC<PrayerTimeWidgetComponentProps> = ({
   prayerTimes,
   currentPrayer,
 }) => {
-  const formatTime = (date: Date): string => {
-    return `${date.getHours()}:${date
-      .getMinutes()
-      .toString()
-      .padStart(2, "0")}`;
+  const lastPrayerCheck = (prayer: string | null) => {
+    if (prayer === "none") {
+      return "isha";
+    }
+    return prayer;
   };
 
   return (
     <View style={styles.prayerTimeContainer}>
       {prayerTimes &&
-        Object.keys(prayerTimes).map((prayer) => (
-          <View key={prayer} style={styles.prayerTimeBlock}>
-            <Text
-              style={[
-                styles.prayerLabel,
-                currentPrayer === prayer && styles.currentPrayerLabel,
-              ]}
-            >
-              {prayer.toUpperCase()}
-            </Text>
-            <Text
-              style={[
-                styles.prayerTime,
-                currentPrayer === prayer && styles.currentPrayerTime,
-              ]}
-            >
-              {formatTime(prayerTimes[prayer])}
-            </Text>
-          </View>
-        ))}
+        Object.keys(prayerTimes).map((prayer) => {
+          const isCurrentPrayer = lastPrayerCheck(currentPrayer) === prayer;
+          return (
+            <View key={prayer} style={styles.prayerTimeBlock}>
+              <Text
+                style={[
+                  styles.prayerLabel,
+                  isCurrentPrayer && styles.currentPrayerLabel,
+                ]}
+              >
+                {prayer.toUpperCase()}
+              </Text>
+              <Text
+                style={[
+                  styles.prayerTime,
+                  isCurrentPrayer && styles.currentPrayerTime,
+                ]}
+              >
+                {formatTime(prayerTimes[prayer])}
+              </Text>
+            </View>
+          );
+        })}
     </View>
   );
 };
@@ -86,4 +93,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PrayerTimeWidgetComponent;
+export default React.memo(PrayerTimeWidgetComponent);

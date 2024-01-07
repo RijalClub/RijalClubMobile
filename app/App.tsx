@@ -6,12 +6,12 @@ import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import FitnessScreen from "./screens/FitnessScreen.tsx";
 import FootballScreen from "./screens/FootballScreen.tsx";
 import HomeScreen from "./screens/HomeScreen.tsx";
-import ProfileScreen from "./screens/ProfileScreen";
+import ProfileScreen from "./screens/ProfileScreen.tsx";
 import CustomDrawerContent from "./components/CustomDrawerContent";
 
 export type DrawerNavigatorParamList = {
   Home: undefined;
-  Quran: undefined;
+  Profile: undefined;
   Football: undefined;
   Fitness: undefined;
 };

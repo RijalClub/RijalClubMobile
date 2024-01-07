@@ -1,10 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  ScrollView,
-  Platform,
-  ActivityIndicator,
-} from "react-native";
+import React, { useState, useCallback } from "react";
+import { ScrollView, Platform, ActivityIndicator } from "react-native";
 import {
   Button,
   Text,
@@ -15,10 +10,6 @@ import {
   Center,
   InputSlot,
   Heading,
-  Alert,
-  AlertIcon,
-  AlertText,
-  InfoIcon,
 } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker, {
@@ -28,7 +19,7 @@ import { useAtom } from "jotai";
 import { emailAtom, passwordAtom, userAtom } from "../utils/atoms";
 import supabase from "../utils/supabaseClient";
 import AlertDialogErrorComponent from "./AlertDialogErrorComponent";
-import validator from 'validator';
+import validator from "validator";
 
 const SignUpComponent = () => {
   const [email, setEmail] = useAtom(emailAtom);
@@ -40,78 +31,66 @@ const SignUpComponent = () => {
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [signUpError, setSignUpError] = useState(null);
-  const [passwordError, setPasswordError] = useState(false);
-  const [fieldError, setFieldError] = useState(false);
-  const [dobError, setDobError] = useState(false);
+  const [errors, setErrors] = useState({
+    fieldError: false,
+    passwordError: false,
+    dobError: false,
+    signUpError: null,
+  });
   const [errorText, setErrorText] = useState("");
 
-  const dobCheck = () => {
-    const currentDate = new Date();
-    const yearsDifference =
-      currentDate.getFullYear() - dateOfBirth.getFullYear();
-    if (
-      yearsDifference >= 15 ||
-      (yearsDifference === 14 &&
-        dateOfBirth.getMonth() >= currentDate.getMonth() &&
-        dateOfBirth.getDate() >= currentDate.getDate())
-    ) {
-      return true;
-    }
-    return false;
+  const clearErrors = () => {
+    setErrors({
+      fieldError: false,
+      passwordError: false,
+      dobError: false,
+      signUpError: null,
+    });
+    setErrorText("");
   };
 
-  const isValidEmail = (email) => {
-    return validator.isEmail(email);
+  const dobCheck = () => {
+    const today = new Date();
+    let age = today.getFullYear() - dateOfBirth.getFullYear();
+    const m = today.getMonth() - dateOfBirth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dateOfBirth.getDate())) {
+      age--;
+    }
+    return age >= 15;
   };
 
   const handleSignUp = async () => {
-    if (email === "") {
-      setFieldError(true);
-      setErrorText("Missing email");
-      return;
-    }
-    if (!isValidEmail(email)) {
-      setFieldError(true);
-      setErrorText("Please enter a valid email format");
-      return;
-    }
+    clearErrors();
 
-    if (password === "") {
-      setFieldError(true);
+    // Field Validations
+    if (!email || !validator.isEmail(email)) {
+      setErrors((prev) => ({ ...prev, fieldError: true }));
+      setErrorText(!email ? "Missing email" : "Invalid email format");
+      return;
+    }
+    if (!password) {
+      setErrors((prev) => ({ ...prev, fieldError: true }));
       setErrorText("Missing password");
       return;
     }
-
-    if (firstName === "") {
-      setFieldError(true);
-      setErrorText("Missing first name");
+    if (!firstName || !lastName) {
+      setErrors((prev) => ({ ...prev, fieldError: true }));
+      setErrorText("Missing first name or last name");
       return;
     }
-
-    if (lastName === "") {
-      setFieldError(true);
-      setErrorText("Missing last name");
-      return;
-    }
-
-    setFieldError(false);
-    setErrorText("");
-
     if (!dobCheck()) {
-      setDobError(true);
+      setErrors((prev) => ({ ...prev, dobError: true }));
+      return;
+    }
+    if (confirmPassword !== password) {
+      setErrors((prev) => ({ ...prev, passwordError: true }));
+      return;
     }
 
-    setDobError(false);
-
-    if (confirmPassword !== password) {
-      setPasswordError(true);
-    } else {
-      setPasswordError(false);
-      setIsLoading(true);
-      setSignUpError(null);
-      const lowerCaseEmail = email.toLocaleLowerCase();
-      const formattedDateOfBirth = dateOfBirth.toISOString().split('T')[0];
+    setIsLoading(true);
+    try {
+      const lowerCaseEmail = email.toLowerCase();
+      const formattedDateOfBirth = dateOfBirth.toISOString().split("T")[0];
 
       const userMetadata = {
         first_name: firstName,
@@ -121,34 +100,44 @@ const SignUpComponent = () => {
 
       const { data, error } = await supabase.auth.signUp({
         email: lowerCaseEmail,
-        password: password,
+        password,
         options: {
           data: userMetadata,
         },
       });
 
       if (error) {
-        console.error("Error signing up:", error.message);
-        setSignUpError(error.message);
-        setIsLoading(false);
-      } else {
-        setUserSession(data.user);
-        setIsLoading(false);
+        setErrors((prev) => ({ ...prev, signUpError: error.message }));
+        return; // Exit the function if there is an error
       }
+
+      if (data) {
+        setUserSession(data.user);
+      }
+
+      // Post sign-up actions (e.g., navigate to a different page or show a success message)
+    } catch (error) {
+      console.error("Unexpected error during sign up:", error);
+      setErrors((prev) => ({
+        ...prev,
+        signUpError: "An unexpected error occurred.",
+      }));
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const openAndroidDatePicker = () => {
+  const openAndroidDatePicker = useCallback(() => {
     DateTimePickerAndroid.open({
       value: dateOfBirth,
       mode: "date",
-      onChange: (event, selectedDate) => {
+      onChange: (_event, selectedDate) => {
         setDateOfBirth(selectedDate || dateOfBirth);
       },
     });
-  };
+  }, [dateOfBirth]);
 
-  const onChangeDate = (event, selectedDate) => {
+  const onChangeDate = (_event, selectedDate) => {
     const currentDate = selectedDate || dateOfBirth;
     setDateOfBirth(currentDate);
   };
@@ -157,12 +146,14 @@ const SignUpComponent = () => {
     <ScrollView>
       <Center>
         <VStack space="xl" alignItems="left" px={4}>
-          <Heading size="xl" bold>
+          <Heading size="xl" bold color="white">
             Sign Up To Rijal Club
           </Heading>
-          <Text>Please enter your details to create an account.</Text>
+          <Text color="white">
+            Please enter your details to create an account.
+          </Text>
 
-          {fieldError && (
+          {errors.fieldError && (
             <AlertDialogErrorComponent alertText={errorText} />
           )}
 
@@ -178,6 +169,7 @@ const SignUpComponent = () => {
               placeholder="Enter email"
               value={email}
               onChangeText={setEmail}
+              color="white"
             />
             <InputSlot pr="$3">
               <Ionicons name="mail" size={20} color="gray" />
@@ -197,6 +189,9 @@ const SignUpComponent = () => {
               placeholder="Enter password"
               value={password}
               onChangeText={setPassword}
+              color="white"
+              autoCapitalize="none"
+              autoCorrect={false}
             />
             <InputSlot pr="$3" onPress={() => setShowPassword(!showPassword)}>
               {showPassword ? (
@@ -220,6 +215,9 @@ const SignUpComponent = () => {
               placeholder="Confirm password"
               value={confirmPassword}
               onChangeText={setConfirmPassword}
+              color="white"
+              autoCapitalize="none"
+              autoCorrect={false}
             />
             <InputSlot pr="$3" onPress={() => setShowPassword(!showPassword)}>
               {showPassword ? (
@@ -230,7 +228,7 @@ const SignUpComponent = () => {
             </InputSlot>
           </Input>
 
-          {passwordError && (
+          {errors.passwordError && (
             <AlertDialogErrorComponent alertText="Password does not match" />
           )}
 
@@ -246,6 +244,7 @@ const SignUpComponent = () => {
               placeholder="Enter first name"
               value={firstName}
               onChangeText={setFirstName}
+              color="white"
             />
             <InputSlot pr="$3">
               <Ionicons name="person" size={20} color="gray" />
@@ -264,6 +263,7 @@ const SignUpComponent = () => {
               placeholder="Enter last name"
               value={lastName}
               onChangeText={setLastName}
+              color="white"
             />
             <InputSlot pr="$3">
               <Ionicons name="person" size={20} color="gray" />
@@ -291,7 +291,7 @@ const SignUpComponent = () => {
             />
           )}
 
-          {dobError && (
+          {errors.dobError && (
             <AlertDialogErrorComponent
               alertText={"You must be at least 15 years old to sign up"}
             />
@@ -304,15 +304,17 @@ const SignUpComponent = () => {
             variant="solid"
             action="primary"
           >
-            <ButtonText>{isLoading ? "Loading..." : "Sign Up"}</ButtonText>
+            <ButtonText>
+              {isLoading ? <ActivityIndicator /> : "Sign Up"}
+            </ButtonText>
           </Button>
 
           {/* Error Message */}
-          {signUpError && <Text color="red">{signUpError}</Text>}
+          {errors.signUpError && <Text color="red">{errors.signUpError}</Text>}
         </VStack>
       </Center>
     </ScrollView>
   );
 };
 
-export default SignUpComponent;
+export default React.memo(SignUpComponent);
