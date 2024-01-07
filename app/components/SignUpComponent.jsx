@@ -20,7 +20,7 @@ import {
   AlertText,
   InfoIcon,
 } from "@gluestack-ui/themed";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker, {
   DateTimePickerAndroid,
 } from "@react-native-community/datetimepicker";
@@ -28,6 +28,7 @@ import { useAtom } from "jotai";
 import { emailAtom, passwordAtom, userAtom } from "../utils/atoms";
 import supabase from "../utils/supabaseClient";
 import AlertDialogErrorComponent from "./AlertDialogErrorComponent";
+import validator from 'validator';
 
 const SignUpComponent = () => {
   const [email, setEmail] = useAtom(emailAtom);
@@ -41,8 +42,7 @@ const SignUpComponent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [signUpError, setSignUpError] = useState(null);
   const [passwordError, setPasswordError] = useState(false);
-  const [missingFieldError, setMissingFieldError] = useState(false);
-  const [emailFormatError, setEmailFormatError] = useState(false);
+  const [fieldError, setFieldError] = useState(false);
   const [dobError, setDobError] = useState(false);
   const [errorText, setErrorText] = useState("");
 
@@ -61,45 +61,57 @@ const SignUpComponent = () => {
     return false;
   };
 
+  const isValidEmail = (email) => {
+    return validator.isEmail(email);
+  };
+
   const handleSignUp = async () => {
     if (email === "") {
-      setMissingFieldError(true);
+      setFieldError(true);
       setErrorText("Missing email");
       return;
     }
+    if (!isValidEmail(email)) {
+      setFieldError(true);
+      setErrorText("Please enter a valid email format");
+      return;
+    }
+
     if (password === "") {
-      setMissingFieldError(true);
+      setFieldError(true);
       setErrorText("Missing password");
       return;
     }
 
     if (firstName === "") {
-      setMissingFieldError(true);
+      setFieldError(true);
       setErrorText("Missing first name");
       return;
     }
 
     if (lastName === "") {
-      setMissingFieldError(true);
+      setFieldError(true);
       setErrorText("Missing last name");
       return;
     }
 
-    setMissingFieldError(false);
+    setFieldError(false);
     setErrorText("");
 
-    if (!dobCheck) {
+    if (!dobCheck()) {
       setDobError(true);
     }
 
+    setDobError(false);
+
     if (confirmPassword !== password) {
-      console.log(dateOfBirth);
       setPasswordError(true);
     } else {
+      setPasswordError(false);
       setIsLoading(true);
       setSignUpError(null);
       const lowerCaseEmail = email.toLocaleLowerCase();
-      const formattedDateOfBirth = dateOfBirth.toISOString().split("T")[0];
+      const formattedDateOfBirth = dateOfBirth.toISOString().split('T')[0];
 
       const userMetadata = {
         first_name: firstName,
@@ -107,12 +119,9 @@ const SignUpComponent = () => {
         dob: formattedDateOfBirth,
       };
 
-      console.log(lowerCaseEmail);
-      console.log(password);
-      console.log(userMetadata);
       const { data, error } = await supabase.auth.signUp({
-        lowerCaseEmail,
-        password,
+        email: lowerCaseEmail,
+        password: password,
         options: {
           data: userMetadata,
         },
@@ -153,7 +162,7 @@ const SignUpComponent = () => {
           </Heading>
           <Text>Please enter your details to create an account.</Text>
 
-          {missingFieldError && (
+          {fieldError && (
             <AlertDialogErrorComponent alertText={errorText} />
           )}
 
