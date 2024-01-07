@@ -24,12 +24,6 @@ const SignInComponent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [signInError, setSignInError] = useState(null);
 
-  const handleState = () => {
-    setShowPassword((showState) => {
-      return !showState;
-    });
-  };
-
   const handleSignIn = async () => {
     setIsLoading(true);
     setSignInError(null);
@@ -38,7 +32,7 @@ const SignInComponent = () => {
         email,
         password,
       });
-      if (error) throw error;
+      if (error) console.error(error);
       setUserSession(data.user);
       setIsLoading(false);
     } catch (error) {

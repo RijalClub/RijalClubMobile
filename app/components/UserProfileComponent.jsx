@@ -14,7 +14,7 @@ const UserProfileComponent = () => {
   const handleSignOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      if (error) console.error(error);
       setUser(null); // Clear the user state
       setUserExists(false);
       setCheckedEmail(false);
