@@ -10,26 +10,30 @@ import {
   Text,
   Input,
   VStack,
-  View,
   InputField,
   ButtonText,
-  Pressable,
-  Icon,
   Center,
-  InputIcon,
   InputSlot,
+  Heading,
+  Alert,
+  AlertIcon,
+  AlertText,
+  InfoIcon,
 } from "@gluestack-ui/themed";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker, {
   DateTimePickerAndroid,
 } from "@react-native-community/datetimepicker";
 import { useAtom } from "jotai";
 import { emailAtom, passwordAtom, userAtom } from "../utils/atoms";
 import supabase from "../utils/supabaseClient";
+import AlertDialogErrorComponent from "./AlertDialogErrorComponent";
+import validator from 'validator';
 
 const SignUpComponent = () => {
   const [email, setEmail] = useAtom(emailAtom);
   const [password, setPassword] = useAtom(passwordAtom);
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [, setUserSession] = useAtom(userAtom);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -37,34 +41,100 @@ const SignUpComponent = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [signUpError, setSignUpError] = useState(null);
+  const [passwordError, setPasswordError] = useState(false);
+  const [fieldError, setFieldError] = useState(false);
+  const [dobError, setDobError] = useState(false);
+  const [errorText, setErrorText] = useState("");
+
+  const dobCheck = () => {
+    const currentDate = new Date();
+    const yearsDifference =
+      currentDate.getFullYear() - dateOfBirth.getFullYear();
+    if (
+      yearsDifference >= 15 ||
+      (yearsDifference === 14 &&
+        dateOfBirth.getMonth() >= currentDate.getMonth() &&
+        dateOfBirth.getDate() >= currentDate.getDate())
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const isValidEmail = (email) => {
+    return validator.isEmail(email);
+  };
 
   const handleSignUp = async () => {
-    setIsLoading(true);
-    setSignUpError(null);
-    const lowerCaseEmail = email.toLocaleLowerCase();
-    const formattedDateOfBirth = dateOfBirth.toISOString().split("T")[0];
+    if (email === "") {
+      setFieldError(true);
+      setErrorText("Missing email");
+      return;
+    }
+    if (!isValidEmail(email)) {
+      setFieldError(true);
+      setErrorText("Please enter a valid email format");
+      return;
+    }
 
-    const userMetadata = {
-      first_name: firstName,
-      last_name: lastName,
-      dob: formattedDateOfBirth,
-    };
+    if (password === "") {
+      setFieldError(true);
+      setErrorText("Missing password");
+      return;
+    }
 
-    const { data, error } = await supabase.auth.signUp({
-      lowerCaseEmail,
-      password,
-      options: {
-        data: userMetadata,
-      },
-    });
+    if (firstName === "") {
+      setFieldError(true);
+      setErrorText("Missing first name");
+      return;
+    }
 
-    if (error) {
-      console.error("Error signing up:", error.message);
-      setSignUpError(error.message);
-      setIsLoading(false);
+    if (lastName === "") {
+      setFieldError(true);
+      setErrorText("Missing last name");
+      return;
+    }
+
+    setFieldError(false);
+    setErrorText("");
+
+    if (!dobCheck()) {
+      setDobError(true);
+    }
+
+    setDobError(false);
+
+    if (confirmPassword !== password) {
+      setPasswordError(true);
     } else {
-      setUserSession(data.user);
-      setIsLoading(false);
+      setPasswordError(false);
+      setIsLoading(true);
+      setSignUpError(null);
+      const lowerCaseEmail = email.toLocaleLowerCase();
+      const formattedDateOfBirth = dateOfBirth.toISOString().split('T')[0];
+
+      const userMetadata = {
+        first_name: firstName,
+        last_name: lastName,
+        dob: formattedDateOfBirth,
+      };
+
+      const { data, error } = await supabase.auth.signUp({
+        email: lowerCaseEmail,
+        password: password,
+        options: {
+          data: userMetadata,
+        },
+      });
+
+      if (error) {
+        console.error("Error signing up:", error.message);
+        setSignUpError(error.message);
+        setIsLoading(false);
+      } else {
+        setUserSession(data.user);
+        setIsLoading(false);
+      }
     }
   };
 
@@ -86,78 +156,129 @@ const SignUpComponent = () => {
   return (
     <ScrollView>
       <Center>
-        <VStack space="xl" alignItems="center" px={4}>
-          <Text size="xl" bold>
+        <VStack space="xl" alignItems="left" px={4}>
+          <Heading size="xl" bold>
             Sign Up To Rijal Club
-          </Text>
+          </Heading>
           <Text>Please enter your details to create an account.</Text>
+
+          {fieldError && (
+            <AlertDialogErrorComponent alertText={errorText} />
+          )}
 
           {/* Email Input */}
           <Input
             variant="outline"
             size="sm"
-            placeholder="Enter your email"
-            value={email}
-            onChangeText={setEmail}
             isDisabled={false}
             isInvalid={false}
             isReadOnly={false}
           >
-            <InputField placeholder="Email" />
+            <InputField
+              placeholder="Enter email"
+              value={email}
+              onChangeText={setEmail}
+            />
             <InputSlot pr="$3">
-              <Ionicons name="mail-outline" size={20} color="gray" />
+              <Ionicons name="mail" size={20} color="gray" />
             </InputSlot>
           </Input>
 
           {/* Password Input */}
           <Input
-            type={showPassword ? "text" : "password"}
             variant="outline"
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            InputRightElement={
-              <Button size="xs" onPress={() => setShowPassword(!showPassword)}>
-                <ButtonText>{showPassword ? "Hide" : "Show"}</ButtonText>
-              </Button>
-            }
-            size="xl"
-          />
+            size="sm"
+            isDisabled={false}
+            isInvalid={false}
+            isReadOnly={false}
+          >
+            <InputField
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter password"
+              value={password}
+              onChangeText={setPassword}
+            />
+            <InputSlot pr="$3" onPress={() => setShowPassword(!showPassword)}>
+              {showPassword ? (
+                <Ionicons name="eye-sharp" size={20} color="gray" />
+              ) : (
+                <Ionicons name="eye-off-sharp" size={20} color="gray" />
+              )}
+            </InputSlot>
+          </Input>
+
+          {/* Confirm Password Input */}
+          <Input
+            variant="outline"
+            size="sm"
+            isDisabled={false}
+            isInvalid={false}
+            isReadOnly={false}
+          >
+            <InputField
+              type={showPassword ? "text" : "password"}
+              placeholder="Confirm password"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+            />
+            <InputSlot pr="$3" onPress={() => setShowPassword(!showPassword)}>
+              {showPassword ? (
+                <Ionicons name="eye-sharp" size={20} color="gray" />
+              ) : (
+                <Ionicons name="eye-off-sharp" size={20} color="gray" />
+              )}
+            </InputSlot>
+          </Input>
+
+          {passwordError && (
+            <AlertDialogErrorComponent alertText="Password does not match" />
+          )}
 
           {/* First Name Input */}
           <Input
             variant="outline"
-            placeholder="First Name"
-            value={firstName}
-            onChangeText={setFirstName}
-            InputLeftElement={
-              <Icon
-                as={<MaterialCommunityIcons name="account-circle" />}
-                size="sm"
-              />
-            }
-            size="xl"
-          />
+            size="sm"
+            isDisabled={false}
+            isInvalid={false}
+            isReadOnly={false}
+          >
+            <InputField
+              placeholder="Enter first name"
+              value={firstName}
+              onChangeText={setFirstName}
+            />
+            <InputSlot pr="$3">
+              <Ionicons name="person" size={20} color="gray" />
+            </InputSlot>
+          </Input>
 
           {/* Last Name Input */}
           <Input
             variant="outline"
-            placeholder="Surname"
-            value={lastName}
-            onChangeText={setLastName}
-            InputLeftElement={
-              <Icon
-                as={<MaterialCommunityIcons name="account-circle" />}
-                size="sm"
-              />
-            }
-            size="xl"
-          />
+            size="sm"
+            isDisabled={false}
+            isInvalid={false}
+            isReadOnly={false}
+          >
+            <InputField
+              placeholder="Enter last name"
+              value={lastName}
+              onChangeText={setLastName}
+            />
+            <InputSlot pr="$3">
+              <Ionicons name="person" size={20} color="gray" />
+            </InputSlot>
+          </Input>
 
           {/* Date of Birth Picker */}
           <Text>Date of Birth:</Text>
           {Platform.OS === "android" ? (
-            <Button onPress={openAndroidDatePicker}>
+            <Button
+              onPress={openAndroidDatePicker}
+              size="lg"
+              variant="outline"
+              action="secondary"
+            >
               <Text>{dateOfBirth.toDateString()}</Text>
             </Button>
           ) : (
@@ -170,13 +291,24 @@ const SignUpComponent = () => {
             />
           )}
 
+          {dobError && (
+            <AlertDialogErrorComponent
+              alertText={"You must be at least 15 years old to sign up"}
+            />
+          )}
+
           {/* Sign Up Button */}
-          <Button onPress={handleSignUp} variant="solid" py={6} px={4}>
+          <Button
+            onPress={handleSignUp}
+            size="md"
+            variant="solid"
+            action="primary"
+          >
             <ButtonText>{isLoading ? "Loading..." : "Sign Up"}</ButtonText>
           </Button>
 
           {/* Error Message */}
-          {signUpError && <Text color="red.500">{signUpError}</Text>}
+          {signUpError && <Text color="red">{signUpError}</Text>}
         </VStack>
       </Center>
     </ScrollView>
