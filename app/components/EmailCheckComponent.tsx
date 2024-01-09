@@ -28,12 +28,9 @@ const EmailCheckComponent: React.FC = () => {
     setIsChecking(true);
     setError(null);
     try {
-      const { data, error } = await supabase.functions.invoke(
-        "listUserByEmail",
-        {
-          body: { email: lowerCaseEmail },
-        },
-      );
+      const { data, error } = await supabase.functions.invoke("email-check", {
+        body: { email: lowerCaseEmail },
+      });
       if (error) {
         console.error("Error checking user:", error);
       } else {

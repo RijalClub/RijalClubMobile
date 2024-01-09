@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
   }
 
   const { data, error } = await supabase
-    .from("email")
+    .from("emails")
     .select("email")
     .eq("email", email);
 
