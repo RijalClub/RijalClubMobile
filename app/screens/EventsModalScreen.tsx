@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { StyleSheet, Modal, TouchableOpacity, Image, View } from "react-native";
-import { Text } from "@gluestack-ui/themed";
+import { Center, Text, Button, ButtonText } from "@gluestack-ui/themed";
 import PositionDropdown from "../components/PositionDropdown.jsx";
 import Animated, {
   useAnimatedStyle,
@@ -12,6 +12,8 @@ import { AntDesign } from "@expo/vector-icons";
 import openMap from "react-native-open-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StripeProvider } from "@stripe/stripe-react-native";
+import { userAtom } from "../utils/atoms.js";
+import { useAtom } from "jotai";
 
 interface Event {
   id: number;
@@ -37,6 +39,7 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
 }) => {
   useRef(null);
   const [isCheckoutVisible, setCheckoutVisible] = useState(false);
+  const [user] = useAtom(userAtom);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -81,7 +84,7 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
 
   const formatDateAndTime = (
     dateString: string | number | Date,
-    timeString: string,
+    timeString: string
   ) => {
     const date = new Date(dateString);
     const formattedDate = date.toLocaleDateString("en-GB", {
@@ -108,11 +111,17 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
           <View style={styles.content}>
             <Text style={styles.title}>{event.title}</Text>
             <Text style={styles.description}>{event.description}</Text>
-            <Text style={styles.dateTimeLocation}>
-              {formatDateAndTime(event.date, event.time)}
-            </Text>
-            <Text style={styles.location}>{event.location}</Text>
-            <Text style={styles.price}>{`Price: £${event.ticketPrice}`}</Text>
+            <Center>
+              <View style={styles.eventDetails}>
+                <Text style={styles.dateTimeLocation}>
+                  {formatDateAndTime(event.date, event.time)}
+                </Text>
+                <Text style={styles.location}>{event.location}</Text>
+                <Text
+                  style={styles.price}
+                >{`Price: £${event.ticketPrice}`}</Text>
+              </View>
+            </Center>
           </View>
           <View style={styles.buttonRow}>
             <TouchableOpacity
@@ -134,12 +143,16 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
               <Text style={styles.buttonText}>Open in Maps</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.payButton}
+          <Button
+            size="md"
+            variant="solid"
+            action="positive"
+            isDisabled={!user}
+            isFocusVisible={false}
             onPress={() => setCheckoutVisible(true)}
           >
-            <Text style={styles.buttonText}>Pay</Text>
-          </TouchableOpacity>
+            <ButtonText>Add </ButtonText>
+          </Button>
         </Animated.ScrollView>
         <StripeProvider publishableKey={pk} urlScheme="your-url-scheme">
           <CheckoutModalScreen
@@ -160,6 +173,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
     justifyContent: "space-between",
     paddingVertical: 30,
+  },
+  eventDetails: {
+    borderColor: "#D0D0D0",
+    borderWidth: 3,
+    borderRadius: 10,
+    padding: 10,
+    width: 300,
   },
   modalContainer: {
     flex: 1,
@@ -188,17 +208,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#D0D0D0", // Dark text for readability
     flexShrink: 1, // Allows text to shrink to fit the container width
+    textAlign: "center",
   },
   description: {
     fontSize: 16,
     color: "#D0D0D0",
     marginBottom: 10,
+    textAlign: "center",
+    paddingBottom: 10,
   },
   price: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#30D5C8", // Highlight Color for important elements
-    marginBottom: 20,
+    textAlign: "center",
   },
   addToCalendarButtonText: {
     color: "#D0D0D0",
@@ -207,10 +230,11 @@ const styles = StyleSheet.create({
   // Adjusting the dateTimeLocation style
   dateTimeLocation: {
     flexDirection: "row", // Align date and time on the same line
-    justifyContent: "space-between", // Spread date and time to opposite ends
-    fontSize: 14,
+    justifyContent: "center", // Spread date and time to opposite ends
+    fontSize: 20,
     color: "#A0A0A0",
     marginBottom: 10,
+    textAlign: "center",
   },
   buttonRow: {
     flexDirection: "row",
