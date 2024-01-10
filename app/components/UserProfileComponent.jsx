@@ -1,10 +1,34 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { VStack, Button, View, Text, ButtonText } from "@gluestack-ui/themed";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  VStack,
+  Button,
+  View,
+  Text,
+  ButtonText,
+  Select,
+  SelectTrigger,
+  SelectInput,
+  SelectIcon,
+  SelectPortal,
+  SelectBackdrop,
+  SelectContent,
+  SelectDragIndicatorWrapper,
+  SelectDragIndicator,
+  SelectItem,
+} from "@gluestack-ui/themed";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { useAtom } from "jotai";
 import { userAtom, checkedEmailAtom, userExistsAtom } from "../utils/atoms";
 import supabase from "../utils/supabaseClient";
+
+const positions = [
+  { id: 0, name: "No Preference", value: "no-preference" },
+  { id: 1, name: "Goalkeeper", value: "goalkeeper" },
+  { id: 2, name: "Defender", value: "defender" },
+  { id: 3, name: "Midfielder", value: "midfielder" },
+  { id: 4, name: "Forward", value: "forward" },
+];
 
 const UserProfileComponent = () => {
   const [user, setUser] = useAtom(userAtom);
@@ -40,6 +64,61 @@ const UserProfileComponent = () => {
         <Text style={styles.info}>
           Surname: {user?.user_metadata?.last_name}
         </Text>
+
+        <Select>
+          <SelectTrigger variant="outline" size="md">
+            <SelectInput
+              placeholder="Select option"
+              style={{ color: "white" }}
+            />
+            <SelectIcon mr="$3">
+              <AntDesign name="caretdown" size={15} color="white" />
+            </SelectIcon>
+          </SelectTrigger>
+          <SelectPortal>
+            <SelectBackdrop />
+            <SelectContent>
+              <SelectDragIndicatorWrapper>
+                <SelectDragIndicator />
+              </SelectDragIndicatorWrapper>
+              {positions.map((position) => (
+                <SelectItem
+                  label={position.name}
+                  value={position.value}
+                  key={position.id}
+                />
+              ))}
+            </SelectContent>
+          </SelectPortal>
+        </Select>
+        <Select>
+          <SelectTrigger variant="outline" size="md">
+            <SelectInput
+              placeholder="Select option"
+              style={{ color: "white" }}
+            />
+            <SelectIcon mr="$3">
+              <AntDesign name="caretdown" size={15} color="white" />
+            </SelectIcon>
+          </SelectTrigger>
+          <SelectPortal>
+            <SelectBackdrop />
+            <SelectContent>
+              <SelectDragIndicatorWrapper>
+                <SelectDragIndicator />
+              </SelectDragIndicatorWrapper>
+              {positions.map((position) => (
+                <SelectItem
+                  label={position.name}
+                  value={position.value}
+                  key={position.id}
+                  color={"white"}
+                />
+              ))}
+            </SelectContent>
+          </SelectPortal>
+        </Select>
+
         {/* Add more user info here */}
         <Button onPress={handleSignOut} style={styles.button}>
           <ButtonText>Sign Out</ButtonText>

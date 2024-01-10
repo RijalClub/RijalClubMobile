@@ -43,7 +43,6 @@ const CheckoutModalScreen: React.FC<CheckoutModalScreenProps> = ({
   onClose,
   eventDetails,
 }) => {
-  const [isAddressSaved, setIsAddressSaved] = useState(false);
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [loading, setLoading] = useState(false);
   const [clientSecret, setClientSecret] = useState("");
@@ -104,9 +103,15 @@ const CheckoutModalScreen: React.FC<CheckoutModalScreenProps> = ({
     const { error } = await presentPaymentSheet();
 
     if (error) {
-      console.error(error);
+      if (error?.code === "Canceled") {
+        onClose();
+      } else if (error?.code === "Failed") {
+        console.error(error);
+        onClose();
+      }
     } else {
       console.log("success");
+      onClose();
     }
   };
 
@@ -114,7 +119,7 @@ const CheckoutModalScreen: React.FC<CheckoutModalScreenProps> = ({
     async function initialize() {
       await initializePaymentSheet();
     }
-    initialize();
+    user && initialize();
     scale.value = isVisible ? withSpring(1) : withSpring(0);
   }, [isVisible, scale]);
 
@@ -137,33 +142,6 @@ const CheckoutModalScreen: React.FC<CheckoutModalScreenProps> = ({
             <View style={styles.eventInfo}>
               <Text style={styles.eventTitle}>{eventDetails.title}</Text>
               <Text style={styles.eventPrice}>£{eventDetails.ticketPrice}</Text>
-            </View>
-          </View>
-          <View style={styles.addressSection}>
-            <Text style={styles.sectionTitle}>Billing Address</Text>
-            <TextInput placeholder="Address Line 1" style={styles.input} />
-            <TextInput
-              placeholder="Address Line 2 (Optional)"
-              style={styles.input}
-            />
-            <TextInput placeholder="Town or City" style={styles.input} />
-            <TextInput placeholder="County (Optional)" style={styles.input} />
-            <TextInput placeholder="Postcode" style={styles.input} />
-            <View>
-              <Checkbox
-                value={isAddressSaved.toString()}
-                aria-label="Save this address"
-                onChange={setIsAddressSaved}
-              >
-                <MaterialIcons
-                  name={
-                    isAddressSaved ? "check-box" : "check-box-outline-blank"
-                  }
-                  size={24}
-                  color="#1BA098"
-                />
-                <Text style={styles.checkboxLabel}>Save this address</Text>
-              </Checkbox>
             </View>
           </View>
           <TouchableOpacity
