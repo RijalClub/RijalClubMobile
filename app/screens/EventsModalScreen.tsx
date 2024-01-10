@@ -1,13 +1,6 @@
 import React, { useRef, useState } from "react";
-import {
-  StyleSheet,
-  Alert,
-  Modal,
-  TouchableOpacity,
-  Image,
-  View,
-} from "react-native";
-import { Box, Button, Text } from "@gluestack-ui/themed";
+import { StyleSheet, Modal, TouchableOpacity, Image, View } from "react-native";
+import { Text } from "@gluestack-ui/themed";
 import PositionDropdown from "../components/PositionDropdown.jsx";
 import Animated, {
   useAnimatedStyle,
@@ -18,6 +11,7 @@ import CheckoutModalScreen from "./CheckoutModalScreen";
 import { AntDesign } from "@expo/vector-icons";
 import openMap from "react-native-open-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StripeProvider } from "@stripe/stripe-react-native";
 
 interface Event {
   id: number;
@@ -41,8 +35,7 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
   event,
   hideModal,
 }) => {
-  const closeButtonRef = useRef(null);
-
+  useRef(null);
   const [isCheckoutVisible, setCheckoutVisible] = useState(false);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -50,11 +43,6 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
       transform: [{ scale: withSpring(isVisible ? 1 : 0) }],
     };
   });
-
-  const joinEvent = () => console.log("Joined");
-  const leaveEvent = () => console.log("Left Match");
-  const payEvent = () => setCheckoutVisible(true);
-
   const requestCalendarPermissions = async () => {
     const { status } = await Calendar.requestCalendarPermissionsAsync();
     if (status === "granted") {
@@ -103,7 +91,7 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
     });
     return `${formattedDate} at ${timeString}`;
   };
-
+  const pk = process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "";
   return (
     <SafeAreaView>
       <Modal visible={isVisible} transparent={true} onRequestClose={hideModal}>
@@ -153,11 +141,13 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
             <Text style={styles.buttonText}>Pay</Text>
           </TouchableOpacity>
         </Animated.ScrollView>
-        <CheckoutModalScreen
-          eventDetails={event}
-          isVisible={isCheckoutVisible}
-          onClose={() => setCheckoutVisible(false)}
-        />
+        <StripeProvider publishableKey={pk} urlScheme="your-url-scheme">
+          <CheckoutModalScreen
+            eventDetails={event}
+            isVisible={isCheckoutVisible}
+            onClose={() => setCheckoutVisible(false)}
+          />
+        </StripeProvider>
       </Modal>
     </SafeAreaView>
   );
