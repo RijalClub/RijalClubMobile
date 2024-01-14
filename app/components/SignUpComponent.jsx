@@ -112,7 +112,12 @@ const SignUpComponent = () => {
       }
 
       if (data) {
-        setUserSession(data.user);
+        const user = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", data.user.id)
+          .single();
+        setUserSession({ ...data.user, ...user.data });
       }
 
       // Post sign-up actions (e.g., navigate to a different page or show a success message)

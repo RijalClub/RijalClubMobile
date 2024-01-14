@@ -33,7 +33,15 @@ const SignInComponent = () => {
         password,
       });
       if (error) console.error(error);
-      setUserSession(data.user);
+
+      const user = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", data.user.id)
+        .single();
+      console.log(user.data);
+      setUserSession({ ...data.user, ...user.data });
+
       setIsLoading(false);
     } catch (error) {
       // Handle error, could set an error state and display it

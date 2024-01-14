@@ -1,26 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
-import {
-  VStack,
-  Button,
-  View,
-  Text,
-  ButtonText,
-  Select,
-  SelectTrigger,
-  SelectInput,
-  SelectIcon,
-  SelectPortal,
-  SelectBackdrop,
-  SelectContent,
-  SelectDragIndicatorWrapper,
-  SelectDragIndicator,
-  SelectItem,
-} from "@gluestack-ui/themed";
+import { VStack, Button, View, Text, ButtonText } from "@gluestack-ui/themed";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { useAtom } from "jotai";
 import { userAtom, checkedEmailAtom, userExistsAtom } from "../utils/atoms";
 import supabase from "../utils/supabaseClient";
+import DropdownComponent from "./DropdownComponent";
 
 const positions = [
   { id: 0, name: "No Preference", value: "no-preference" },
@@ -30,10 +15,47 @@ const positions = [
   { id: 4, name: "Forward", value: "forward" },
 ];
 
+const findNameByValue = (arr, value) => {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].value === value) {
+      return arr[i].name;
+    }
+  }
+  return "";
+  console.log(value);
+};
+
 const UserProfileComponent = () => {
   const [user, setUser] = useAtom(userAtom);
   const [, setCheckedEmail] = useAtom(checkedEmailAtom);
   const [, setUserExists] = useAtom(userExistsAtom);
+  const [dropdownOne, setDropdownOne] = useState("");
+  const [dropdownTwo, setDropdownTwo] = useState("");
+  const [isChanged, setChanged] = useState(false);
+
+  useEffect(() => {
+    if (
+      dropdownOne !== "" &&
+      user?.preferred_position?.posOne !== dropdownOne
+    ) {
+      setChanged(true);
+    }
+    if (
+      dropdownTwo !== "" &&
+      user?.preferred_position?.posTwo !== dropdownTwo
+    ) {
+      setChanged(true);
+    }
+    if (
+      (user?.preferred_position?.posOne === dropdownOne &&
+        user?.preferred_position?.posTwo === dropdownTwo) ||
+      (user?.preferred_position?.posOne === dropdownOne &&
+        dropdownTwo === "") ||
+      (user?.preferred_position?.posTwo === dropdownTwo && dropdownOne === "")
+    ) {
+      setChanged(false);
+    }
+  }, [dropdownOne, dropdownTwo]);
 
   const handleSignOut = async () => {
     try {
@@ -45,6 +67,28 @@ const UserProfileComponent = () => {
     } catch (error) {
       console.error("Error signing out:", error.message);
     }
+  };
+
+  const handleSaveButton = async () => {
+    const preferredPositions = {
+      posOne: dropdownOne,
+      posTwo: dropdownTwo,
+    };
+    const usersData = await supabase
+      .from("users")
+      .update({ preferred_position: preferredPositions })
+      .eq("id", user?.id);
+
+    if (usersData.error) {
+      console.error(usersData.error);
+    } else {
+      if (typeof usersData.data === "object" && usersData.data !== null) {
+        // @ts-ignore
+        setUser({ ...user, ...usersData.data });
+      }
+    }
+    setChanged(false);
+    console.log(user);
   };
 
   return (
@@ -64,62 +108,30 @@ const UserProfileComponent = () => {
         <Text style={styles.info}>
           Surname: {user?.user_metadata?.last_name}
         </Text>
+        <DropdownComponent
+          options={positions}
+          setDropdownValue={setDropdownOne}
+          placeHolderText={"Select Your Preferred Option 1"}
+          selected={
+            user?.preferred_position?.posOne &&
+            findNameByValue(positions, user?.preferred_position?.posOne)
+          }
+        />
+        <DropdownComponent
+          options={positions}
+          setDropdownValue={setDropdownTwo}
+          placeHolderText={"Select Your Preferred Option 2"}
+          selected={
+            user?.preferred_position?.posTwo &&
+            findNameByValue(positions, user?.preferred_position?.posTwo)
+          }
+        />
+        {isChanged && (
+          <Button onPress={handleSaveButton} style={styles.button}>
+            <ButtonText>Save Changes</ButtonText>
+          </Button>
+        )}
 
-        <Select>
-          <SelectTrigger variant="outline" size="md">
-            <SelectInput
-              placeholder="Select option"
-              style={{ color: "white" }}
-            />
-            <SelectIcon mr="$3">
-              <AntDesign name="caretdown" size={15} color="white" />
-            </SelectIcon>
-          </SelectTrigger>
-          <SelectPortal>
-            <SelectBackdrop />
-            <SelectContent>
-              <SelectDragIndicatorWrapper>
-                <SelectDragIndicator />
-              </SelectDragIndicatorWrapper>
-              {positions.map((position) => (
-                <SelectItem
-                  label={position.name}
-                  value={position.value}
-                  key={position.id}
-                />
-              ))}
-            </SelectContent>
-          </SelectPortal>
-        </Select>
-        <Select>
-          <SelectTrigger variant="outline" size="md">
-            <SelectInput
-              placeholder="Select option"
-              style={{ color: "white" }}
-            />
-            <SelectIcon mr="$3">
-              <AntDesign name="caretdown" size={15} color="white" />
-            </SelectIcon>
-          </SelectTrigger>
-          <SelectPortal>
-            <SelectBackdrop />
-            <SelectContent>
-              <SelectDragIndicatorWrapper>
-                <SelectDragIndicator />
-              </SelectDragIndicatorWrapper>
-              {positions.map((position) => (
-                <SelectItem
-                  label={position.name}
-                  value={position.value}
-                  key={position.id}
-                  color={"white"}
-                />
-              ))}
-            </SelectContent>
-          </SelectPortal>
-        </Select>
-
-        {/* Add more user info here */}
         <Button onPress={handleSignOut} style={styles.button}>
           <ButtonText>Sign Out</ButtonText>
         </Button>
