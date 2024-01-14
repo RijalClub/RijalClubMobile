@@ -84,7 +84,7 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
 
   const formatDateAndTime = (
     dateString: string | number | Date,
-    timeString: string
+    timeString: string,
   ) => {
     const date = new Date(dateString);
     const formattedDate = date.toLocaleDateString("en-GB", {
@@ -151,7 +151,7 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
             isFocusVisible={false}
             onPress={() => setCheckoutVisible(true)}
           >
-            <ButtonText>Add </ButtonText>
+            <ButtonText>Pay</ButtonText>
           </Button>
         </Animated.ScrollView>
         <StripeProvider publishableKey={pk} urlScheme="your-url-scheme">

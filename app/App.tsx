@@ -26,7 +26,7 @@ const App: FC = () => {
           headerShown: false,
           drawerStyle: styles.drawer,
           drawerType: "slide",
-          drawerActiveTintColor: "blue",
+          drawerActiveTintColor: "#fff",
           drawerInactiveTintColor: "#fff",
         }}
         drawerContent={(props: DrawerContentComponentProps) => (
@@ -34,9 +34,9 @@ const App: FC = () => {
         )}
       >
         <Drawer.Screen name="Home" component={HomeScreen} />
-        <Drawer.Screen name="Profile" component={ProfileScreen} />
         <Drawer.Screen name="Football" component={FootballScreen} />
         <Drawer.Screen name="Fitness" component={FitnessScreen} />
+        <Drawer.Screen name="Profile" component={ProfileScreen} />
       </Drawer.Navigator>
     </NavigationContainer>
   );

@@ -5,7 +5,6 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  TextInput,
   Modal,
   Keyboard,
   TouchableWithoutFeedback,
@@ -15,8 +14,7 @@ import Animated, {
   withSpring,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import { Checkbox } from "@gluestack-ui/themed";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { useStripe } from "@stripe/stripe-react-native";
 import supabase from "../utils/supabaseClient";
 import { useAtom } from "jotai";
