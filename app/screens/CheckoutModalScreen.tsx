@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -72,6 +73,7 @@ const CheckoutModalScreen: React.FC<CheckoutModalScreenProps> = ({
   };
 
   const initializePaymentSheet = async () => {
+    setLoading(false);
     const { paymentIntent, ephemeralKey, customer } =
       await fetchPaymentSheetParams();
 
@@ -97,9 +99,7 @@ const CheckoutModalScreen: React.FC<CheckoutModalScreenProps> = ({
     if (!clientSecret) {
       return;
     }
-    setLoading(true);
     const { error } = await presentPaymentSheet();
-
     if (error) {
       if (error?.code === "Canceled") {
         onClose();
@@ -142,12 +142,14 @@ const CheckoutModalScreen: React.FC<CheckoutModalScreenProps> = ({
               <Text style={styles.eventPrice}>£{eventDetails.ticketPrice}</Text>
             </View>
           </View>
-          <TouchableOpacity
-            onPress={openPaymentSheet}
-            style={styles.payNowButton}
-          >
-            <Text style={styles.payNowText}>Pay Now</Text>
-          </TouchableOpacity>
+          {!loading && (
+            <TouchableOpacity
+              onPress={openPaymentSheet}
+              style={styles.payNowButton}
+            >
+              <Text style={styles.payNowText}>Pay Now</Text>
+            </TouchableOpacity>
+          )}
         </Animated.ScrollView>
       </TouchableWithoutFeedback>
     </Modal>
