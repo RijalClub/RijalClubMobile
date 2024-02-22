@@ -7,6 +7,7 @@ import { useAtom } from "jotai";
 import { checkedEmailAtom, userAtom, userExistsAtom } from "../utils/atoms";
 import SignInComponent from "../components/SignInComponent";
 import UserProfileComponent from "../components/UserProfileComponent";
+import { Box, Center } from "@gluestack-ui/themed";
 
 interface ProfileScreenProps {
   navigation: any; // Use the correct type for your navigation prop, e.g., NavigationProp
@@ -17,7 +18,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const [userExists] = useAtom(userExistsAtom);
   const [user] = useAtom(userAtom);
   return (
-    <View style={styles.safeArea}>
+    <Box backgroundColor="#121212" height={"100%"}>
       <StatusBar barStyle="light-content" backgroundColor="#121212" />
       <HeaderComponent navigation={navigation} />
       {user ? (
@@ -29,7 +30,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
       ) : (
         <SignUpComponent />
       )}
-    </View>
+    </Box>
   );
 };
 

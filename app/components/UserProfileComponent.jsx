@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
-import { VStack, Button, View, Text, ButtonText } from "@gluestack-ui/themed";
-import { Ionicons, AntDesign } from "@expo/vector-icons";
+import {
+  VStack,
+  Button,
+  Box,
+  Text,
+  ButtonText,
+  Center,
+  HStack,
+} from "@gluestack-ui/themed";
+import { Ionicons } from "@expo/vector-icons";
 import { useAtom } from "jotai";
 import { userAtom, checkedEmailAtom, userExistsAtom } from "../utils/atoms";
 import supabase from "../utils/supabaseClient";
@@ -88,91 +95,96 @@ const UserProfileComponent = () => {
       }
     }
     setChanged(false);
-    console.log(user);
   };
 
   return (
-    <View style={styles.container}>
-      <VStack space="md" style={styles.profileBox}>
-        <Ionicons
-          name="person-circle-outline"
-          size={100}
-          color="#cccccc"
-          style={styles.icon}
-        />
-        <Text style={styles.header}>Profile</Text>
-        <Text style={styles.info}>Email: {user?.email}</Text>
-        <Text style={styles.info}>
-          First Name: {user?.user_metadata?.first_name}
-        </Text>
-        <Text style={styles.info}>
-          Surname: {user?.user_metadata?.last_name}
-        </Text>
-        <DropdownComponent
-          options={positions}
-          setDropdownValue={setDropdownOne}
-          placeHolderText={"Select Your Preferred Option 1"}
-          selected={
-            user?.preferred_position?.posOne &&
-            findNameByValue(positions, user?.preferred_position?.posOne)
-          }
-        />
-        <DropdownComponent
-          options={positions}
-          setDropdownValue={setDropdownTwo}
-          placeHolderText={"Select Your Preferred Option 2"}
-          selected={
-            user?.preferred_position?.posTwo &&
-            findNameByValue(positions, user?.preferred_position?.posTwo)
-          }
-        />
-        {isChanged && (
-          <Button onPress={handleSaveButton} style={styles.button}>
-            <ButtonText>Save Changes</ButtonText>
-          </Button>
-        )}
-
-        <Button onPress={handleSignOut} style={styles.button}>
+    <Center>
+      <VStack
+        space="4xl"
+        alignItems="center"
+        height={"100%"}
+        justifyContent="center"
+        // width={"100%"}
+      >
+        <VStack
+          space="lg"
+          borderWidth={2}
+          borderColor="#cccccc"
+          borderRadius={10}
+          padding={15}
+          width={300}
+          maxWidth={"90%"}
+          height={300}
+          justifyContent="center"
+        >
+          <Center>
+            <Ionicons name="person-circle-outline" size={100} color="#cccccc" />
+          </Center>
+          <HStack justifyContent="center">
+            <Box>
+              <Text color="white" fontWeight="bold" textAlign="right" mb={5}>
+                Email:{" "}
+              </Text>
+              <Text color="white" fontWeight="bold" textAlign="right" mb={5}>
+                First Name:{" "}
+              </Text>
+              <Text color="white" fontWeight="bold" textAlign="right">
+                Last Name:{" "}
+              </Text>
+            </Box>
+            <Box>
+              <Text color="white" mb={5}>
+                {user?.email}
+              </Text>
+              <Text color="white" mb={5}>
+                {user?.user_metadata?.first_name}
+              </Text>
+              <Text color="white">{user?.user_metadata?.last_name}</Text>
+            </Box>
+          </HStack>
+        </VStack>
+        <VStack
+          space="md"
+          borderWidth={2}
+          borderColor="#cccccc"
+          borderRadius={10}
+          padding={15}
+          width={300}
+          maxWidth={"90%"}
+        >
+          <Text fontSize={"$md"} color="white" fontWeight="bold">
+            Preferred positions:
+          </Text>
+          <DropdownComponent
+            options={positions}
+            setDropdownValue={setDropdownOne}
+            placeHolderText={"Select Your Preferred Option 1"}
+            selected={
+              user?.preferred_position?.posOne &&
+              findNameByValue(positions, user?.preferred_position?.posOne)
+            }
+          />
+          <DropdownComponent
+            options={positions}
+            setDropdownValue={setDropdownTwo}
+            placeHolderText={"Select Your Preferred Option 2"}
+            selected={
+              user?.preferred_position?.posTwo &&
+              findNameByValue(positions, user?.preferred_position?.posTwo)
+            }
+          />
+          {isChanged && (
+            <Button onPress={() => handleSaveButton()}>
+              <ButtonText>Save Changes</ButtonText>
+            </Button>
+          )}
+        </VStack>
+        <Button onPress={handleSignOut} action="negative" borderRadius={10}>
           <ButtonText>Sign Out</ButtonText>
         </Button>
       </VStack>
-    </View>
+    </Center>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
-  },
-  profileBox: {
-    padding: 20,
-    borderWidth: 1,
-    borderColor: "#cccccc",
-    borderRadius: 8,
-    width: "100%",
-    maxWidth: 400,
-  },
-  icon: {
-    alignSelf: "center",
-    marginBottom: 16,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 10,
-    paddingTop: 10,
-  },
-  info: {
-    fontSize: 18,
-    marginBottom: 5,
-  },
-  button: {
-    marginTop: 10,
-    backgroundColor: "#ff3333", // A contrasting color for the sign-out button
-  },
-});
 
 export default UserProfileComponent;

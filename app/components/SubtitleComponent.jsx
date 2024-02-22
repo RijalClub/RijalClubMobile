@@ -1,17 +1,17 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
-import { Text } from '@gluestack-ui/themed';
+import React from "react";
+import { Text } from "@gluestack-ui/themed";
 
-const Subtitle = ({ children, style }) => (
-  <Text style={[styles.subtitleStyle, style]}>{children}</Text>
-  );
+const Subtitle = ({ children }) => (
+  <Text
+    fontSize={22}
+    fontWeight="bold"
+    textAlign="center"
+    color="#FFFFFF"
+    marginVertical={20}
 
-const styles = StyleSheet.create({
-  subtitleStyle: {
-    fontSize: 18,
-    fontWeight: 'normal',
-    textAlign: 'center',
-  }
-});
+  >
+    {children}
+  </Text>
+);
 
 export default Subtitle;

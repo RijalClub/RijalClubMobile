@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet, SectionList} from "react-native";
+import { SectionList } from "react-native";
 import EventMonthHeader from './EventMonthHeaderComponent';
 import EventItem from './EventItemComponent';
 
@@ -40,17 +40,9 @@ const EventListComponent = ({ events, onEventPress }) => {
             renderSectionHeader={({ section: { title } }) => (
                 <EventMonthHeader monthYear={title} />
             )}
-            contentContainerStyle={styles.container}
+            contentContainerStyle={style={backgroundColor: '#121212'}}
         />
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#121212',
-        padding: 16,
-    },
-});
-
 
 export default EventListComponent;
