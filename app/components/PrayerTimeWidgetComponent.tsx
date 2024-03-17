@@ -1,5 +1,6 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { Box, Text } from "@gluestack-ui/themed";
 
 interface PrayerTimes {
   [key: string]: Date;
@@ -24,12 +25,20 @@ const PrayerTimeWidgetComponent: React.FC<PrayerTimeWidgetComponentProps> = ({
   };
 
   return (
-    <View style={styles.prayerTimeContainer}>
+    <Box
+      flexDirection="row"
+      justifyContent="space-between"
+      backgroundColor="#333"
+      borderRadius={10}
+      paddingVertical={15}
+      paddingHorizontal={5}
+      marginHorizontal={10}
+    >
       {prayerTimes &&
         Object.keys(prayerTimes).map((prayer) => {
           const isCurrentPrayer = lastPrayerCheck(currentPrayer) === prayer;
           return (
-            <View key={prayer} style={styles.prayerTimeBlock}>
+            <Box key={prayer} alignItems="center" flex={1}>
               <Text
                 style={[
                   styles.prayerLabel,
@@ -46,44 +55,28 @@ const PrayerTimeWidgetComponent: React.FC<PrayerTimeWidgetComponentProps> = ({
               >
                 {formatTime(prayerTimes[prayer])}
               </Text>
-            </View>
+            </Box>
           );
         })}
-    </View>
+    </Box>
   );
 };
 
 const styles = StyleSheet.create({
-  prayerTimeContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    backgroundColor: "#333",
-    borderRadius: 10,
-    paddingVertical: 15,
-    paddingHorizontal: 5,
-    marginHorizontal: 10,
-  },
-  prayerTimeBlock: {
-    alignItems: "center",
-    flex: 1,
-  },
-  prayerIcon: {
-    marginBottom: 5,
-  },
   prayerLabel: {
     fontSize: 14,
     color: "#FFF",
     fontWeight: "700",
     marginBottom: 3,
   },
-  currentPrayerLabel: {
-    fontSize: 14,
-    color: "#30D5C8",
-    fontWeight: "700",
-  },
   prayerTime: {
     fontSize: 14,
     color: "#FFF",
+    fontWeight: "700",
+  },
+  currentPrayerLabel: {
+    fontSize: 14,
+    color: "#30D5C8",
     fontWeight: "700",
   },
   currentPrayerTime: {

@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { View, StyleSheet, StatusBar, Text } from "react-native";
+import { StatusBar } from "react-native";
 import HeaderComponent from "../components/HeaderComponent";
 import EventsModalScreen from "./EventsModalScreen";
 import EventListComponent from "../components/EventListComponent";
 import { dummyEventsData } from "../utils/eventsDummyData";
+import { FontAwesome } from "@expo/vector-icons";
+import { VStack, Text, Box } from "@gluestack-ui/themed";
 
 interface Event {
   id: number;
@@ -36,17 +38,46 @@ const FootballScreen: React.FC<FootballScreenProps> = ({ navigation }) => {
   const isEventsArray = Array.isArray(events);
 
   return (
-    <View style={styles.safeArea}>
+    <Box flex={1} backgroundColor="#121212">
       <StatusBar barStyle="light-content" backgroundColor="#121212" />
       <HeaderComponent navigation={navigation} />
       {isEventsArray ? (
         <>
-          <Text style={styles.titleText}>Football Events</Text>
-          <Text style={styles.subtitleText}>In North London</Text>
-          <EventListComponent events={events} onEventPress={showModal} />
+          <VStack space="md" paddingHorizontal={16}>
+            <Text
+              fontSize={30}
+              fontWeight="bold"
+              color="#D0D0D0"
+              mt={20}
+              pt={20}
+            >
+              Football Events
+            </Text>
+            <Text
+              fontSize={16}
+              color="#A0A0A0"
+              textAlign="left"
+              lineHeight={24}
+            >
+              In North London
+            </Text>
+            <EventListComponent events={events} onEventPress={showModal} />
+          </VStack>
         </>
       ) : (
-        <Text style={styles.errorText}>No events available.</Text>
+        <>
+          <VStack alignItems="center" justifyContent="center" height={"80%"}>
+            <FontAwesome name="calendar" size={100} color="#FEE2E2" />
+            <Text
+              fontSize={18}
+              color="#FEE2E2"
+              fontWeight="bold"
+              marginTop={20}
+            >
+              No events available.
+            </Text>
+          </VStack>
+        </>
       )}
       {currentEvent && (
         <EventsModalScreen
@@ -55,39 +86,8 @@ const FootballScreen: React.FC<FootballScreenProps> = ({ navigation }) => {
           hideModal={hideModal}
         />
       )}
-    </View>
+    </Box>
   );
 };
-
-const styles = StyleSheet.create({
-  titleText: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#D0D0D0", // Primary text color on dark background
-    marginTop: 20,
-    marginBottom: 10, // Adjust as needed
-    paddingHorizontal: 16, // Match with your container padding
-    textAlign: "left", // Assuming you want the title centered as per modern design trends
-  },
-  subtitleText: {
-    fontSize: 16,
-    color: "#A0A0A0", // Secondary text color for less emphasis
-    paddingHorizontal: 16, // Match with your container padding
-    textAlign: "left", // If you want the subtitle centered
-    lineHeight: 24, // Adjust line-height for better readability
-  },
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#121212",
-  },
-  errorText: {
-    fontSize: 18,
-    color: "red",
-    fontWeight: "bold",
-    textAlign: "center",
-    marginTop: 20,
-    paddingHorizontal: 16,
-  },
-});
 
 export default FootballScreen;

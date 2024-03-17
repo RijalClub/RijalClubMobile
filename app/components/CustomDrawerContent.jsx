@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { TouchableOpacity, StyleSheet } from "react-native";
+import { Text } from "@gluestack-ui/themed";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 
 const CustomDrawerContent = (props) => {

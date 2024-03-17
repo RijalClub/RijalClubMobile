@@ -6,7 +6,7 @@ import {
   Button,
   VStack,
   Text,
-  View,
+  Box,
   ButtonText,
   Heading,
   InputSlot,
@@ -20,7 +20,7 @@ const EmailCheckComponent: React.FC = () => {
   const [email, setEmail] = useAtom(emailAtom);
   const [isChecking, setIsChecking] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [, setCheckedEmail] = useAtom(checkedEmailAtom);
+  const [checkedEmail, setCheckedEmail] = useAtom(checkedEmailAtom);
   const [, setUserExists] = useAtom(userExistsAtom);
 
   const checkUserExists = async () => {
@@ -46,27 +46,36 @@ const EmailCheckComponent: React.FC = () => {
   };
 
   return (
-    <VStack space="md" alignItems="center" padding={20}>
-      <View alignItems="center">
-        <Heading size="xl" bold color="white">
+    <VStack
+      space="4xl"
+      alignItems="center"
+      height="90%"
+      padding="10%"
+      justifyContent="center"
+    >
+      <Box
+        justifyContent="space-between"
+        alignItems="center"
+        height={100}
+      >
+        <Heading size="xl" bold color="white" letterSpacing={"$md"}>
           Sign in to Rijal Club
         </Heading>
-        <Text color="gray" style={{ textAlign: "center" }}>
-          Please enter your email & password to continue to your personal
-          account.
+        <Text color="white" textAlign="center">
+          Please enter your email & password to view your personal account.
         </Text>
-      </View>
+      </Box>
+
       <Input>
         <InputField
           type="text"
           value={email}
           onChangeText={setEmail}
           placeholder="Enter email"
-          placeholderTextColor="#a1a1a1"
           clearButtonMode="while-editing"
           autoCapitalize="none"
-          color="white"
           autoCorrect={false}
+          color="white"
         />
         <InputSlot pr="$3">
           <Ionicons name="mail" size={20} color="gray" />

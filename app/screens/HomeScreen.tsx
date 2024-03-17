@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View } from "react-native";
-import { Text, VStack } from "@gluestack-ui/themed";
-import Subtitle from "../components/SubtitleComponent";
-import PrayerTimeWidgetComponent from "../components/PrayerTimeWidgetComponent.tsx";
+import { Text, VStack, Box } from "@gluestack-ui/themed";
 import { getLondonPrayerTimesForToday } from "../utils/prayerTimes.ts";
-import NotificationPanelComponent from "../components/NotificationPanelComponent";
 import { writeIslamicDate } from "../utils/islamicCalendarConversion";
-import HeaderComponent from "../components/HeaderComponent";
 import { clearTimeout } from "@testing-library/react-native/build/helpers/timers";
+import PrayerTimeWidgetComponent from "../components/PrayerTimeWidgetComponent.tsx";
+import NotificationPanelComponent from "../components/NotificationPanelComponent";
+import Subtitle from "../components/SubtitleComponent";
+import Title from "../components/TitleComponent.jsx";
+import HeaderComponent from "../components/HeaderComponent";
 
 interface HomeScreenProps {
   navigation: any;
@@ -23,7 +23,7 @@ type PrayerTimes = {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [todayPrayerTimes, setTodayPrayerTimes] = useState<PrayerTimes | null>(
-    null,
+    null
   );
   const [todayIslamicDate, setTodayIslamicDate] = useState<string>("");
   const [currentPrayer, setCurrentPrayer] = useState<string>("");
@@ -53,7 +53,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     const tomorrow = new Date(
       now.getFullYear(),
       now.getMonth(),
-      now.getDate() + 1,
+      now.getDate() + 1
     );
     const msUntilMidnight = tomorrow.getTime() - now.getTime();
 
@@ -63,7 +63,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
     const intervalId = setInterval(() => {
       setCurrentPrayer(
-        getLondonPrayerTimesForToday().currentPrayer(new Date()),
+        getLondonPrayerTimesForToday().currentPrayer(new Date())
       );
     }, 60000); // every 60 seconds
 
@@ -76,90 +76,22 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   return (
     <>
       <HeaderComponent navigation={navigation} />
-      <View style={styles.container}>
+      <Box backgroundColor="#121212" flex={1}>
         <VStack space="lg" alignItems="center">
-          <Subtitle style={styles.subtitleText}>
-            Connecting you to your faith and community
-          </Subtitle>
-          <Subtitle style={styles.subtitleText}>{todayIslamicDate}</Subtitle>
+          <Title>Connecting you to your faith and community</Title>
+          <Text color="white" fontSize={18} fontStyle="italic">{todayIslamicDate}</Text>
           <PrayerTimeWidgetComponent
             prayerTimes={todayPrayerTimes}
             currentPrayer={currentPrayer}
           />
         </VStack>
-        <Text style={styles.sectionTitle}>Announcements</Text>
+        <Subtitle>
+          Announcements
+        </Subtitle>
         <NotificationPanelComponent />
-      </View>
+      </Box>
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#121212", // Dark background color for the entire screen
-    flex: 1,
-  },
-  titleText: {
-    fontSize: 28,
-    color: "#FFFFFF",
-    marginTop: 20,
-    paddingTop: 10,
-  },
-  subtitleText: {
-    fontSize: 16,
-    color: "#D0D0D0",
-    marginTop: 20,
-  },
-  prayerDay: {
-    fontSize: 16,
-    color: "#333",
-  },
-  introText: {
-    fontSize: 14,
-    color: "#555",
-    padding: 10,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#FFFFFF",
-    paddingVertical: 10,
-    textAlign: "center",
-  },
-  notificationCard: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 15,
-    marginBottom: 10,
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    shadowColor: "#000",
-    shadowOffset: { height: 2, width: 0 },
-    elevation: 3,
-  },
-  notificationTitle: {
-    fontWeight: "bold",
-    fontSize: 18,
-    color: "#000",
-    marginBottom: 4,
-  },
-  cardStyle: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 10,
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    shadowColor: "black",
-    shadowOffset: { height: 2, width: 2 },
-    elevation: 4,
-  },
-  urgentTitle: {
-    color: "red",
-  },
-  medTitle: {
-    color: "orange",
-  },
-});
 
 export default HomeScreen;

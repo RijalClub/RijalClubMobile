@@ -10,6 +10,7 @@ import {
   Center,
   InputSlot,
   Heading,
+  Box,
 } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker, {
@@ -20,6 +21,7 @@ import { emailAtom, passwordAtom, userAtom } from "../utils/atoms";
 import supabase from "../utils/supabaseClient";
 import AlertDialogErrorComponent from "./AlertDialogErrorComponent";
 import validator from "validator";
+import { checkedEmailAtom } from "../utils/atoms";
 
 const SignUpComponent = () => {
   const [email, setEmail] = useAtom(emailAtom);
@@ -38,6 +40,7 @@ const SignUpComponent = () => {
     signUpError: null,
   });
   const [errorText, setErrorText] = useState("");
+  const [, setCheckedEmail] = useAtom(checkedEmailAtom);
 
   const clearErrors = () => {
     setErrors({
@@ -120,7 +123,12 @@ const SignUpComponent = () => {
         setUserSession({ ...data.user, ...user.data });
       }
 
-      // Post sign-up actions (e.g., navigate to a different page or show a success message)
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setFirstName("");
+      setLastName("");
+      setDateOfBirth(new Date());
     } catch (error) {
       console.error("Unexpected error during sign up:", error);
       setErrors((prev) => ({
@@ -150,11 +158,11 @@ const SignUpComponent = () => {
   return (
     <ScrollView>
       <Center>
-        <VStack space="xl" alignItems="left" px={4}>
-          <Heading size="xl" bold color="white">
+        <VStack space="3xl" alignItems="left">
+          <Heading size="xl" bold color="white" letterSpacing={"$md"}>
             Sign Up To Rijal Club
           </Heading>
-          <Text color="white">
+          <Text color="white" fontWeight="bold">
             Please enter your details to create an account.
           </Text>
 
@@ -200,7 +208,7 @@ const SignUpComponent = () => {
             />
             <InputSlot pr="$3" onPress={() => setShowPassword(!showPassword)}>
               {showPassword ? (
-                <Ionicons name="eye-sharp" size={20} color="gray" />
+                <Ionicons name="eye-sharp" size={20} color="white" />
               ) : (
                 <Ionicons name="eye-off-sharp" size={20} color="gray" />
               )}
@@ -226,7 +234,7 @@ const SignUpComponent = () => {
             />
             <InputSlot pr="$3" onPress={() => setShowPassword(!showPassword)}>
               {showPassword ? (
-                <Ionicons name="eye-sharp" size={20} color="gray" />
+                <Ionicons name="eye-sharp" size={20} color="white" />
               ) : (
                 <Ionicons name="eye-off-sharp" size={20} color="gray" />
               )}
@@ -276,25 +284,29 @@ const SignUpComponent = () => {
           </Input>
 
           {/* Date of Birth Picker */}
-          <Text>Date of Birth:</Text>
-          {Platform.OS === "android" ? (
-            <Button
-              onPress={openAndroidDatePicker}
-              size="lg"
-              variant="outline"
-              action="secondary"
-            >
-              <Text>{dateOfBirth.toDateString()}</Text>
-            </Button>
-          ) : (
-            <DateTimePicker
-              value={dateOfBirth}
-              mode="date"
-              display="default"
-              onChange={onChangeDate}
-              maximumDate={new Date()}
-            />
-          )}
+          <Box>
+            <Text color="white" fontWeight="bold" mb={4}>
+              Date of Birth:
+            </Text>
+            {Platform.OS === "android" ? (
+              <Button
+                onPress={openAndroidDatePicker}
+                size="lg"
+                variant="outline"
+                action="secondary"
+              >
+                <Text color="white">{dateOfBirth.toDateString()}</Text>
+              </Button>
+            ) : (
+              <DateTimePicker
+                value={dateOfBirth}
+                mode="date"
+                display="default"
+                onChange={onChangeDate}
+                maximumDate={new Date()}
+              />
+            )}
+          </Box>
 
           {errors.dobError && (
             <AlertDialogErrorComponent
@@ -309,9 +321,12 @@ const SignUpComponent = () => {
             variant="solid"
             action="primary"
           >
-            <ButtonText>
+            <ButtonText fontWeight="$black" letterSpacing={"$xl"}>
               {isLoading ? <ActivityIndicator /> : "Sign Up"}
             </ButtonText>
+          </Button>
+          <Button size="md" variant="outline" action="secondary">
+            <ButtonText color="#FCFCFC">Go Back</ButtonText>
           </Button>
 
           {/* Error Message */}

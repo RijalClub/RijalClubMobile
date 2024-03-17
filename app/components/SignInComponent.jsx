@@ -10,6 +10,11 @@ import {
   ButtonText,
   Heading,
   InputSlot,
+  Alert,
+  AlertIcon,
+  AlertText,
+  InfoIcon,
+  InputIcon,
 } from "@gluestack-ui/themed";
 import { useAtom } from "jotai";
 import { Ionicons } from "@expo/vector-icons";
@@ -39,10 +44,11 @@ const SignInComponent = () => {
         .select("*")
         .eq("id", data.user.id)
         .single();
-      console.log(user.data);
       setUserSession({ ...data.user, ...user.data });
 
       setIsLoading(false);
+      setEmail("");
+      setPassword("");
     } catch (error) {
       // Handle error, could set an error state and display it
       console.error("Error signing in:", error.message);
@@ -52,27 +58,37 @@ const SignInComponent = () => {
   };
 
   return (
-    <VStack space="md" alignItems="center" padding={20}>
-      <View alignItems="center">
-        <Heading size="xl" bold color="white">
+    <VStack
+      space="4xl"
+      alignItems="center"
+      height={"90%"}
+      padding={"10%"}
+      justifyContent="center"
+    >
+      <View
+        justifyContent="space-between"
+        alignItems="center"
+        // borderWidth={1} borderColor="white"
+        height={100}
+      >
+        <Heading size="xl" bold color="white" letterSpacing={"$md"}>
           Sign in to Rijal Club
         </Heading>
-        <Text color="gray" style={{ textAlign: "center" }}>
-          Please enter your email & password to continue to your personal
-          account.
+        <Text color="white" textAlign="center">
+          Please enter your email & password to view your personal account.
         </Text>
       </View>
-      <Input color="gray">
+
+      <Input>
         <InputField
           type="text"
           value={email}
           onChangeText={setEmail}
           placeholder="Enter email"
-          placeholderTextColor="#a1a1a1"
           clearButtonMode="while-editing"
           autoCapitalize="none"
-          color="white"
           autoCorrect={false}
+          color="white"
         />
         <InputSlot pr="$3">
           <Ionicons name="mail" size={20} color="gray" />
@@ -80,23 +96,23 @@ const SignInComponent = () => {
       </Input>
       <Input
         variant="outline"
-        size="sm"
         isDisabled={false}
         isInvalid={false}
         isReadOnly={false}
+        // borderColor="white"
       >
         <InputField
           type={showPassword ? "text" : "password"}
           placeholder="Enter password"
           value={password}
           onChangeText={setPassword}
-          color="white"
           autoCapitalize="none"
           autoCorrect={false}
+          color="white"
         />
         <InputSlot pr="$3" onPress={() => setShowPassword(!showPassword)}>
           {showPassword ? (
-            <Ionicons name="eye-sharp" size={20} color="gray" />
+            <Ionicons name="eye-sharp" size={20} color="white" />
           ) : (
             <Ionicons name="eye-off-sharp" size={20} color="gray" />
           )}
@@ -110,6 +126,11 @@ const SignInComponent = () => {
         )}
       </Button>
       {signInError && <Text color="red">{signInError}</Text>}
+
+      {/* <Alert mx="$2.5" action="error" variant="accent">
+        <AlertIcon as={InfoIcon} mr="$3" />
+        <AlertText>Something went wrong. Please try again later.</AlertText>
+      </Alert> */}
     </VStack>
   );
 };
