@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View } from "react-native";
 import { Text, VStack, Box } from "@gluestack-ui/themed";
 import { getLondonPrayerTimesForToday } from "../utils/prayerTimes.ts";
 import { writeIslamicDate } from "../utils/islamicCalendarConversion";
@@ -94,51 +93,5 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  prayerDay: {
-    fontSize: 16,
-    color: "#333",
-  },
-  introText: {
-    fontSize: 14,
-    color: "#555",
-    padding: 10,
-  },
-  notificationCard: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 15,
-    marginBottom: 10,
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    shadowColor: "#000",
-    shadowOffset: { height: 2, width: 0 },
-    elevation: 3,
-  },
-  notificationTitle: {
-    fontWeight: "bold",
-    fontSize: 18,
-    color: "#000",
-    marginBottom: 4,
-  },
-  cardStyle: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 10,
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    shadowColor: "black",
-    shadowOffset: { height: 2, width: 2 },
-    elevation: 4,
-  },
-  urgentTitle: {
-    color: "red",
-  },
-  medTitle: {
-    color: "orange",
-  },
-});
 
 export default HomeScreen;

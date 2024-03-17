@@ -19,7 +19,7 @@ const positions = [
   { id: 1, name: "Goalkeeper", value: "goalkeeper" },
   { id: 2, name: "Defender", value: "defender" },
   { id: 3, name: "Midfielder", value: "midfielder" },
-  { id: 4, name: "Forward", value: "forward" },
+  { id: 4, name: "Striker", value: "striker" },
 ];
 
 const findNameByValue = (arr, value) => {

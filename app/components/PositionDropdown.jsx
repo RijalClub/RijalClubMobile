@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Modal, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { View, Text, Pressable } from '@gluestack-ui/themed';
+import React, { useState } from "react";
+import { Modal } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { Box, Text, Pressable } from "@gluestack-ui/themed";
 
 const PositionDropdown = () => {
   const [visible, setVisible] = useState(false);
-  const [selected, setSelected] = useState('No Preference');
+  const [selected, setSelected] = useState("No Preference");
 
   const toggleMenu = () => setVisible(!visible);
 
@@ -14,57 +14,53 @@ const PositionDropdown = () => {
     toggleMenu();
   };
 
-  const positions = ['No Preference', 'Goalkeeper', 'Defender', 'Midfielder', 'Forward'];
+  const positions = [
+    "No Preference",
+    "Goalkeeper",
+    "Defender",
+    "Midfielder",
+    "Striker",
+  ];
 
   return (
-    <View>
+    <Box>
       <Pressable onPress={toggleMenu}>
-        <View style={styles.dropdown}>
+        <Box flexDirection="row" alignItems="center" padding={10}>
           <Text>{selected}</Text>
-          <Ionicons name="chevron-down-circle-outline" size={24} style={{marginLeft:8}} color="#333333" />
-        </View>
+          <Ionicons
+            name="chevron-down-circle-outline"
+            size={24}
+            style={{ marginLeft: 8 }}
+            color="#333333"
+          />
+        </Box>
       </Pressable>
-      <Modal
-        transparent={true}
-        visible={visible}
-        onRequestClose={toggleMenu}
+      <Modal transparent={true} visible={visible} onRequestClose={toggleMenu}>
+        <Pressable
+          flex={1}
+          justifyContent="center"
+          alignItems="center"
+          backgroundColor="rgba(0, 0, 0, 0.5)"
+          onPress={toggleMenu}
         >
-        <Pressable style={styles.modalOverlay} onPress={toggleMenu}>
-          <View style={styles.menu}>
+          <Box
+            backgroundColor="white"
+            borderRadius={5}
+            padding={10}
+            width={200}
+          >
             {positions.map((position) => (
               <Pressable key={position} onPress={() => selectItem(position)}>
-                <Text style={styles.menuItem}>{position}</Text>
+                <Text padding={10} textAlign="center">
+                  {position}
+                </Text>
               </Pressable>
-              ))}
-          </View>
+            ))}
+          </Box>
         </Pressable>
       </Modal>
-    </View>
-    );
+    </Box>
+  );
 };
-
-const styles = StyleSheet.create({
-  dropdown: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  menu: {
-    backgroundColor: 'white',
-    borderRadius: 5,
-    padding: 10,
-    width: 200,
-  },
-  menuItem: {
-    padding: 10,
-    textAlign: 'center',
-  },
-});
 
 export default PositionDropdown;
