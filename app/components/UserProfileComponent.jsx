@@ -7,12 +7,14 @@ import {
   ButtonText,
   Center,
   HStack,
+  Switch,
 } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { useAtom } from "jotai";
 import { userAtom, checkedEmailAtom, userExistsAtom } from "../utils/atoms";
 import supabase from "../utils/supabaseClient";
 import DropdownComponent from "./DropdownComponent";
+import { CheckboxIndicator } from "@gluestack-ui/themed";
 
 const positions = [
   { id: 0, name: "No Preference", value: "no-preference" },
@@ -173,6 +175,11 @@ const UserProfileComponent = () => {
               findNameByValue(positions, user?.preferred_position?.posTwo)
             }
           />
+          <HStack space="md" alignItems="center">
+            <Switch />
+            <Text size="sm" color="white" fontSize={"$md"}> Want to be Captain ?</Text>
+          </HStack>
+
           {isChanged && (
             <Button onPress={() => handleSaveButton()}>
               <ButtonText>Save Changes</ButtonText>
