@@ -14,7 +14,6 @@ import { useAtom } from "jotai";
 import { userAtom, checkedEmailAtom, userExistsAtom } from "../utils/atoms";
 import supabase from "../utils/supabaseClient";
 import DropdownComponent from "./DropdownComponent";
-import { CheckboxIndicator } from "@gluestack-ui/themed";
 
 const positions = [
   { id: 0, name: "No Preference", value: "no-preference" },
@@ -31,7 +30,6 @@ const findNameByValue = (arr, value) => {
     }
   }
   return "";
-  console.log(value);
 };
 
 const UserProfileComponent = () => {
@@ -41,6 +39,7 @@ const UserProfileComponent = () => {
   const [dropdownOne, setDropdownOne] = useState("");
   const [dropdownTwo, setDropdownTwo] = useState("");
   const [isChanged, setChanged] = useState(false);
+  const [isCapPref, setIsCapPref] = useState(true);
 
   useEffect(() => {
     if (
@@ -64,6 +63,8 @@ const UserProfileComponent = () => {
     ) {
       setChanged(false);
     }
+
+    setIsCapPref(user?.metadata?.captainPref || false);
   }, [dropdownOne, dropdownTwo]);
 
   const handleSignOut = async () => {
@@ -75,6 +76,23 @@ const UserProfileComponent = () => {
       setCheckedEmail(false);
     } catch (error) {
       console.error("Error signing out:", error.message);
+    }
+  };
+
+  const handleCaptainPreference = async () => {
+    const userMeta = { ...user?.metadata, captainPref: isCapPref };
+    setIsCapPref(!isCapPref);
+    const usersData = await supabase
+      .from("users")
+      .update({ metadata: userMeta })
+      .eq("id", user?.id);
+    if (usersData.error) {
+      console.error(usersData.error);
+    } else {
+      if (typeof usersData.data === "object" && usersData.data !== null) {
+        // @ts-ignore
+        setUser({ ...user, ...usersData.data });
+      }
     }
   };
 
@@ -176,8 +194,15 @@ const UserProfileComponent = () => {
             }
           />
           <HStack space="md" alignItems="center">
-            <Switch />
-            <Text size="sm" color="white" fontSize={"$md"}> Want to be Captain ?</Text>
+            <Switch
+              value={isCapPref}
+              isRequired={false}
+              onToggle={handleCaptainPreference}
+            />
+            <Text size="sm" color="white" fontSize={"$md"}>
+              {" "}
+              Want to be Captain ?
+            </Text>
           </HStack>
 
           {isChanged && (
