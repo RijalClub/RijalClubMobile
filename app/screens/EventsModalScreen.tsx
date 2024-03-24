@@ -1,6 +1,14 @@
 import React, { useRef, useState } from "react";
 import { StyleSheet, Modal, TouchableOpacity, Image, View } from "react-native";
-import { Center, Text, Button, ButtonText } from "@gluestack-ui/themed";
+import {
+  Center,
+  Text,
+  Button,
+  ButtonText,
+  Box,
+  VStack,
+  ScrollView,
+} from "@gluestack-ui/themed";
 import PositionDropdown from "../components/PositionDropdown.jsx";
 import Animated, {
   useAnimatedStyle,
@@ -25,6 +33,31 @@ interface Event {
   ticketPrice: number;
   currency: string;
 }
+
+const dummyNames = [
+  "Harry Smith",
+  "Jordan Brown",
+  "Liam Jones",
+  "Charlie Wilson",
+  "Jack Taylor",
+  "Oliver Evans",
+  "Thomas Clarke",
+  "George King",
+  "Jacob White",
+  "Noah Harris",
+  "William Martin",
+  "James Thompson",
+  "Ethan Carter",
+  "Daniel Wright",
+  "Oscar Green",
+  "Joseph Hall",
+  "Henry Young",
+  "Leo Walker",
+  "Alexander Edwards",
+  "Samuel Hill",
+  "Max Mitchell",
+  "Dylan Turner",
+];
 
 interface EventsModalScreenProps {
   isVisible: boolean;
@@ -84,7 +117,7 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
 
   const formatDateAndTime = (
     dateString: string | number | Date,
-    timeString: string,
+    timeString: string
   ) => {
     const date = new Date(dateString);
     const formattedDate = date.toLocaleDateString("en-GB", {
@@ -102,57 +135,65 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
           <TouchableOpacity style={styles.backButton} onPress={hideModal}>
             <AntDesign name="arrowleft" size={24} color="white" />
           </TouchableOpacity>
-          <Image
-            source={{
-              uri: "https://www.timeoutdubai.com/cloud/timeoutdubai/2021/09/10/8Z01KJ8v-Footlab-dubai-0.jpg",
-            }}
-            style={styles.image}
-          />
-          <View style={styles.content}>
-            <Text style={styles.title}>{event.title}</Text>
-            <Text style={styles.description}>{event.description}</Text>
-            <Center>
-              <View style={styles.eventDetails}>
-                <Text style={styles.dateTimeLocation}>
-                  {formatDateAndTime(event.date, event.time)}
-                </Text>
-                <Text style={styles.location}>{event.location}</Text>
-                <Text
-                  style={styles.price}
-                >{`Price: £${event.ticketPrice}`}</Text>
-              </View>
-            </Center>
-          </View>
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[styles.button, styles.registerInterestButton]}
-            >
-              <Text style={styles.buttonText}>Register Interest</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.addToCalendarButton]}
-            >
-              <Text style={styles.buttonText}>Add to Calendar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.openInMapsButton]}
-              onPress={() =>
-                openMap({ latitude: 37.865101, longitude: -119.53833 })
-              }
-            >
-              <Text style={styles.buttonText}>Open in Maps</Text>
-            </TouchableOpacity>
-          </View>
-          <Button
-            size="md"
-            variant="solid"
-            action="positive"
-            isDisabled={!user}
-            isFocusVisible={false}
-            onPress={() => setCheckoutVisible(true)}
-          >
-            <ButtonText>Pay</ButtonText>
-          </Button>
+
+          <Box justifyContent="center">
+            <VStack space="4xl">
+              <Text style={styles.title}>{event.title}</Text>
+              <Text style={styles.description}>{event.description}</Text>
+
+              <Center>
+                <VStack space="2xl">
+                  <Box style={styles.eventDetails}>
+                    <Text style={styles.dateTimeLocation}>
+                      {formatDateAndTime(event.date, event.time)}
+                    </Text>
+                    <Text style={styles.location}>{event.location}</Text>
+                    <Text
+                      style={styles.price}
+                    >{`Price: £${event.ticketPrice}`}</Text>
+                  </Box>
+                  <Box style={styles.eventDetails}>
+                    <ScrollView h={"$20"}>
+                      {dummyNames.map((name) => (
+                        <Text color="white">- {name}</Text>
+                      ))}
+                    </ScrollView>
+                  </Box>
+                </VStack>
+              </Center>
+
+              <Box style={styles.buttonRow}>
+                <TouchableOpacity
+                  style={[styles.button, styles.registerInterestButton]}
+                >
+                  <Text style={styles.buttonText}>Register Interest</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.button, styles.addToCalendarButton]}
+                >
+                  <Text style={styles.buttonText}>Add to Calendar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.button, styles.openInMapsButton]}
+                  onPress={() =>
+                    openMap({ latitude: 37.865101, longitude: -119.53833 })
+                  }
+                >
+                  <Text style={styles.buttonText}>Open in Maps</Text>
+                </TouchableOpacity>
+              </Box>
+              <Button
+                size="md"
+                variant="solid"
+                action="positive"
+                isDisabled={!user}
+                isFocusVisible={false}
+                onPress={() => setCheckoutVisible(true)}
+              >
+                <ButtonText>Pay</ButtonText>
+              </Button>
+            </VStack>
+          </Box>
         </Animated.ScrollView>
         <StripeProvider publishableKey={pk} urlScheme="your-url-scheme">
           <CheckoutModalScreen
