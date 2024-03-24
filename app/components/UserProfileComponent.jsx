@@ -8,13 +8,14 @@ import {
   Center,
   HStack,
   Switch,
+  Avatar,
+  AvatarFallbackText,
 } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { useAtom } from "jotai";
 import { userAtom, checkedEmailAtom, userExistsAtom } from "../utils/atoms";
 import supabase from "../utils/supabaseClient";
 import DropdownComponent from "./DropdownComponent";
-import { CheckboxIndicator } from "@gluestack-ui/themed";
 
 const positions = [
   { id: 0, name: "No Preference", value: "no-preference" },
@@ -31,7 +32,6 @@ const findNameByValue = (arr, value) => {
     }
   }
   return "";
-  console.log(value);
 };
 
 const UserProfileComponent = () => {
@@ -41,6 +41,7 @@ const UserProfileComponent = () => {
   const [dropdownOne, setDropdownOne] = useState("");
   const [dropdownTwo, setDropdownTwo] = useState("");
   const [isChanged, setChanged] = useState(false);
+  const [isCapPref, setIsCapPref] = useState(true);
 
   useEffect(() => {
     if (
@@ -64,6 +65,8 @@ const UserProfileComponent = () => {
     ) {
       setChanged(false);
     }
+
+    setIsCapPref(user?.metadata?.captainPref || false);
   }, [dropdownOne, dropdownTwo]);
 
   const handleSignOut = async () => {
@@ -75,6 +78,23 @@ const UserProfileComponent = () => {
       setCheckedEmail(false);
     } catch (error) {
       console.error("Error signing out:", error.message);
+    }
+  };
+
+  const handleCaptainPreference = async () => {
+    const userMeta = { ...user?.metadata, captainPref: isCapPref };
+    setIsCapPref(!isCapPref);
+    const usersData = await supabase
+      .from("users")
+      .update({ metadata: userMeta })
+      .eq("id", user?.id);
+    if (usersData.error) {
+      console.error(usersData.error);
+    } else {
+      if (typeof usersData.data === "object" && usersData.data !== null) {
+        // @ts-ignore
+        setUser({ ...user, ...usersData.data });
+      }
     }
   };
 
@@ -99,6 +119,21 @@ const UserProfileComponent = () => {
     setChanged(false);
   };
 
+  const getRandomHexColor = () => {
+    // Generate random hex value for red, green, and blue components
+    let red = Math.floor(Math.random() * 256).toString(16);
+    let green = Math.floor(Math.random() * 256).toString(16);
+    let blue = Math.floor(Math.random() * 256).toString(16);
+  
+    // Ensure that each component has two digits
+    red = (red.length === 1 ? "0" + red : red);
+    green = (green.length === 1 ? "0" + green : green);
+    blue = (blue.length === 1 ? "0" + blue : blue);
+  
+    // Concatenate components to form the color
+    const hexColor = "#" + red + green + blue;
+    return hexColor;
+  }
   return (
     <Center>
       <VStack
@@ -120,7 +155,9 @@ const UserProfileComponent = () => {
           justifyContent="center"
         >
           <Center>
-            <Ionicons name="person-circle-outline" size={100} color="#cccccc" />
+            <Avatar bgColor={getRandomHexColor()} size="2xl" borderRadius="$full">
+              <AvatarFallbackText>{user?.user_metadata?.first_name + " " + user?.user_metadata?.last_name}</AvatarFallbackText>
+            </Avatar>
           </Center>
           <HStack justifyContent="center">
             <Box>
@@ -176,8 +213,15 @@ const UserProfileComponent = () => {
             }
           />
           <HStack space="md" alignItems="center">
-            <Switch />
-            <Text size="sm" color="white" fontSize={"$md"}> Want to be Captain ?</Text>
+            <Switch
+              value={isCapPref}
+              isRequired={false}
+              onToggle={handleCaptainPreference}
+            />
+            <Text size="sm" color="white" fontSize={"$md"}>
+              {" "}
+              Want to be Captain ?
+            </Text>
           </HStack>
 
           {isChanged && (
