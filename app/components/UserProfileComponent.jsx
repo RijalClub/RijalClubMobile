@@ -8,6 +8,8 @@ import {
   Center,
   HStack,
   Switch,
+  Avatar,
+  AvatarFallbackText,
 } from "@gluestack-ui/themed";
 import { Ionicons } from "@expo/vector-icons";
 import { useAtom } from "jotai";
@@ -117,6 +119,21 @@ const UserProfileComponent = () => {
     setChanged(false);
   };
 
+  const getRandomHexColor = () => {
+    // Generate random hex value for red, green, and blue components
+    let red = Math.floor(Math.random() * 256).toString(16);
+    let green = Math.floor(Math.random() * 256).toString(16);
+    let blue = Math.floor(Math.random() * 256).toString(16);
+  
+    // Ensure that each component has two digits
+    red = (red.length === 1 ? "0" + red : red);
+    green = (green.length === 1 ? "0" + green : green);
+    blue = (blue.length === 1 ? "0" + blue : blue);
+  
+    // Concatenate components to form the color
+    const hexColor = "#" + red + green + blue;
+    return hexColor;
+  }
   return (
     <Center>
       <VStack
@@ -138,7 +155,9 @@ const UserProfileComponent = () => {
           justifyContent="center"
         >
           <Center>
-            <Ionicons name="person-circle-outline" size={100} color="#cccccc" />
+            <Avatar bgColor={getRandomHexColor()} size="2xl" borderRadius="$full">
+              <AvatarFallbackText>{user?.user_metadata?.first_name + " " + user?.user_metadata?.last_name}</AvatarFallbackText>
+            </Avatar>
           </Center>
           <HStack justifyContent="center">
             <Box>
