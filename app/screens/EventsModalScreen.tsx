@@ -9,7 +9,6 @@ import {
   VStack,
   ScrollView,
 } from "@gluestack-ui/themed";
-import PositionDropdown from "../components/PositionDropdown.jsx";
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -22,6 +21,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import { userAtom } from "../utils/atoms.js";
 import { useAtom } from "jotai";
+import PlayerListModalComponent from "../components/PlayerListModalComponent.tsx";
 
 interface Event {
   id: number;
@@ -34,7 +34,7 @@ interface Event {
   currency: string;
 }
 
-const dummyNames = [
+const playerList = [
   "Harry Smith",
   "Jordan Brown",
   "Liam Jones",
@@ -52,6 +52,8 @@ const dummyNames = [
   "Oscar Green",
   "Joseph Hall",
   "Henry Young",
+];
+const subList = [
   "Leo Walker",
   "Alexander Edwards",
   "Samuel Hill",
@@ -72,6 +74,7 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
 }) => {
   useRef(null);
   const [isCheckoutVisible, setCheckoutVisible] = useState(false);
+  const [isPlayerListVisible, setPlayerListVisible] = useState(false);
   const [user] = useAtom(userAtom);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -143,6 +146,7 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
 
               <Center>
                 <VStack space="2xl">
+                  {/* Event details */}
                   <Box style={styles.eventDetails}>
                     <Text style={styles.dateTimeLocation}>
                       {formatDateAndTime(event.date, event.time)}
@@ -152,36 +156,50 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
                       style={styles.price}
                     >{`Price: £${event.ticketPrice}`}</Text>
                   </Box>
+
+                  {/* Player list */}
                   <Box style={styles.eventDetails}>
-                    <ScrollView h={"$20"}>
-                      {dummyNames.map((name) => (
-                        <Text color="white">- {name}</Text>
-                      ))}
-                    </ScrollView>
+                    <Button onPress={() => setPlayerListVisible(true)}>
+                      <ButtonText>See Player List</ButtonText>
+                    </Button>
                   </Box>
                 </VStack>
               </Center>
+              <PlayerListModalComponent
+                isVisible={isPlayerListVisible}
+                playerList={playerList}
+                subList={subList}
+                hideModal={() => setPlayerListVisible(false)}
+              ></PlayerListModalComponent>
 
+              {/* Action buttons */}
               <Box style={styles.buttonRow}>
                 <TouchableOpacity
                   style={[styles.button, styles.registerInterestButton]}
                 >
-                  <Text style={styles.buttonText}>Register Interest</Text>
+                  <Text style={styles.buttonText}>Sign Up</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.button, styles.registerInterestButton]}
+                >
+                  <Text style={styles.buttonText}>Join Subs</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.button, styles.addToCalendarButton]}
                 >
                   <Text style={styles.buttonText}>Add to Calendar</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={[styles.button, styles.openInMapsButton]}
                   onPress={() =>
                     openMap({ latitude: 37.865101, longitude: -119.53833 })
                   }
                 >
                   <Text style={styles.buttonText}>Open in Maps</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </Box>
+              
+              {/* PAY */}
               <Button
                 size="md"
                 variant="solid"
@@ -273,6 +291,7 @@ const styles = StyleSheet.create({
     flexDirection: "row", // Align date and time on the same line
     justifyContent: "center", // Spread date and time to opposite ends
     fontSize: 20,
+    fontWeight: "bold",
     color: "#A0A0A0",
     marginBottom: 10,
     textAlign: "center",
