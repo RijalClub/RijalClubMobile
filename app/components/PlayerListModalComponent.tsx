@@ -46,7 +46,7 @@ const PlayerListModalComponent: React.FC<PlayerListModalProps> = ({
             <AntDesign name="arrowleft" size={24} color="white" />
           </TouchableOpacity>
 
-          <Box alignItems="center">
+          <Box alignItems="center" paddingBottom={30}>
             <Text fontSize={"$2xl"} paddingVertical={10} marginTop={10} color="white" fontWeight="bold" underline={true}>Players</Text>
             {playerList.map((name) => (
               <Text color="white">- {name}</Text>

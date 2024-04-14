@@ -29,7 +29,24 @@ const SignInComponent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [signInError, setSignInError] = useState(null);
 
+  const getRandomHexColor = () => {
+    // Generate random hex value for red, green, and blue components
+    let red = Math.floor(Math.random() * 256).toString(16);
+    let green = Math.floor(Math.random() * 256).toString(16);
+    let blue = Math.floor(Math.random() * 256).toString(16);
+
+    // Ensure that each component has two digits
+    red = red.length === 1 ? "0" + red : red;
+    green = green.length === 1 ? "0" + green : green;
+    blue = blue.length === 1 ? "0" + blue : blue;
+
+    // Concatenate components to form the color
+    const hexColor = "#" + red + green + blue;
+    return hexColor;
+  };
+
   const handleSignIn = async () => {
+    const userProfileColor = getRandomHexColor();
     setIsLoading(true);
     setSignInError(null);
     try {
@@ -44,7 +61,7 @@ const SignInComponent = () => {
         .select("*")
         .eq("id", data.user.id)
         .single();
-      setUserSession({ ...data.user, ...user.data });
+      setUserSession({ ...data.user, ...user.data, userProfileColor });
 
       setIsLoading(false);
       setEmail("");
