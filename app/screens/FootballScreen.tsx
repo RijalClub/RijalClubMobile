@@ -5,7 +5,8 @@ import EventsModalScreen from "./EventsModalScreen";
 import EventListComponent from "../components/EventListComponent";
 import { dummyEventsData } from "../utils/eventsDummyData";
 import { FontAwesome } from "@expo/vector-icons";
-import { VStack, Text, Box } from "@gluestack-ui/themed";
+import { VStack, Text, Box, ButtonText, Button } from "@gluestack-ui/themed";
+import AlertDisclaimerDialogComponent from "../components/AlertDisclaimerDialogComponent";
 
 interface Event {
   id: number;
@@ -25,6 +26,7 @@ interface FootballScreenProps {
 const FootballScreen: React.FC<FootballScreenProps> = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
   const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
 
   const showModal = (event: Event) => {
     setCurrentEvent(event);

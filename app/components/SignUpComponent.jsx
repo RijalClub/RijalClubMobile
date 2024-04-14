@@ -64,6 +64,7 @@ const SignUpComponent = () => {
 
   const handleSignUp = async () => {
     clearErrors();
+    const userProfileColor = getRandomHexColor();
 
     // Field Validations
     if (!email || !validator.isEmail(email)) {
@@ -120,7 +121,7 @@ const SignUpComponent = () => {
           .select("*")
           .eq("id", data.user.id)
           .single();
-        setUserSession({ ...data.user, ...user.data });
+        setUserSession({ ...data.user, ...user.data, userProfileColor });
       }
 
       setEmail("");

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { StyleSheet, Modal, TouchableOpacity, Image, View } from "react-native";
+import { StyleSheet, Modal, TouchableOpacity } from "react-native";
 import {
   Center,
   Text,
@@ -22,6 +22,7 @@ import { StripeProvider } from "@stripe/stripe-react-native";
 import { userAtom } from "../utils/atoms.js";
 import { useAtom } from "jotai";
 import PlayerListModalComponent from "../components/PlayerListModalComponent.tsx";
+import AlertDisclaimerDialogComponent from "../components/AlertDisclaimerDialogComponent.tsx";
 
 interface Event {
   id: number;
@@ -52,8 +53,17 @@ const playerList = [
   "Oscar Green",
   "Joseph Hall",
   "Henry Young",
+  "Daniel Wright",
+  "Oscar Green",
+  "Joseph Hall",
+  "Henry Young",
 ];
 const subList = [
+  "Leo Walker",
+  "Alexander Edwards",
+  "Samuel Hill",
+  "Max Mitchell",
+  "Dylan Turner",
   "Leo Walker",
   "Alexander Edwards",
   "Samuel Hill",
@@ -75,6 +85,7 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
   useRef(null);
   const [isCheckoutVisible, setCheckoutVisible] = useState(false);
   const [isPlayerListVisible, setPlayerListVisible] = useState(false);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [user] = useAtom(userAtom);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -128,7 +139,7 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
       month: "short",
       year: "numeric",
     });
-    return `${formattedDate} at ${timeString}`;
+    return `${formattedDate.toUpperCase()} | ${timeString}`;
   };
   const pk = process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "";
   return (
@@ -139,32 +150,31 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
             <AntDesign name="arrowleft" size={24} color="white" />
           </TouchableOpacity>
 
-          <Box justifyContent="center">
+          <Box>
             <VStack space="4xl">
-              <Text style={styles.title}>{event.title}</Text>
-              <Text style={styles.description}>{event.description}</Text>
+              <Text style={styles.title}>{event.title.toUpperCase()}</Text>
+              <Text style={styles.description}>- {event.description}</Text>
 
-              <Center>
-                <VStack space="2xl">
-                  {/* Event details */}
-                  <Box style={styles.eventDetails}>
-                    <Text style={styles.dateTimeLocation}>
-                      {formatDateAndTime(event.date, event.time)}
-                    </Text>
-                    <Text style={styles.location}>{event.location}</Text>
-                    <Text
-                      style={styles.price}
-                    >{`Price: £${event.ticketPrice}`}</Text>
-                  </Box>
+              {/* Event details */}
+              <Box style={styles.eventDetails}>
+                <VStack space="lg">
+                  <Text style={styles.dateTimeLocation}>
+                    {formatDateAndTime(event.date, event.time)}
+                  </Text>
+                  <Text style={styles.location}>
+                    {event.location.toUpperCase()}
+                  </Text>
+                  <Text
+                    style={styles.price}
+                  >{`PRICE: £${event.ticketPrice}`}</Text>
 
                   {/* Player list */}
-                  <Box style={styles.eventDetails}>
-                    <Button onPress={() => setPlayerListVisible(true)}>
-                      <ButtonText>See Player List</ButtonText>
-                    </Button>
-                  </Box>
+                  <Button onPress={() => setPlayerListVisible(true)}>
+                    <ButtonText>See Player List</ButtonText>
+                  </Button>
                 </VStack>
-              </Center>
+              </Box>
+
               <PlayerListModalComponent
                 isVisible={isPlayerListVisible}
                 playerList={playerList}
@@ -174,16 +184,22 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
 
               {/* Action buttons */}
               <Box style={styles.buttonRow}>
+                {/* Sign Up */}
                 <TouchableOpacity
                   style={[styles.button, styles.registerInterestButton]}
                 >
                   <Text style={styles.buttonText}>Sign Up</Text>
                 </TouchableOpacity>
+
+                {/* Join subs */}
                 <TouchableOpacity
                   style={[styles.button, styles.registerInterestButton]}
+                  onPress={() => setShowDisclaimer(true)}
                 >
                   <Text style={styles.buttonText}>Join Subs</Text>
                 </TouchableOpacity>
+
+                {/* Add to calendar */}
                 <TouchableOpacity
                   style={[styles.button, styles.addToCalendarButton]}
                 >
@@ -198,7 +214,7 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
                   <Text style={styles.buttonText}>Open in Maps</Text>
                 </TouchableOpacity> */}
               </Box>
-              
+
               {/* PAY */}
               <Button
                 size="md"
@@ -213,6 +229,14 @@ const EventsModalScreen: React.FC<EventsModalScreenProps> = ({
             </VStack>
           </Box>
         </Animated.ScrollView>
+
+        {/* Subs Disclaimer */}
+        <AlertDisclaimerDialogComponent
+          showAlertDialog={showDisclaimer}
+          hideShowAlertDialog={() => setShowDisclaimer(false)}
+        />
+
+        {/* Payment Modal Screen */}
         <StripeProvider publishableKey={pk} urlScheme="your-url-scheme">
           <CheckoutModalScreen
             eventDetails={event}
@@ -237,8 +261,7 @@ const styles = StyleSheet.create({
     borderColor: "#D0D0D0",
     borderWidth: 3,
     borderRadius: 10,
-    padding: 10,
-    width: 300,
+    padding: 20,
   },
   modalContainer: {
     flex: 1,
@@ -265,6 +288,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 23, // Larger for emphasis
     fontWeight: "bold",
+    fontStyle: "italic",
+    lineHeight: 30,
+    textDecorationLine: "underline",
     color: "#D0D0D0", // Dark text for readability
     flexShrink: 1, // Allows text to shrink to fit the container width
     textAlign: "center",
@@ -274,6 +300,7 @@ const styles = StyleSheet.create({
     color: "#D0D0D0",
     marginBottom: 10,
     textAlign: "center",
+    fontStyle: "italic",
     paddingBottom: 10,
   },
   price: {
@@ -300,21 +327,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around", // Space out buttons evenly
     alignItems: "center",
-    marginBottom: 20, // Ensure it doesn't stick to the bottom
+    // marginBottom: 20, // Ensure it doesn't stick to the bottom
   },
   // Ensure all buttons have the same flex value to distribute space evenly
   button: {
     flex: 1, // Each button will take up equal space
     alignItems: "center", // Center the text inside the button
     justifyContent: "center", // Center the content vertically
-    padding: 10, // Add some padding for better touch area
+    // padding: 10, // Add some padding for better touch area
     marginHorizontal: 5, // Add horizontal margin between buttons
     borderRadius: 5,
+    height: 52,
   },
   // Text styles that are common across all buttons
   buttonText: {
     color: "#D0D0D0",
     fontWeight: "bold",
+    fontSize: 16,
   },
   // Unique button styles for background colors
   registerInterestButton: {
@@ -328,7 +357,7 @@ const styles = StyleSheet.create({
   },
   payButton: {
     backgroundColor: "#517b41", // A bright, inviting blue
-    padding: 15,
+    padding: 10,
     borderRadius: 30, // Rounded edges for modern look
     alignItems: "center",
     justifyContent: "center",
